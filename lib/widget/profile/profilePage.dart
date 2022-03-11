@@ -60,6 +60,7 @@ class _Profile extends State<Profile> {
         selectedIndex: 4,
         showElevation: true,
         itemCornerRadius: 24,
+        backgroundColor: Colors.white,
         curve: Curves.easeIn,
         onItemSelected: (index) =>
             {setState(() => _currentIndex = index), onTabTapped(index)},

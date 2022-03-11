@@ -14,7 +14,7 @@ import 'package:toy_app/model/cart_model.dart';
 class ProductService {
   // var url = Uri.http('192.168.116.40:5000/', '/api/products', {'q': '{http}'});
   String url =
-      "http://192.168.116.40:5000/api/products?Fields=id%2Cname%2Cshort_description%2Cfull_description%2Cprice%2Capproved_rating_sum%2Cimages&PublishedStatus=true";
+      "http://23.21.117.81:5000/api/products?Fields=id%2Cname%2Cshort_description%2Cfull_description%2Cprice%2Capproved_rating_sum%2Cimages&PublishedStatus=true";
 
   Future<List<Product>> getManufacture(String name) async {
     try {
@@ -23,7 +23,7 @@ class ProductService {
       String? token = prefs.getString("bearer_token");
       final manufacturer = await http.get(
         Uri.parse(
-            "http://192.168.116.40:5000/api/manufacturers?Fields=id%2Cname"),
+            "http://23.21.117.81:5000/api/manufacturers?Fields=id%2Cname"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -42,7 +42,7 @@ class ProductService {
       //Get Product IDs from Manufacture-Product-Mapping List
       final response = await http.get(
         Uri.parse(
-            "http://192.168.116.40:5000/api/product_manufacturer_mappings?Fields=product_id&ManufacturerId=$manuId"),
+            "http://23.21.117.81:5000/api/product_manufacturer_mappings?Fields=product_id&ManufacturerId=$manuId"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -60,7 +60,7 @@ class ProductService {
       }
       final productResponse = await http.get(
         Uri.parse(
-            "http://192.168.116.40:5000/api/products?$ids&Fields=id%2Cname%2Cshort_description%2Cfull_description%2Cprice%2Capproved_rating_sum%2Cimages&PublishedStatus=true"),
+            "http://23.21.117.81:5000/api/products?$ids&Fields=id%2Cname%2Cshort_description%2Cfull_description%2Cprice%2Capproved_rating_sum%2Cimages&PublishedStatus=true"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -91,7 +91,7 @@ class ProductService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("bearer_token");
       final categoryResponse = await http.get(
-        Uri.parse("http://192.168.116.40:5000/api/categories?Fields=id%2Cname"),
+        Uri.parse("http://23.21.117.81:5000/api/categories?Fields=id%2Cname"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -198,7 +198,7 @@ class ProductService {
       String? userId = prefs.getString('auth_userid');
       final response = await http.get(
         Uri.parse(
-            "http://192.168.116.40:5000/api/shopping_cart_items?Fields=id%2Cproduct%2Cquantity&ShoppingCartType=ShoppingCart&CustomerId=$userId"),
+            "http://23.21.117.81:5000/api/shopping_cart_items?Fields=id%2Cproduct%2Cquantity&ShoppingCartType=ShoppingCart&CustomerId=$userId"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -223,7 +223,7 @@ class ProductService {
       String? token = prefs.getString("bearer_token");
       String? userId = prefs.getString('auth_userid');
       final response = await http.get(
-        Uri.parse("http://192.168.116.40:5000/api/products/$productId"),
+        Uri.parse("http://23.21.117.81:5000/api/products/$productId"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -232,7 +232,7 @@ class ProductService {
       final decode_product = body['products'][0];
 
       final cart_response = await http.post(
-        Uri.parse("http://192.168.116.40:5000/api/shopping_cart_items"),
+        Uri.parse("http://23.21.117.81:5000/api/shopping_cart_items"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -271,7 +271,7 @@ class ProductService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("bearer_token");
       final response = await http.delete(
-        Uri.parse("http://192.168.116.40:5000/api/shopping_cart_items/$id"),
+        Uri.parse("http://23.21.117.81:5000/api/shopping_cart_items/$id"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -293,7 +293,7 @@ class ProductService {
       String? userId = prefs.getString('auth_userid');
       final response = await http.get(
         Uri.parse(
-            "http://192.168.116.40:5000/api/shopping_cart_items?Fields=product%2Cquantity&ShoppingCartType=Wishlist&CustomerId=$userId"),
+            "http://23.21.117.81:5000/api/shopping_cart_items?Fields=product%2Cquantity&ShoppingCartType=Wishlist&CustomerId=$userId"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -317,7 +317,7 @@ class ProductService {
       String? token = prefs.getString("bearer_token");
       String? userId = prefs.getString('auth_userid');
       final response = await http.get(
-        Uri.parse("http://192.168.116.40:5000/api/products/$productId"),
+        Uri.parse("http://23.21.117.81:5000/api/products/$productId"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -326,7 +326,7 @@ class ProductService {
       final decode_product = body['products'][0];
 
       final favourite_response = await http.post(
-        Uri.parse("http://192.168.116.40:5000/api/shopping_cart_items"),
+        Uri.parse("http://23.21.117.81:5000/api/shopping_cart_items"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -368,7 +368,7 @@ class ProductService {
       String? token = prefs.getString("bearer_token");
       final response = await http.get(
         Uri.parse(
-            "http://192.168.116.40:5000/api/categories?Fields=name%2Cdescription%2Cimage%2Cid"),
+            "http://23.21.117.81:5000/api/categories?Fields=name%2Cdescription%2Cimage%2Cid"),
         headers: {
           'Authorization': 'Bearer $token',
         },

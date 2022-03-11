@@ -48,7 +48,7 @@ class _Toystory extends State<Toystory> {
     }
 
     return Scaffold(
-      // backgroundColor: Color(0xff283488),
+      backgroundColor: const Color(0xff45cbf5),
       bottomNavigationBar: BottomNavyBar(
         selectedIndex: 0,
         showElevation: true,
@@ -60,7 +60,7 @@ class _Toystory extends State<Toystory> {
           BottomNavyBarItem(
             icon: Icon(Icons.home),
             title: Text('Home'),
-            activeBackColor: Color(0xFF283488),
+            activeBackColor: const Color(0xFF283488),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
             inactiveColor: Colors.grey[600],
@@ -68,7 +68,7 @@ class _Toystory extends State<Toystory> {
           BottomNavyBarItem(
             icon: Icon(Icons.apps),
             title: Text('Categories'),
-            activeBackColor: Color(0xFF283488),
+            activeBackColor: const Color(0xFF283488),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
             inactiveColor: Colors.grey[600],
@@ -76,7 +76,7 @@ class _Toystory extends State<Toystory> {
           BottomNavyBarItem(
             icon: Icon(Icons.shopping_cart),
             title: Text('Shopping Cart Items'),
-            activeBackColor: Color(0xFF283488),
+            activeBackColor: const Color(0xFF283488),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
             inactiveColor: Colors.grey[600],
@@ -84,7 +84,7 @@ class _Toystory extends State<Toystory> {
           BottomNavyBarItem(
             icon: Icon(Icons.favorite_outline),
             title: Text('Saved'),
-            activeBackColor: Color(0xFF283488),
+            activeBackColor: const Color(0xFF283488),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
             inactiveColor: Colors.grey[600],
@@ -92,7 +92,7 @@ class _Toystory extends State<Toystory> {
           BottomNavyBarItem(
             icon: Icon(Icons.account_circle_outlined),
             title: Text('Profile'),
-            activeBackColor: Color(0xFF283488),
+            activeBackColor: const Color(0xFF283488),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
             inactiveColor: Colors.grey[600],
@@ -100,8 +100,9 @@ class _Toystory extends State<Toystory> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Container(
-          color: const Color(0xff45cbf5),
+        child: Padding(
+          // color: const Color(0xff45cbf5),
+          padding: EdgeInsets.zero,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

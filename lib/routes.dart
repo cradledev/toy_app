@@ -2,16 +2,12 @@ import 'package:flutter/widgets.dart';
 
 // Splash, Boarding Pages
 import 'package:toy_app/widget/boarding/splash.dart';
-import 'package:toy_app/widget/boarding/boarding1.dart';
-import 'package:toy_app/widget/boarding/boarding2.dart';
-import 'package:toy_app/widget/boarding/boarding3.dart';
+import 'package:toy_app/widget/boarding/onboarding.dart';
 
 // Auth Pages
 import 'package:toy_app/widget/auth/auth.dart';
 import 'package:toy_app/widget/auth/login.dart';
 import 'package:toy_app/widget/auth/register.dart';
-import 'package:toy_app/widget/auth/registerEmail.dart';
-import 'package:toy_app/widget/auth/registerAddress.dart';
 
 // Home
 import 'package:toy_app/widget/home.dart';
@@ -63,13 +59,9 @@ import 'package:toy_app/widget/listPages/recommendedPage.dart';
 final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
   '/splash': (BuildContext context) => const Splash(),
   '/auth': (BuildContext context) => const Auth(),
-  '/login': (BuildContext context) => LoginScreen(),
+  '/login': (BuildContext context) => const LoginScreen(),
   '/register': (BuildContext context) => const Register(),
-  '/registeremail': (BuildContext context) => const RegisterEmail(),
-  '/registeraddress': (BuildContext context) => const RegisterAddress(),
-  '/boardingone': (BuildContext context) => Boarding1(),
-  '/boardingtwo': (BuildContext context) => Boarding2(),
-  '/boardingthree': (BuildContext context) => Boarding3(),
+  '/boardingone': (BuildContext context) => const Onboarding(),
   '/home': (BuildContext context) => const Home(),
   '/categories': (BuildContext context) => const Categories(),
   '/categoryItem': (BuildContext context) => const CategoryItems(),

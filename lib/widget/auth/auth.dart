@@ -14,18 +14,19 @@ class _Auth extends State<Auth> {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             height: height * 0.35,
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(width * 0.05, 0, 0, 0),
-            child: SizedBox(
-              height: height * 0.1,
-              width: width * 0.9,
-              child: Image.asset(
-                "assets/img/LoginRegistration/header.png",
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: Image(
+              image: const AssetImage(
+                'assets/img/LoginRegistration/header.png',
               ),
+              fit: BoxFit.scaleDown,
+              height: height * 0.1,
             ),
           ),
           SizedBox(

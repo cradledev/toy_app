@@ -62,7 +62,7 @@ class _Newarrivals extends State<Newarrivals> {
           BottomNavyBarItem(
             icon: Icon(Icons.home),
             title: Text('Home'),
-            activeBackColor: Color(0xFF283488),
+            activeBackColor: const Color(0xFF283488),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
             inactiveColor: Colors.grey[600],
@@ -70,7 +70,7 @@ class _Newarrivals extends State<Newarrivals> {
           BottomNavyBarItem(
             icon: Icon(Icons.apps),
             title: Text('Categories'),
-            activeBackColor: Color(0xFF283488),
+            activeBackColor: const Color(0xFF283488),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
             inactiveColor: Colors.grey[600],
@@ -78,7 +78,7 @@ class _Newarrivals extends State<Newarrivals> {
           BottomNavyBarItem(
             icon: Icon(Icons.shopping_cart),
             title: Text('Shopping Cart Items'),
-            activeBackColor: Color(0xFF283488),
+            activeBackColor: const Color(0xFF283488),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
             inactiveColor: Colors.grey[600],
@@ -86,7 +86,7 @@ class _Newarrivals extends State<Newarrivals> {
           BottomNavyBarItem(
             icon: Icon(Icons.favorite_outline),
             title: Text('Saved'),
-            activeBackColor: Color(0xFF283488),
+            activeBackColor: const Color(0xFF283488),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
             inactiveColor: Colors.grey[600],
@@ -94,7 +94,7 @@ class _Newarrivals extends State<Newarrivals> {
           BottomNavyBarItem(
             icon: Icon(Icons.account_circle_outlined),
             title: Text('Profile'),
-            activeBackColor: Color(0xFF283488),
+            activeBackColor: const Color(0xFF283488),
             activeColor: Colors.white,
             textAlign: TextAlign.center,
             inactiveColor: Colors.grey[600],

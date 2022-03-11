@@ -10,7 +10,7 @@ class UserService {
   Future<String> getToken() async {
     try {
       var responnse = await http.post(
-        Uri.parse("http://192.168.116.40:5000/token"),
+        Uri.parse("http://23.21.117.81:5000/token"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -23,6 +23,8 @@ class UserService {
       );
       final body = json.decode(responnse.body);
       String token = body["access_token"];
+      print("token =====================================");
+      print(token);
       return token;
     } catch (err) {
       rethrow;
@@ -32,11 +34,11 @@ class UserService {
   Future<String> login(String userEmail, String userPassword) async {
     try {
       // var responnse = await http.post(
-      //   "http://192.168.116.40:5000/api/"
+      //   "http://23.21.117.81:5000/api/"
       // )
       String token = await getToken();
       final response = await http.get(
-        Uri.parse("http://192.168.116.40:5000/api/customers?Limit=100"),
+        Uri.parse("http://23.21.117.81:5000/api/customers?Limit=100"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -81,7 +83,7 @@ class UserService {
       String? pass = prefs.getString('password');
       int ids = int.parse(id!);
       final response = await http.put(
-        Uri.parse("http://192.168.116.40:5000/api/customers/$id"),
+        Uri.parse("http://23.21.117.81:5000/api/customers/$id"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -193,7 +195,7 @@ class UserService {
     try {
       String token = await getToken();
       final response = await http.post(
-        Uri.parse("http://192.168.116.40:5000/api/customers"),
+        Uri.parse("http://23.21.117.81:5000/api/customers"),
         headers: {
           'Authorization': 'Bearer $token',
         },

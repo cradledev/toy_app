@@ -107,6 +107,7 @@ class _Payment extends State<Payment> {
                           Container(
                             height: height * 0.06,
                             width: width * 0.46,
+                            padding: const EdgeInsets.only(left: 10),
                             margin: EdgeInsets.only(
                                 left: width * 0.02, right: width * 0.02),
                             child: ElevatedButton(
@@ -159,6 +160,7 @@ class _Payment extends State<Payment> {
                           Container(
                             height: height * 0.06,
                             width: width * 0.46,
+                            padding: const EdgeInsets.only(right: 10),
                             margin: EdgeInsets.only(
                                 left: width * 0.02, right: width * 0.02),
                             child: ElevatedButton(
@@ -206,7 +208,7 @@ class _Payment extends State<Payment> {
                   height: height * 0.03,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
                       Column(
@@ -253,7 +255,7 @@ class _Payment extends State<Payment> {
                           Expanded(
                             flex: 1,
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 const Text(
                                   "Expiry",

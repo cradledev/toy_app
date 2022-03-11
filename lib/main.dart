@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:toy_app/routes.dart';
-import 'package:toy_app/widget/boarding/boarding1.dart';
+import 'package:toy_app/widget/boarding/onboarding.dart';
+
+// provider
+import 'package:toy_app/provider/index.dart';
+import 'package:toy_app/provider/app_locale.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-      overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
-  runApp(const MyApp());
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarBrightness: Brightness.dark,
+  ));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider.value(value: AppState()),
+    ChangeNotifierProvider(
+      create: (_) => AppLocale(),
+    ),
+    // ChangeNotifierProvider(
+    //     create: (_) => DataNotifier(),
+    //   ),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -21,16 +40,30 @@ class MyApp extends StatelessWidget {
       builder: (context, AsyncSnapshot snapshot) {
         // Show splash screen while waiting for app resources to load:
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const MaterialApp(home: Splash());
+          return const MaterialApp(
+              debugShowCheckedModeBanner: false, home: Splash());
         } else {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
-            home: Boarding1(),
-            routes: routes,
+          return ChangeNotifierProvider(
+            create: (context) => AppLocale(),
+            child: Consumer<AppLocale>(builder: (context, locale, child) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Flutter Demo',
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: AppLocalizations.supportedLocales,
+                locale: locale.locale,
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                ),
+                home: const Onboarding(),
+                routes: routes,
+              );
+            }),
           );
         }
       },
@@ -38,17 +71,47 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Splash extends StatelessWidget {
+class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
+
+  @override
+  State<Splash> createState() => _Splash();
+}
+
+class _Splash extends State<Splash> with SingleTickerProviderStateMixin {
+  late AnimationController animationController;
+  late Animation<double> animation;
+  @override
+  void initState() {
+    super.initState();
+    animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    animation =
+        CurvedAnimation(parent: animationController, curve: Curves.easeOut);
+
+    animation.addListener(() => setState(() {}));
+    animationController.forward();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff283488),
-      body: Image.asset(
-        'assets/img/splash/1.png',
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.cover,
+      backgroundColor: const Color(0xff283488),
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset(
+                'assets/img/splash/header.png',
+                width: animation.value *
+                    (MediaQuery.of(context).size.width * 0.95),
+                height: animation.value * 250,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -62,6 +125,6 @@ class Init {
     // This is where you can initialize the resources needed by your app while
     // the splash screen is displayed.  Remove the following example because
     // delaying the user experience is a bad design practice!
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 4));
   }
 }

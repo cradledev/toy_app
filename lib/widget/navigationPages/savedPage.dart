@@ -55,6 +55,7 @@ class _Saved extends State<Saved> {
         selectedIndex: 3,
         showElevation: true,
         itemCornerRadius: 24,
+        backgroundColor: const Color(0xFF283488),
         curve: Curves.easeIn,
         onItemSelected: (index) =>
             {setState(() => _currentIndex = index), onTabTapped(index)},

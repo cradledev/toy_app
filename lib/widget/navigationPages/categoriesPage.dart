@@ -67,6 +67,7 @@ class _Categories extends State<Categories> {
         selectedIndex: 1,
         showElevation: true,
         itemCornerRadius: 24,
+        backgroundColor: const Color(0xFF283488),
         curve: Curves.easeIn,
         onItemSelected: (index) =>
             {setState(() => _currentIndex = index), onTabTapped(index)},

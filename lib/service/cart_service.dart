@@ -11,13 +11,13 @@ import 'package:toy_app/model/manufacture_mapping.dart';
 class ProductService {
   // var url = Uri.http('192.168.116.40:5000/', '/api/products', {'q': '{http}'});
   String url =
-      "http://192.168.116.40:5000/api/products?Fields=id%2Cname%2Cshort_description%2Cfull_description%2Cprice%2Capproved_rating_sum%2Cimages&PublishedStatus=true";
+      "http://23.21.117.81:5000/api/products?Fields=id%2Cname%2Cshort_description%2Cfull_description%2Cprice%2Capproved_rating_sum%2Cimages&PublishedStatus=true";
   String token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOiIxNjQzMjc2Mzc3IiwiZXhwIjoiMTY0MzM2Mjc3NyIsIkN1c3RvbWVySWQiOiIxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJhMDMxOTkzNS1kNzM0LTRiOTQtYTYwZi0xYzVlZGQ4OTEzMzciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJkZXZ2YWxlcmlhQHByb3Rvbm1haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImRldnZhbGVyaWFAcHJvdG9ubWFpbC5jb20ifQ.wYppA8xSJBz240_B_CQB_62GwjgqS20gh2tz39i8zy8";
   Future<List<Product>> getCategory(String name) async {
     try {
       final categoryResponse = await http.get(
-        Uri.parse("http://192.168.116.40:5000/api/categories?Fields=id%2Cname"),
+        Uri.parse("http://23.21.117.81:5000/api/categories?Fields=id%2Cname"),
         headers: {
           'Authorization': 'Bearer $token',
         },

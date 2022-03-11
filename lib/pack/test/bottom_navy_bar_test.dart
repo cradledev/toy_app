@@ -53,7 +53,8 @@ Widget buildNavyBarBoilerplate({
 }
 
 void main() {
-  testWidgets('default values are used when not provided', (WidgetTester tester) async {
+  testWidgets('default values are used when not provided',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -78,17 +79,41 @@ void main() {
       ),
     );
 
-    expect(tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).iconSize, 24.0);
-    expect(tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).selectedIndex, 0);
-    expect(tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).showElevation, true);
-    expect(tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).itemCornerRadius, 50);
-    expect(tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).containerHeight, 56);
-    expect(tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).animationDuration, const Duration(milliseconds: 270));
-    expect(tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).mainAxisAlignment, MainAxisAlignment.spaceBetween);
-    expect(tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).curve, Curves.linear);
+    expect(tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).iconSize,
+        24.0);
+    expect(
+        tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).selectedIndex,
+        0);
+    expect(
+        tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).showElevation,
+        true);
+    expect(
+        tester
+            .widget<BottomNavyBar>(find.byType(BottomNavyBar))
+            .itemCornerRadius,
+        50);
+    expect(
+        tester
+            .widget<BottomNavyBar>(find.byType(BottomNavyBar))
+            .containerHeight,
+        56);
+    expect(
+        tester
+            .widget<BottomNavyBar>(find.byType(BottomNavyBar))
+            .animationDuration,
+        const Duration(milliseconds: 270));
+    expect(
+        tester
+            .widget<BottomNavyBar>(find.byType(BottomNavyBar))
+            .mainAxisAlignment,
+        MainAxisAlignment.spaceBetween);
+    expect(tester.widget<BottomNavyBar>(find.byType(BottomNavyBar)).curve,
+        Curves.linear);
   });
-  
-  testWidgets('throws assertion error if items is less than two or greater than five', (WidgetTester tester) async {
+
+  testWidgets(
+      'throws assertion error if items is less than two or greater than five',
+      (WidgetTester tester) async {
     Widget boilerplate(List<BottomNavyBarItem> items) {
       return MaterialApp(
         home: Material(
@@ -120,18 +145,25 @@ void main() {
     }, throwsAssertionError);
   });
 
-  testWidgets('show elevation when showElevation is true', (WidgetTester tester) async {
+  testWidgets('show elevation when showElevation is true',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
-        buildNavyBarBoilerplate(
-          showElevation: true,
-          onItemSelected: onItemSelected,
-        ),
+      buildNavyBarBoilerplate(
+        showElevation: true,
+        onItemSelected: onItemSelected,
+      ),
     );
 
-    final Container containerFinder = tester.firstWidget<Container>(find.byType(Container));
+    final Container containerFinder =
+        tester.firstWidget<Container>(find.byType(Container));
 
     expect((containerFinder.decoration as BoxDecoration).boxShadow, isNotNull);
     expect((containerFinder.decoration as BoxDecoration).boxShadow!.length, 1);
-    expect((containerFinder.decoration as BoxDecoration).boxShadow!.first.blurRadius, 2);
+    expect(
+        (containerFinder.decoration as BoxDecoration)
+            .boxShadow!
+            .first
+            .blurRadius,
+        2);
   });
 }
