@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+
+import 'package:toy_app/components/components.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -11,9 +13,6 @@ class Profile extends StatefulWidget {
 }
 
 class _Profile extends State<Profile> {
-  int currentIndex = 0;
-  final List<bool> isTappedList = [true, false, false, false];
-  int _currentIndex = 0;
   String savedFirstName = '';
   String savedLastName = '';
   String imagePath = '';
@@ -37,92 +36,24 @@ class _Profile extends State<Profile> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    void onTabTapped(int index) {
-      if (index == 0) {
-        Navigator.pushNamed(context, '/home');
-      }
-      if (index == 1) {
-        Navigator.pushNamed(context, '/categories');
-      }
-      if (index == 2) {
-        Navigator.pushNamed(context, '/cart');
-      }
-      if (index == 3) {
-        Navigator.pushNamed(context, '/saved');
-      }
-      if (index == 4) {
-        Navigator.pushNamed(context, '/profile');
-      }
-    }
 
     return Scaffold(
-      bottomNavigationBar: BottomNavyBar(
-        selectedIndex: 4,
-        showElevation: true,
-        itemCornerRadius: 24,
-        backgroundColor: Colors.white,
-        curve: Curves.easeIn,
-        onItemSelected: (index) =>
-            {setState(() => _currentIndex = index), onTabTapped(index)},
-        items: <BottomNavyBarItem>[
-          BottomNavyBarItem(
-            icon: const Icon(Icons.home),
-            title: const Text('Home'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(Icons.apps),
-            title: const Text('Categories'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(Icons.shopping_cart),
-            title: const Text('Shopping Cart Items'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(Icons.favorite_outline),
-            title: const Text('Saved'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(Icons.account_circle_outlined),
-            title: const Text('Profile'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-        ],
+      appBar: CustomAppBar(
+        title: Image.asset(
+          'assets/img/LoginRegistration/header.png',
+          // height: height * 0.1,
+          width: width * 0.5,
+          fit: BoxFit.cover,
+        ),
+        leadingAction: () {
+          Navigator.pop(context);
+        },
       ),
+      floatingActionButton: const LanguageTransitionWidget(),
+      bottomNavigationBar:
+          CustomBottomNavbar(context: context, selectedIndex: 4),
       body: Column(
         children: [
-          Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(width * 0.25, height * 0.05, 0, 0),
-                child: SizedBox(
-                  height: height * 0.1,
-                  width: width * 0.5,
-                  child: Image.asset(
-                    "assets/img/LoginRegistration/header.png",
-                  ),
-                ),
-              ),
-            ],
-          ),
           Column(
             children: [
               Column(
@@ -132,7 +63,7 @@ class _Profile extends State<Profile> {
                       Container(
                         width: width * 0.2,
                         margin: EdgeInsets.only(
-                            left: width * 0.05, right: width * 0.02),
+                            left: width * 0.05, right: width * 0.05),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(32),
                           color: Colors.white,
@@ -154,7 +85,8 @@ class _Profile extends State<Profile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
                             child: Text(
                               savedFirstName + " " + savedLastName,
                               style: const TextStyle(
@@ -164,7 +96,8 @@ class _Profile extends State<Profile> {
                             ),
                           ),
                           const Padding(
-                            padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 5),
                             child: Text(
                               "68 purchase",
                               style: TextStyle(
@@ -189,11 +122,11 @@ class _Profile extends State<Profile> {
               Navigator.pushNamed(context, '/edit'),
             },
             child: Row(
-              children: const [
-                SizedBox(
+              children: [
+                const SizedBox(
                   width: 20,
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Icon(
                     Icons.account_circle_outlined,
@@ -201,10 +134,10 @@ class _Profile extends State<Profile> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Profile Information",
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.profilepage_info,
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                   ),
@@ -218,11 +151,11 @@ class _Profile extends State<Profile> {
           InkWell(
             onTap: () => {},
             child: Row(
-              children: const [
-                SizedBox(
+              children: [
+                const SizedBox(
                   width: 20,
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Icon(
                     Icons.badge_outlined,
@@ -230,10 +163,10 @@ class _Profile extends State<Profile> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Banking details",
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.profilepage_bank,
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                   ),
@@ -247,11 +180,11 @@ class _Profile extends State<Profile> {
           InkWell(
             onTap: () => {},
             child: Row(
-              children: const [
-                SizedBox(
+              children: [
+                const SizedBox(
                   width: 20,
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Icon(
                     Icons.pin_drop_outlined,
@@ -259,10 +192,10 @@ class _Profile extends State<Profile> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Address",
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.profilepage_address,
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                   ),
@@ -276,11 +209,11 @@ class _Profile extends State<Profile> {
           InkWell(
             onTap: () => {},
             child: Row(
-              children: const [
-                SizedBox(
+              children: [
+                const SizedBox(
                   width: 20,
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Icon(
                     Icons.shopping_bag_outlined,
@@ -288,10 +221,10 @@ class _Profile extends State<Profile> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Shopping history",
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.profilepage_history,
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                   ),
@@ -305,11 +238,11 @@ class _Profile extends State<Profile> {
           InkWell(
             onTap: () => {},
             child: Row(
-              children: const [
-                SizedBox(
+              children: [
+                const SizedBox(
                   width: 20,
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Icon(
                     Icons.settings_outlined,
@@ -317,10 +250,10 @@ class _Profile extends State<Profile> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Settings",
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.profilepage_setting,
+                    style: const TextStyle(
                       fontSize: 18,
                     ),
                   ),
@@ -332,38 +265,4 @@ class _Profile extends State<Profile> {
       ),
     );
   }
-}
-
-Widget makeInput({label, obsureText = false}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: const TextStyle(
-            fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87),
-      ),
-      const SizedBox(
-        height: 5,
-      ),
-      TextField(
-        obscureText: obsureText,
-        decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.grey,
-            ),
-            borderRadius: BorderRadius.circular(32),
-          ),
-          border: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey)),
-        ),
-      ),
-      const SizedBox(
-        height: 30,
-      )
-    ],
-  );
 }

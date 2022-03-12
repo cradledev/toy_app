@@ -1,13 +1,12 @@
-// ignore_for_file: unnecessary_const
-
 import 'package:flutter/material.dart';
-// import 'package:toy_app/model/details.dart';
-// import 'package:toy_app/widget/detailPage_test.dart';
-import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
+import 'package:toy_app/components/components.dart';
+
 import 'package:toy_app/service/product_repo.dart';
 import 'package:toy_app/model/category_list_model.dart';
 import 'package:toy_app/model/product_model.dart';
 import 'package:toy_app/model/search_model.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Categories extends StatefulWidget {
   const Categories({Key? key}) : super(key: key);
@@ -17,9 +16,6 @@ class Categories extends StatefulWidget {
 }
 
 class _Categories extends State<Categories> {
-  int currentIndex = 0;
-  final List<bool> isTappedList = [true, false, false, false];
-  int _currentIndex = 0;
   final ProductService _productService = ProductService();
   late Future<List<CategoryList>> categories;
   late Future<List<Product>> products;
@@ -43,76 +39,21 @@ class _Categories extends State<Categories> {
           arguments: SearchData(item, products));
     }
 
-    void onTabTapped(int index) {
-      if (index == 0) {
-        Navigator.pushNamed(context, '/home');
-      }
-      if (index == 1) {
-        Navigator.pushNamed(context, '/categories');
-      }
-      if (index == 2) {
-        Navigator.pushNamed(context, '/cart');
-      }
-      if (index == 3) {
-        Navigator.pushNamed(context, '/saved');
-      }
-      if (index == 4) {
-        Navigator.pushNamed(context, '/profile');
-      }
-    }
-
     return Scaffold(
       // backgroundColor: Color(0xff283488),
-      bottomNavigationBar: BottomNavyBar(
-        selectedIndex: 1,
-        showElevation: true,
-        itemCornerRadius: 24,
-        backgroundColor: const Color(0xFF283488),
-        curve: Curves.easeIn,
-        onItemSelected: (index) =>
-            {setState(() => _currentIndex = index), onTabTapped(index)},
-        items: <BottomNavyBarItem>[
-          BottomNavyBarItem(
-            icon: const Icon(Icons.home),
-            title: const Text('Home'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(Icons.apps),
-            title: const Text('Categories'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(Icons.shopping_cart),
-            title: const Text('Shopping Cart Items'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(Icons.favorite_outline),
-            title: const Text('Saved'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(Icons.account_circle_outlined),
-            title: const Text('Settings'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-        ],
+      bottomNavigationBar:
+          CustomBottomNavbar(context: context, selectedIndex: 1),
+      floatingActionButton: const LanguageTransitionWidget(),
+      appBar: CustomAppBar(
+        title: const Text(""),
+        leadingAction: () {
+          Navigator.pushNamed(context, '/search');
+        },
+        leadingIcon: const Icon(
+          Icons.search,
+          color: Colors.black,
+          size: 30,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -121,29 +62,11 @@ class _Categories extends State<Categories> {
             Row(
               children: [
                 Container(
-                  padding:
-                      EdgeInsets.only(top: height * 0.1, left: width * 0.05),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/search');
-                    },
-                    child: const Icon(
-                      Icons.search,
-                      color: Colors.black,
-                      size: 30,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  padding:
-                      EdgeInsets.only(top: height * 0.05, left: width * 0.05),
-                  child: const Text(
-                    "Categories",
-                    style: TextStyle(
+                  padding: EdgeInsets.only(
+                      top: 30, left: width * 0.05, right: width * 0.05),
+                  child: Text(
+                    AppLocalizations.of(context)!.categoriespage_categories,
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 32,
@@ -157,14 +80,13 @@ class _Categories extends State<Categories> {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.only(
-                    top: height * 0.02,
-                    left: width * 0.05,
-                    bottom: height * 0.01,
+                  padding: EdgeInsets.symmetric(
+                    vertical: height * 0.02,
+                    horizontal: width * 0.05,
                   ),
-                  child: const Text(
-                    "All the yourchild needs",
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.categoriespage_text,
+                    style: const TextStyle(
                       color: Color(0xff999999),
                       fontWeight: FontWeight.normal,
                       fontSize: 14,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:toy_app/components/components.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
-import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
 import 'package:toy_app/model/product_model.dart';
 import 'package:toy_app/service/product_repo.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Bratz extends StatefulWidget {
   const Bratz({Key? key}) : super(key: key);
@@ -12,9 +14,7 @@ class Bratz extends StatefulWidget {
 }
 
 class _Bratz extends State<Bratz> {
-  int currentIndex = 0;
   final List<bool> isTappedList = [true, false, false, false];
-  int _currentIndex = 0;
   final ProductService _productService = ProductService();
   late Future<List<Product>> products;
 
@@ -30,75 +30,21 @@ class _Bratz extends State<Bratz> {
     var height = MediaQuery.of(context).size.height;
     var itemHeight = height * 0.3;
     var itemWidth = width * 0.4;
-    void onTabTapped(int index) {
-      if (index == 0) {
-        Navigator.pushNamed(context, '/home');
-      }
-      if (index == 1) {
-        Navigator.pushNamed(context, '/categories');
-      }
-      if (index == 2) {
-        Navigator.pushNamed(context, '/cart');
-      }
-      if (index == 3) {
-        Navigator.pushNamed(context, '/saved');
-      }
-      if (index == 4) {
-        Navigator.pushNamed(context, '/profile');
-      }
-    }
 
     return Scaffold(
-      // backgroundColor: Color(0xff283488),
-      bottomNavigationBar: BottomNavyBar(
+      backgroundColor: const Color(0xff7042d1),
+      floatingActionButton: const LanguageTransitionWidget(),
+      appBar: CustomAppBar(
+        leadingAction: () {
+          Navigator.pop(context);
+        },
+        title: const Text(""),
+        backgroundColor: const Color(0xff7042d1),
+        leadingIconColor: Colors.white,
+      ),
+      bottomNavigationBar: CustomBottomNavbar(
+        context: context,
         selectedIndex: 0,
-        showElevation: true,
-        itemCornerRadius: 24,
-        curve: Curves.easeIn,
-        onItemSelected: (index) =>
-            {setState(() => _currentIndex = index), onTabTapped(index)},
-        items: <BottomNavyBarItem>[
-          BottomNavyBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.apps),
-            title: Text('Categories'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.shopping_cart),
-            title: Text('Shopping Cart Items'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.favorite_outline),
-            title: Text('Saved'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.account_circle_outlined),
-            title: Text('Profile'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -109,25 +55,14 @@ class _Bratz extends State<Bratz> {
               Row(
                 children: [
                   Container(
-                    padding:
-                        EdgeInsets.only(top: height * 0.1, left: width * 0.05),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Icon(Icons.arrow_back, color: Colors.white),
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                    padding:
-                        EdgeInsets.only(top: height * 0.05, left: width * 0.05),
-                    child: const Text(
-                      "Bratz",
-                      style: TextStyle(
+                    padding: EdgeInsets.only(
+                        top: 30,
+                        left: width * 0.05,
+                        right: width * 0.05,
+                        bottom: 0),
+                    child: Text(
+                      AppLocalizations.of(context)!.bratzpage_bratz,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 32,
@@ -142,12 +77,13 @@ class _Bratz extends State<Bratz> {
                 children: [
                   Container(
                     padding: EdgeInsets.only(
-                      top: height * 0.02,
+                      top: 15,
                       left: width * 0.05,
+                      right: width * 0.05,
                     ),
-                    child: const Text(
-                      "Toys collection",
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(context)!.bratzpage_collection,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.normal,
                         fontSize: 14,

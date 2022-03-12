@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:toy_app/components/components.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
 import 'package:toy_app/model/cart_model.dart';
 import 'package:toy_app/service/product_repo.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -51,43 +54,30 @@ class _Cart extends State<Cart> {
 
     return Scaffold(
       // backgroundColor: Color(0xff283488),
+      floatingActionButton: const LanguageTransitionWidget(),
+      appBar: CustomAppBar(
+        title: Image.asset(
+          'assets/img/LoginRegistration/header.png',
+          // height: height * 0.1,
+          width: width * 0.5,
+          fit: BoxFit.cover,
+        ),
+        leadingAction: () {
+          Navigator.pushNamed(context, '/home');
+        },
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: height * 0.05, left: width * 0.05),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/home');
-                      // Navigator.pop(context);
-                    },
-                    child: const Icon(Icons.arrow_back, color: Colors.black),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: height * 0.05, left: width * 0.15),
-                  child: SizedBox(
-                    height: height * 0.1,
-                    width: width * 0.5,
-                    child: Image.asset(
-                      "assets/img/LoginRegistration/header.png",
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Row(
-              children: [
                 Container(
-                  padding: EdgeInsets.only(top: 10, left: width * 0.05),
-                  child: const Text(
-                    "Shopping Cart",
-                    style: TextStyle(
+                  padding: EdgeInsets.only(
+                      top: 30, left: width * 0.05, right: width * 0.05),
+                  child: Text(
+                    AppLocalizations.of(context)!.cartpage_scart,
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 32,
@@ -101,12 +91,14 @@ class _Cart extends State<Cart> {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.only(
-                    top: height * 0.02,
-                    left: width * 0.05,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: width * 0.05,
                   ),
                   child: Text(
-                    "You have " + cart_count + " items in tour cart",
+                    AppLocalizations.of(context)!.searchpage_text1 +
+                        cart_count +
+                        AppLocalizations.of(context)!.searchpage_text2,
                     style: const TextStyle(
                       color: Color(0xff999999),
                       fontWeight: FontWeight.normal,
@@ -281,10 +273,10 @@ class _Cart extends State<Cart> {
                 Navigator.pushNamed(context, '/wrap'),
               },
               child: Padding(
-                padding: EdgeInsets.fromLTRB(width * 0.05, 8, 0, 0),
-                child: const Text(
-                  "Do you want to wrap it as a gift?",
-                  style: TextStyle(
+                padding: EdgeInsets.fromLTRB(width * 0.05, 8, width * 0.05, 0),
+                child: Text(
+                  AppLocalizations.of(context)!.searchpage_text3,
+                  style: const TextStyle(
                     fontFamily: 'Avenir Next',
                     fontSize: 14,
                     color: Color(0xff283488),
@@ -296,10 +288,10 @@ class _Cart extends State<Cart> {
             InkWell(
               onTap: () => {},
               child: Padding(
-                padding: EdgeInsets.fromLTRB(width * 0.05, 8, 0, 0),
-                child: const Text(
-                  "Add coupon",
-                  style: TextStyle(
+                padding: EdgeInsets.fromLTRB(width * 0.05, 8, width * 0.05, 0),
+                child: Text(
+                  AppLocalizations.of(context)!.searchpage_coupon,
+                  style: const TextStyle(
                     fontFamily: 'Avenir Next',
                     fontSize: 14,
                     color: Color(0xff283488),
@@ -309,12 +301,14 @@ class _Cart extends State<Cart> {
               ),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: EdgeInsets.fromLTRB(width * 0.05, 8, 0, 0),
-                  child: const Text(
-                    "Subtotal",
-                    style: TextStyle(
+                  padding:
+                      EdgeInsets.fromLTRB(width * 0.05, 8, width * 0.05, 0),
+                  child: Text(
+                    AppLocalizations.of(context)!.searchpage_Subtotal,
+                    style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 14,
                       color: Color(0xff999999),
@@ -322,7 +316,8 @@ class _Cart extends State<Cart> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(width * 0.5, 8, 0, 0),
+                  padding:
+                      EdgeInsets.fromLTRB(width * 0.05, 8, width * 0.05, 0),
                   child: Text(
                     '\$' + total_price,
                     style: const TextStyle(
@@ -339,7 +334,7 @@ class _Cart extends State<Cart> {
               height: height * 0.05,
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(width * 0.05, 0, 0, 0),
+              padding: EdgeInsets.fromLTRB(width * 0.05, 0, width * 0.05, 0),
               child: SizedBox(
                 height: height * 0.07,
                 width: width * 0.9,
@@ -357,9 +352,9 @@ class _Cart extends State<Cart> {
                       ),
                     ),
                   ),
-                  child: const Text(
-                    'Checkout',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  child: Text(
+                    AppLocalizations.of(context)!.searchpage_checkout,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),
               ),

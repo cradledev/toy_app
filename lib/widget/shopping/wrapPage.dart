@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'package:toy_app/model/details.dart';
-// import 'package:toy_app/widget/detailPage_test.dart';
+
 import 'package:toy_app/model/product_model.dart';
 import 'package:toy_app/service/product_repo.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WrapPage extends StatefulWidget {
   const WrapPage({Key? key}) : super(key: key);
@@ -53,9 +53,9 @@ class _WrapPage extends State<WrapPage> {
                 Container(
                   padding:
                       EdgeInsets.only(top: height * 0.05, left: width * 0.05),
-                  child: const Text(
-                    "Wrap options",
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.wrappage_options,
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 32,
@@ -73,9 +73,9 @@ class _WrapPage extends State<WrapPage> {
                     top: height * 0.02,
                     left: width * 0.05,
                   ),
-                  child: const Text(
-                    "Choose packeging design",
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.wrappage_design,
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.normal,
                       fontSize: 14,
@@ -211,9 +211,9 @@ class _WrapPage extends State<WrapPage> {
                       ),
                     ),
                   ),
-                  child: const Text(
-                    'Next',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  child: Text(
+                    AppLocalizations.of(context)!.wrappage_next,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),
               ),

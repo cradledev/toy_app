@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:toy_app/model/details.dart';
+import 'package:provider/provider.dart';
+import 'package:toy_app/components/components.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
 import 'package:toy_app/model/product_model.dart';
 import 'package:toy_app/service/product_repo.dart';
-import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:toy_app/provider/index.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,9 +16,6 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-  int currentIndex = 0;
-  final List<bool> isTappedList = [true, false, false, false];
-  int _currentIndex = 0;
   final ProductService _productService = ProductService();
   late Future<List<Product>> popularProducts;
   late Future<List<Product>> newArrivalProducts;
@@ -24,6 +24,9 @@ class _Home extends State<Home> {
   late Future<List<Product>> babyProducts;
   late Future<List<Product>> recommendedProducts;
 
+  // provider setting
+  late AppState _appState;
+  late String _languageCode = "en";
   @override
   void initState() {
     super.initState();
@@ -33,85 +36,26 @@ class _Home extends State<Home> {
     robotProducts = _productService.getCategory('Robots');
     babyProducts = _productService.getCategory('Baby');
     recommendedProducts = _productService.getCategory('Recommended');
+    // app state
+    _appState = Provider.of<AppState>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    void onTabTapped(int index) {
-      if (index == 0) {
-        Navigator.pushNamed(context, '/home');
-      }
-      if (index == 1) {
-        Navigator.pushNamed(context, '/categories');
-      }
-      if (index == 2) {
-        Navigator.pushNamed(context, '/cart');
-      }
-      if (index == 3) {
-        Navigator.pushNamed(context, '/saved');
-      }
-      if (index == 4) {
-        Navigator.pushNamed(context, '/profile');
-      }
-    }
-
+    _appState.getLocale().then((locale) {
+      setState(() {
+        _languageCode = locale.languageCode;
+      });
+    });
     return WillPopScope(
       onWillPop: () async {
         return false;
       },
       child: Scaffold(
-        bottomNavigationBar: BottomNavyBar(
-          selectedIndex: 0,
-          showElevation: true,
-          itemCornerRadius: 24,
-          curve: Curves.easeIn,
-          onItemSelected: (index) =>
-              {setState(() => _currentIndex = index), onTabTapped(index)},
-          items: <BottomNavyBarItem>[
-            BottomNavyBarItem(
-              icon: const Icon(Icons.home),
-              title: const Text('Home'),
-              activeBackColor: const Color(0xFF283488),
-              activeColor: Colors.white,
-              textAlign: TextAlign.center,
-              inactiveColor: Colors.grey[600],
-            ),
-            BottomNavyBarItem(
-              icon: const Icon(Icons.apps),
-              title: const Text('Categories'),
-              activeBackColor: const Color(0xFF283488),
-              activeColor: Colors.white,
-              textAlign: TextAlign.center,
-              inactiveColor: Colors.grey[600],
-            ),
-            BottomNavyBarItem(
-              icon: const Icon(Icons.shopping_cart),
-              title: const Text('Shopping Cart Items'),
-              activeBackColor: const Color(0xFF283488),
-              activeColor: Colors.white,
-              textAlign: TextAlign.center,
-              inactiveColor: Colors.grey[600],
-            ),
-            BottomNavyBarItem(
-              icon: const Icon(Icons.favorite_outline),
-              title: const Text('Saved'),
-              activeBackColor: const Color(0xFF283488),
-              activeColor: Colors.white,
-              textAlign: TextAlign.center,
-              inactiveColor: Colors.grey[600],
-            ),
-            BottomNavyBarItem(
-              icon: const Icon(Icons.account_circle_outlined),
-              title: const Text('Profile'),
-              activeBackColor: const Color(0xFF283488),
-              activeColor: Colors.white,
-              textAlign: TextAlign.center,
-              inactiveColor: Colors.grey[600],
-            ),
-          ],
-        ),
+        bottomNavigationBar:
+            CustomBottomNavbar(context: context, selectedIndex: 0),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +74,7 @@ class _Home extends State<Home> {
                             padding: const EdgeInsets.only(top: 70),
                             child: Image.asset(
                               "assets/img/home/header.png",
-                              scale: 1.7,
+                              scale: 1.6,
                             ),
                           ),
                         )
@@ -148,9 +92,12 @@ class _Home extends State<Home> {
                             alignment: Alignment.bottomCenter,
                             child: Container(
                               padding: const EdgeInsets.only(top: 30),
-                              child: Image.asset(
-                                "assets/img/home/1-3.png",
-                                scale: 1.8,
+                              child: const Image(
+                                image: AssetImage(
+                                  'assets/img/home/1-3.png',
+                                ),
+                                fit: BoxFit.scaleDown,
+                                height: 50,
                               ),
                             ),
                           )
@@ -178,17 +125,19 @@ class _Home extends State<Home> {
               ),
               Column(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 20, left: 20),
-                        child: const Text(
-                          "Top Brands",
-                          style: TextStyle(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.home_top,
+                          style: const TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: height * 0.02,
@@ -315,30 +264,35 @@ class _Home extends State<Home> {
               ),
               Column(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 20, left: 20),
-                        child: const Text(
-                          "Popular",
-                          style: TextStyle(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.home_popular,
+                          style: const TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(width * 0.7, 20, 0, 0),
-                        child: InkWell(
+                        InkWell(
                           onTap: () {
                             Navigator.pushNamed(context, '/popular');
                           },
-                          child: const Icon(
-                            Icons.keyboard_arrow_right_outlined,
-                            color: Colors.black,
-                            size: 30,
-                          ),
+                          child: (_languageCode == "en")
+                              ? const Icon(
+                                  Icons.keyboard_arrow_right_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                )
+                              : const Icon(
+                                  Icons.keyboard_arrow_left_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: height * 0.35,
@@ -486,30 +440,35 @@ class _Home extends State<Home> {
               ),
               Column(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 20, left: 20),
-                        child: const Text(
-                          "New arrivals",
-                          style: TextStyle(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.home_new,
+                          style: const TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(width * 0.65, 20, 0, 0),
-                        child: InkWell(
+                        InkWell(
                           onTap: () {
                             Navigator.pushNamed(context, '/new');
                           },
-                          child: const Icon(
-                            Icons.keyboard_arrow_right_outlined,
-                            color: Colors.black,
-                            size: 30,
-                          ),
+                          child: (_languageCode == "en")
+                              ? const Icon(
+                                  Icons.keyboard_arrow_right_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                )
+                              : const Icon(
+                                  Icons.keyboard_arrow_left_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: height * 0.35,
@@ -679,30 +638,35 @@ class _Home extends State<Home> {
               ),
               Column(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 20, left: 20),
-                        child: const Text(
-                          "Top collections",
-                          style: TextStyle(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.home_collections,
+                          style: const TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(width * 0.6, 20, 0, 0),
-                        child: InkWell(
+                        InkWell(
                           onTap: () {
                             Navigator.pushNamed(context, '/top');
                           },
-                          child: const Icon(
-                            Icons.keyboard_arrow_right_outlined,
-                            color: Colors.black,
-                            size: 30,
-                          ),
+                          child: (_languageCode == "en")
+                              ? const Icon(
+                                  Icons.keyboard_arrow_right_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                )
+                              : const Icon(
+                                  Icons.keyboard_arrow_left_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: height * 0.35,
@@ -822,30 +786,35 @@ class _Home extends State<Home> {
               ),
               Column(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 20, left: 20),
-                        child: const Text(
-                          "Robots",
-                          style: TextStyle(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.home_robots,
+                          style: const TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(width * 0.7, 20, 0, 0),
-                        child: InkWell(
+                        InkWell(
                           onTap: () {
                             Navigator.pushNamed(context, '/robots');
                           },
-                          child: const Icon(
-                            Icons.keyboard_arrow_right_outlined,
-                            color: Colors.black,
-                            size: 30,
-                          ),
+                          child: (_languageCode == "en")
+                              ? const Icon(
+                                  Icons.keyboard_arrow_right_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                )
+                              : const Icon(
+                                  Icons.keyboard_arrow_left_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: height * 0.35,
@@ -965,30 +934,35 @@ class _Home extends State<Home> {
               ),
               Column(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 20, left: 20),
-                        child: const Text(
-                          "Baby toys",
-                          style: TextStyle(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.home_baby,
+                          style: const TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(width * 0.7, 20, 0, 0),
-                        child: InkWell(
+                        InkWell(
                           onTap: () {
                             Navigator.pushNamed(context, '/baby');
                           },
-                          child: const Icon(
-                            Icons.keyboard_arrow_right_outlined,
-                            color: Colors.black,
-                            size: 30,
-                          ),
+                          child: (_languageCode == "en")
+                              ? const Icon(
+                                  Icons.keyboard_arrow_right_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                )
+                              : const Icon(
+                                  Icons.keyboard_arrow_left_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: height * 0.35,
@@ -1133,30 +1107,35 @@ class _Home extends State<Home> {
               ),
               Column(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 20, left: 20),
-                        child: const Text(
-                          "Recommended",
-                          style: TextStyle(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.home_recommended,
+                          style: const TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(width * 0.6, 20, 0, 0),
-                        child: InkWell(
+                        InkWell(
                           onTap: () {
                             Navigator.pushNamed(context, '/recommended');
                           },
-                          child: const Icon(
-                            Icons.keyboard_arrow_right_outlined,
-                            color: Colors.black,
-                            size: 30,
-                          ),
+                          child: (_languageCode == "en")
+                              ? const Icon(
+                                  Icons.keyboard_arrow_right_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                )
+                              : const Icon(
+                                  Icons.keyboard_arrow_left_outlined,
+                                  color: Colors.black,
+                                  size: 30,
+                                ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: height * 0.35,
@@ -1280,6 +1259,7 @@ class _Home extends State<Home> {
             ],
           ),
         ),
+        floatingActionButton: const LanguageTransitionWidget(),
       ),
     );
   }

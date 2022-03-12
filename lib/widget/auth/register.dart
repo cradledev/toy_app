@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:toy_app/service/user_auth.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -167,8 +168,6 @@ class _Register extends State<Register> {
                 onPageChanged: (int page) {
                   WidgetsBinding.instance?.focusManager.primaryFocus?.unfocus();
                   _checkValidation();
-                  print(isValid);
-                  print("=======================================");
                   if (isValid == false && _currentPage == 0) {
                     // _pageController.jumpTo(0);
                     _pageController.jumpToPage(0);
@@ -190,9 +189,9 @@ class _Register extends State<Register> {
                           const SizedBox(
                             height: 30,
                           ),
-                          const Text(
-                            "Create account",
-                            style: TextStyle(
+                          Text(
+                            AppLocalizations.of(context)!.register_create,
+                            style: const TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                             ),
@@ -200,17 +199,17 @@ class _Register extends State<Register> {
                           const SizedBox(
                             height: 20,
                           ),
-                          const Text(
-                            "Please review and edit your name if necessary",
-                            style: TextStyle(
+                          Text(
+                            AppLocalizations.of(context)!.register_description1,
+                            style: const TextStyle(
                               fontSize: 15,
                               color: Color(0xff999999),
                               height: 1.2,
                             ),
                           ),
-                          const Text(
-                            "before tapping next",
-                            style: TextStyle(
+                          Text(
+                            AppLocalizations.of(context)!.register_description2,
+                            style: const TextStyle(
                               fontSize: 15,
                               color: Color(0xff999999),
                               height: 1.2,
@@ -228,9 +227,10 @@ class _Register extends State<Register> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        "First name",
-                                        style: TextStyle(
+                                      Text(
+                                        AppLocalizations.of(context)!
+                                            .register_fname,
+                                        style: const TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w400,
                                             color: Colors.black87),
@@ -250,7 +250,9 @@ class _Register extends State<Register> {
                                             borderRadius:
                                                 BorderRadius.circular(32),
                                           ),
-                                          hintText: "First Name",
+                                          hintText:
+                                              AppLocalizations.of(context)!
+                                                  .register_fname,
                                           hintStyle: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.normal),
@@ -261,7 +263,8 @@ class _Register extends State<Register> {
                                         validator: (value) {
                                           if (value == null ||
                                               value.trim().isEmpty) {
-                                            return 'Please enter your first name';
+                                            return AppLocalizations.of(context)!
+                                                .register_pfname;
                                           }
                                           // Return null if the entered email is valid
                                           return null;
@@ -282,9 +285,10 @@ class _Register extends State<Register> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        "Last name",
-                                        style: TextStyle(
+                                      Text(
+                                        AppLocalizations.of(context)!
+                                            .register_lname,
+                                        style: const TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w400,
                                             color: Colors.black87),
@@ -304,7 +308,9 @@ class _Register extends State<Register> {
                                             borderRadius:
                                                 BorderRadius.circular(32),
                                           ),
-                                          hintText: "Last Name",
+                                          hintText:
+                                              AppLocalizations.of(context)!
+                                                  .register_lname,
                                           hintStyle: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.normal),
@@ -316,7 +322,8 @@ class _Register extends State<Register> {
                                         validator: (value) {
                                           if (value == null ||
                                               value.trim().isEmpty) {
-                                            return 'Please enter your last name';
+                                            return AppLocalizations.of(context)!
+                                                .register_plname;
                                           }
                                           // Return null if the entered email is valid
                                           return null;
@@ -355,9 +362,10 @@ class _Register extends State<Register> {
                             const SizedBox(
                               height: 30,
                             ),
-                            const Text(
-                              "Create account",
-                              style: TextStyle(
+                            Text(
+                              AppLocalizations.of(context)!
+                                  .registeremail_caccount,
+                              style: const TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -365,17 +373,18 @@ class _Register extends State<Register> {
                             const SizedBox(
                               height: 20,
                             ),
-                            const Text(
-                              "Please review and edit your name if necessary",
-                              style: TextStyle(
+                            Text(
+                              AppLocalizations.of(context)!
+                                  .registeremail_description1,
+                              style: const TextStyle(
                                 fontSize: 15,
                                 color: Color(0xff999999),
                                 height: 1.2,
                               ),
                             ),
-                            const Text(
-                              "before tapping next",
-                              style: TextStyle(
+                            Text(
+                              AppLocalizations.of(context)!.registeremail_tap,
+                              style: const TextStyle(
                                 fontSize: 15,
                                 color: Color(0xff999999),
                                 height: 1.2,
@@ -393,9 +402,10 @@ class _Register extends State<Register> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          "Email",
-                                          style: TextStyle(
+                                        Text(
+                                          AppLocalizations.of(context)!
+                                              .registeremail_email,
+                                          style: const TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black87),
@@ -423,12 +433,16 @@ class _Register extends State<Register> {
                                           validator: (value) {
                                             if (value == null ||
                                                 value.trim().isEmpty) {
-                                              return 'Please enter your email address';
+                                              return AppLocalizations.of(
+                                                      context)!
+                                                  .registeremail_pmail;
                                             }
                                             // Check if the entered email has the right format
                                             if (!RegExp(r'\S+@\S+\.\S+')
                                                 .hasMatch(value)) {
-                                              return 'Please enter a valid email address';
+                                              return AppLocalizations.of(
+                                                      context)!
+                                                  .registeremail_vmail;
                                             }
                                             // Return null if the entered email is valid
                                             return null;
@@ -449,9 +463,10 @@ class _Register extends State<Register> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          "Password",
-                                          style: TextStyle(
+                                        Text(
+                                          AppLocalizations.of(context)!
+                                              .registeremail_pwd,
+                                          style: const TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black87),
@@ -483,7 +498,14 @@ class _Register extends State<Register> {
                                           validator: (value) {
                                             if (value == null ||
                                                 value.trim().isEmpty) {
-                                              return 'Please enter your password';
+                                              return AppLocalizations.of(
+                                                      context)!
+                                                  .registeremail_ppwd;
+                                            }
+                                            if (value.trim().length < 8) {
+                                              return AppLocalizations.of(
+                                                      context)!
+                                                  .registeremail_lpwd;
                                             }
                                             return null;
                                           },
@@ -502,9 +524,10 @@ class _Register extends State<Register> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          "Confirm Password",
-                                          style: TextStyle(
+                                        Text(
+                                          AppLocalizations.of(context)!
+                                              .registeremail_cpwd,
+                                          style: const TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black87),
@@ -536,10 +559,14 @@ class _Register extends State<Register> {
                                           validator: (value) {
                                             if (value == null ||
                                                 value.trim().isEmpty) {
-                                              return 'Please confirm password';
+                                              return AppLocalizations.of(
+                                                      context)!
+                                                  .registeremail_pcpwd;
                                             }
                                             if (value != _password) {
-                                              return 'Password is incorrect.';
+                                              return AppLocalizations.of(
+                                                      context)!
+                                                  .registeremail_ipwd;
                                             }
 
                                             // Return null if the entered email is valid
@@ -787,10 +814,11 @@ class _Register extends State<Register> {
                       ),
                       child: Text(
                         (_currentPage != _numPages - 1)
-                            ? 'Next'
+                            ? AppLocalizations.of(context)!.registeremail_next
                             : _loadingStatus
                                 ? "Hold on..."
-                                : "Register",
+                                : AppLocalizations.of(context)!
+                                    .registeremail_register_button,
                         style:
                             const TextStyle(color: Colors.white, fontSize: 14),
                       ),

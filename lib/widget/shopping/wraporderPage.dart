@@ -1,8 +1,8 @@
 // ignore_for_file: unnecessary_const
 
 import 'package:flutter/material.dart';
-import 'package:toy_app/model/details.dart';
-import 'package:toy_app/widget/detailPage_test.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Wraporder extends StatefulWidget {
   const Wraporder({Key? key}) : super(key: key);
@@ -52,9 +52,9 @@ class _Wraporder extends State<Wraporder> {
               children: [
                 Container(
                   padding: EdgeInsets.only(top: 10, left: width * 0.05),
-                  child: const Text(
-                    "Shopping Cart",
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.wraporderpage_cart,
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 32,
@@ -72,9 +72,9 @@ class _Wraporder extends State<Wraporder> {
                       top: height * 0.02,
                       left: width * 0.05,
                       bottom: height * 0.05),
-                  child: const Text(
-                    "You have 2 wrapped items in tour cart",
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.wraporderpage_text1,
+                    style: const TextStyle(
                       color: Color(0xff999999),
                       fontWeight: FontWeight.normal,
                       fontSize: 14,
@@ -114,9 +114,10 @@ class _Wraporder extends State<Wraporder> {
                                     Padding(
                                       padding: EdgeInsets.fromLTRB(
                                           width * 0.05, height * 0.03, 0, 0),
-                                      child: const Text(
-                                        "Rocker",
-                                        style: TextStyle(
+                                      child: Text(
+                                        AppLocalizations.of(context)!
+                                            .wraporderpage_rocker,
+                                        style: const TextStyle(
                                           fontFamily: 'Avenir Next',
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -187,9 +188,10 @@ class _Wraporder extends State<Wraporder> {
                                     Padding(
                                       padding: EdgeInsets.fromLTRB(
                                           width * 0.05, height * 0.03, 0, 0),
-                                      child: const Text(
-                                        "Green paper",
-                                        style: TextStyle(
+                                      child: Text(
+                                        AppLocalizations.of(context)!
+                                            .wraporderpage_paper,
+                                        style: const TextStyle(
                                           fontFamily: 'Avenir Next',
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -234,9 +236,9 @@ class _Wraporder extends State<Wraporder> {
               onTap: () => {},
               child: Padding(
                 padding: EdgeInsets.fromLTRB(width * 0.05, 8, 0, 0),
-                child: const Text(
-                  "Add coupon",
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.wraporderpage_coupon,
+                  style: const TextStyle(
                     fontFamily: 'Avenir Next',
                     fontSize: 14,
                     color: Color(0xff283488),
@@ -249,9 +251,9 @@ class _Wraporder extends State<Wraporder> {
               children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(width * 0.05, 8, 0, 0),
-                  child: const Text(
-                    "Subtotal",
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.wraporderpage_subtotal,
+                    style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 14,
                       color: Color(0xff999999),
@@ -294,9 +296,9 @@ class _Wraporder extends State<Wraporder> {
                       ),
                     ),
                   ),
-                  child: const Text(
-                    'Checkout',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  child: Text(
+                    AppLocalizations.of(context)!.wraporderpage_checkout,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),
               ),

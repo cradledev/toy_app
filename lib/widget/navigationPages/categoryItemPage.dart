@@ -1,11 +1,12 @@
 // ignore_for_file: unnecessary_const
 
 import 'package:flutter/material.dart';
-import 'package:toy_app/model/details.dart';
+import 'package:toy_app/components/components.dart';
 import 'package:toy_app/model/product_model.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
-import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
 import 'package:toy_app/model/search_model.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CategoryItems extends StatefulWidget {
   const CategoryItems({Key? key}) : super(key: key);
@@ -15,9 +16,6 @@ class CategoryItems extends StatefulWidget {
 }
 
 class _CategoryItems extends State<CategoryItems> {
-  int currentIndex = 0;
-  final List<bool> isTappedList = [true, false, false, false];
-  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -27,75 +25,22 @@ class _CategoryItems extends State<CategoryItems> {
     SearchData data = ModalRoute.of(context)!.settings.arguments as SearchData;
     late Future<List<Product>> products = data.products;
     String title = data.searchText;
-    void onTabTapped(int index) {
-      if (index == 0) {
-        Navigator.pushNamed(context, '/home');
-      }
-      if (index == 1) {
-        Navigator.pushNamed(context, '/categories');
-      }
-      if (index == 2) {
-        Navigator.pushNamed(context, '/cart');
-      }
-      if (index == 3) {
-        Navigator.pushNamed(context, '/saved');
-      }
-      if (index == 4) {
-        Navigator.pushNamed(context, '/profile');
-      }
-    }
 
     return Scaffold(
       // backgroundColor: Color(0xff283488),
-      bottomNavigationBar: BottomNavyBar(
-        selectedIndex: 0,
-        showElevation: true,
-        itemCornerRadius: 24,
-        curve: Curves.easeIn,
-        onItemSelected: (index) =>
-            {setState(() => _currentIndex = index), onTabTapped(index)},
-        items: <BottomNavyBarItem>[
-          BottomNavyBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.apps),
-            title: Text('Categories'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.shopping_cart),
-            title: Text('Shopping Cart Items'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.favorite_outline),
-            title: Text('Saved'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.account_circle_outlined),
-            title: Text('Profile'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-        ],
+      bottomNavigationBar:
+          CustomBottomNavbar(context: context, selectedIndex: 0),
+      floatingActionButton: const LanguageTransitionWidget(),
+      appBar: CustomAppBar(
+        title: const Text(""),
+        leadingAction: () {
+          Navigator.pop(context);
+        },
+        leadingIcon: const Icon(
+          Icons.arrow_back,
+          color: Colors.black,
+          size: 30,
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -106,25 +51,8 @@ class _CategoryItems extends State<CategoryItems> {
               Row(
                 children: [
                   Container(
-                    padding:
-                        EdgeInsets.only(top: height * 0.1, left: width * 0.05),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                    padding:
-                        EdgeInsets.only(top: height * 0.05, left: width * 0.05),
+                    padding: EdgeInsets.only(
+                        top: 30, left: width * 0.05, right: width * 0.05),
                     child: Text(
                       title,
                       style: const TextStyle(
@@ -141,9 +69,9 @@ class _CategoryItems extends State<CategoryItems> {
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.only(
-                      top: height * 0.02,
-                      left: width * 0.05,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: width * 0.05,
+                      vertical: 15,
                     ),
                     child: const Text(
                       "",
@@ -217,7 +145,7 @@ class _CategoryItems extends State<CategoryItems> {
                                                 padding: EdgeInsets.fromLTRB(
                                                     width * 0.05,
                                                     height * 0.01,
-                                                    0,
+                                                    width * 0.05,
                                                     0),
                                                 child: Text(
                                                   snapshot.data![index].name,
@@ -230,7 +158,10 @@ class _CategoryItems extends State<CategoryItems> {
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.fromLTRB(
-                                                    width * 0.05, 10, 0, 0),
+                                                    width * 0.05,
+                                                    10,
+                                                    width * 0.05,
+                                                    0),
                                                 child: Text(
                                                   '\$' +
                                                       snapshot

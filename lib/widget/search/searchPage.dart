@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
+import 'package:toy_app/components/components.dart';
 import 'package:toy_app/model/product_model.dart';
 import 'package:toy_app/service/product_repo.dart';
 import 'package:toy_app/model/search_model.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -13,10 +15,8 @@ class Search extends StatefulWidget {
 
 class _Search extends State<Search> {
   final _formKey = GlobalKey<FormState>();
-  int currentIndex = 0;
-  final List<bool> isTappedList = [true, false, false, false];
+
   String _searchText = '';
-  int _currentIndex = 0;
   final ProductService _productService = ProductService();
   late Future<List<Product>> products;
 
@@ -34,91 +34,20 @@ class _Search extends State<Search> {
       }
     }
 
-    void onTabTapped(int index) {
-      if (index == 0) {
-        Navigator.pushNamed(context, '/home');
-      }
-      if (index == 1) {
-        Navigator.pushNamed(context, '/categories');
-      }
-      if (index == 2) {
-        Navigator.pushNamed(context, '/cart');
-      }
-      if (index == 3) {
-        Navigator.pushNamed(context, '/saved');
-      }
-      if (index == 4) {
-        Navigator.pushNamed(context, '/profile');
-      }
-    }
-
     return Scaffold(
-      bottomNavigationBar: BottomNavyBar(
+      bottomNavigationBar: CustomBottomNavbar(
+        context: context,
         selectedIndex: 0,
-        showElevation: true,
-        itemCornerRadius: 24,
-        backgroundColor: const Color(0xFF283488),
-        curve: Curves.easeIn,
-        onItemSelected: (index) =>
-            {setState(() => _currentIndex = index), onTabTapped(index)},
-        items: <BottomNavyBarItem>[
-          BottomNavyBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.apps),
-            title: Text('Categories'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.shopping_cart),
-            title: Text('Shopping Cart Items'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.favorite_outline),
-            title: Text('Saved'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.account_circle_outlined),
-            title: Text('Profile'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-        ],
       ),
+      appBar: CustomAppBar(
+        title: const Text(""),
+        leadingAction: () {
+          Navigator.pop(context);
+        },
+      ),
+      floatingActionButton: const LanguageTransitionWidget(),
       body: Column(
         children: [
-          Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(20, height * 0.1, 0, 0),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Icon(Icons.arrow_back, color: Colors.black),
-                ),
-              ),
-            ],
-          ),
           SizedBox(
             height: height * 0.05,
           ),
@@ -126,40 +55,41 @@ class _Search extends State<Search> {
             key: _formKey,
             child: Column(
               children: [
-                Column(
-                  children: [
-                    Row(
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
-                          child: Text(
-                            "Find the best toy",
-                            style: TextStyle(
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!
+                                .searchlistpage_find_toy,
+                            style: const TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
-                      child: Row(
-                        children: const [
-                          Text(
-                            "Enter everything here",
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Color(0xff999999),
-                            ),
-                          ),
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      height: height * 0.05,
-                    )
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .searchlistpage_everythting,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Color(0xff999999),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: height * 0.05,
+                      )
+                    ],
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -187,7 +117,8 @@ class _Search extends State<Search> {
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return 'Please enter text to search';
+                                return AppLocalizations.of(context)!
+                                    .searchpage_psearch;
                               }
                               return null;
                             },
@@ -221,9 +152,9 @@ class _Search extends State<Search> {
                         ),
                       ),
                     ),
-                    child: const Text(
-                      'Search',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    child: Text(
+                      AppLocalizations.of(context)!.searchpage_search,
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   ),
                 ),
@@ -234,39 +165,4 @@ class _Search extends State<Search> {
       ),
     );
   }
-}
-
-Widget makeInput({label, obsureText = false}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: const TextStyle(
-            fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87),
-      ),
-      const SizedBox(
-        height: 5,
-      ),
-      TextField(
-        obscureText: obsureText,
-        decoration: InputDecoration(
-          suffixIcon: const Icon(Icons.search),
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.grey,
-            ),
-            borderRadius: BorderRadius.circular(32),
-          ),
-          border: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey)),
-        ),
-      ),
-      const SizedBox(
-        height: 30,
-      )
-    ],
-  );
 }

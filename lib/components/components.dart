@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:toy_app/provider/app_locale.dart';
+import 'package:toy_app/provider/index.dart';
+import 'package:provider/provider.dart';
+
+import 'dart:math' as math;
 
 class RoundedButton extends StatelessWidget {
   final String? text;
@@ -42,8 +51,16 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final Size preferredSize;
   final Widget? title;
   final Function()? leadingAction;
-
-  const CustomAppBar({Key? key, this.title, this.leadingAction})
+  final Widget? leadingIcon;
+  final Color? backgroundColor;
+  final Color? leadingIconColor;
+  const CustomAppBar(
+      {Key? key,
+      this.title,
+      this.leadingAction,
+      this.leadingIcon,
+      this.backgroundColor,
+      this.leadingIconColor})
       : preferredSize = const Size.fromHeight(50),
         super(key: key);
 
@@ -62,18 +79,19 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
         // offset: const Offset(0, -20),
         offset: const Offset(0, 0),
         child: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            size: 30,
-            color: Colors.black,
-          ),
+          icon: leadingIcon ??
+              Icon(
+                Icons.arrow_back,
+                size: 30,
+                color: leadingIconColor ?? Colors.black,
+              ),
           onPressed: leadingAction,
         ),
       ),
       centerTitle: true,
       flexibleSpace: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: backgroundColor ?? Colors.white,
           // borderRadius: BorderRadius.only(
           //   bottomLeft: Radius.circular(20),
           //   bottomRight: Radius.circular(20),
@@ -85,6 +103,392 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
         ),
       ),
       systemOverlayStyle: SystemUiOverlayStyle.dark,
+    );
+  }
+}
+
+class CustomBottomNavbar extends StatelessWidget {
+  final BuildContext context;
+  final int selectedIndex;
+  const CustomBottomNavbar(
+      {Key? key, required this.context, required this.selectedIndex})
+      : super(key: key);
+
+  void onTabTapped(int index) {
+    if (index == 0) {
+      Navigator.pushNamed(context, '/home');
+    }
+    if (index == 1) {
+      Navigator.pushNamed(context, '/categories');
+    }
+    if (index == 2) {
+      Navigator.pushNamed(context, '/cart');
+    }
+    if (index == 3) {
+      Navigator.pushNamed(context, '/saved');
+    }
+    if (index == 4) {
+      Navigator.pushNamed(context, '/profile');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavyBar(
+      selectedIndex: selectedIndex,
+      showElevation: true,
+      itemCornerRadius: 24,
+      curve: Curves.easeIn,
+      onItemSelected: (index) => {onTabTapped(index)},
+      items: <BottomNavyBarItem>[
+        BottomNavyBarItem(
+          icon: const Icon(Icons.home),
+          title: Text(AppLocalizations.of(context)!.babytoyspage_home),
+          activeBackColor: const Color(0xFF283488),
+          activeColor: Colors.white,
+          textAlign: TextAlign.center,
+          inactiveColor: Colors.grey[600],
+        ),
+        BottomNavyBarItem(
+          icon: const Icon(Icons.apps),
+          title: Text(AppLocalizations.of(context)!.babytoyspage_categories),
+          activeBackColor: const Color(0xFF283488),
+          activeColor: Colors.white,
+          textAlign: TextAlign.center,
+          inactiveColor: Colors.grey[600],
+        ),
+        BottomNavyBarItem(
+          icon: const Icon(Icons.shopping_cart),
+          title: Text(AppLocalizations.of(context)!.babytoyspage_scart),
+          activeBackColor: const Color(0xFF283488),
+          activeColor: Colors.white,
+          textAlign: TextAlign.center,
+          inactiveColor: Colors.grey[600],
+        ),
+        BottomNavyBarItem(
+          icon: const Icon(Icons.favorite_outline),
+          title: Text(AppLocalizations.of(context)!.babytoyspage_saved),
+          activeBackColor: const Color(0xFF283488),
+          activeColor: Colors.white,
+          textAlign: TextAlign.center,
+          inactiveColor: Colors.grey[600],
+        ),
+        BottomNavyBarItem(
+          icon: const Icon(Icons.account_circle_outlined),
+          title: Text(AppLocalizations.of(context)!.babytoyspage_profile),
+          activeBackColor: const Color(0xFF283488),
+          activeColor: Colors.white,
+          textAlign: TextAlign.center,
+          inactiveColor: Colors.grey[600],
+        ),
+      ],
+    );
+  }
+}
+
+// float button for transition language
+@immutable
+class ExpandableFab extends StatefulWidget {
+  const ExpandableFab({
+    Key? key,
+    this.initialOpen,
+    required this.distance,
+    required this.children,
+  }) : super(key: key);
+
+  final bool? initialOpen;
+  final double distance;
+  final List<Widget> children;
+
+  @override
+  _ExpandableFabState createState() => _ExpandableFabState();
+}
+
+class _ExpandableFabState extends State<ExpandableFab>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _expandAnimation;
+  bool _open = false;
+
+  late AppState _appState;
+  late String _languageCode = "en";
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  void _init() {
+    _open = widget.initialOpen ?? false;
+    _controller = AnimationController(
+      value: _open ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
+    _expandAnimation = CurvedAnimation(
+      curve: Curves.fastOutSlowIn,
+      reverseCurve: Curves.easeOutQuad,
+      parent: _controller,
+    );
+    _appState = Provider.of<AppState>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toggle() {
+    setState(() {
+      _open = !_open;
+      if (_open) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _appState.getLocale().then((locale) {
+      setState(() {
+        _languageCode = locale.languageCode;
+      });
+    });
+    if (_languageCode == "en") {
+      return SizedBox.expand(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 25, bottom: 80),
+          child: Stack(
+            alignment: Alignment.bottomLeft,
+            clipBehavior: Clip.none,
+            children: [
+              _buildTapToCloseFab(),
+              ..._buildExpandingActionButtons(),
+              _buildTapToOpenFab(),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return SizedBox.expand(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 0, bottom: 80),
+          child: Stack(
+            alignment: Alignment.bottomLeft,
+            clipBehavior: Clip.none,
+            children: [
+              _buildTapToCloseFab(),
+              ..._buildExpandingActionButtons(),
+              _buildTapToOpenFab(),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _buildTapToCloseFab() {
+    return SizedBox(
+      width: 56.0,
+      height: 56.0,
+      child: Center(
+        child: Material(
+          shape: const CircleBorder(),
+          clipBehavior: Clip.antiAlias,
+          elevation: 4.0,
+          child: InkWell(
+            onTap: _toggle,
+            child: const Padding(
+              padding: EdgeInsets.all(2.0),
+              child: Icon(
+                Icons.close,
+                color: Color(0xff757579),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildExpandingActionButtons() {
+    final children = <Widget>[];
+    final count = widget.children.length;
+    final step = 90.0 / (count - 1);
+    for (var i = 0, angleInDegrees = 0.0;
+        i < count;
+        i++, angleInDegrees += step) {
+      children.add(
+        _ExpandingActionButton(
+          directionInDegrees: angleInDegrees,
+          maxDistance: widget.distance,
+          progress: _expandAnimation,
+          child: widget.children[i],
+        ),
+      );
+    }
+    return children;
+  }
+
+  Widget _buildTapToOpenFab() {
+    return IgnorePointer(
+      ignoring: _open,
+      child: AnimatedContainer(
+        transformAlignment: Alignment.center,
+        transform: Matrix4.diagonal3Values(
+          _open ? 0.7 : 1.0,
+          _open ? 0.7 : 1.0,
+          1.0,
+        ),
+        duration: const Duration(milliseconds: 250),
+        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+        child: AnimatedOpacity(
+          opacity: _open ? 0.0 : 1,
+          curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
+          duration: const Duration(milliseconds: 250),
+          child: FloatingActionButton(
+            mini: true,
+            backgroundColor: const Color(0xff757579),
+            onPressed: _toggle,
+            child: const Icon(Icons.language),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+@immutable
+class _ExpandingActionButton extends StatelessWidget {
+  const _ExpandingActionButton({
+    Key? key,
+    required this.directionInDegrees,
+    required this.maxDistance,
+    required this.progress,
+    required this.child,
+  }) : super(key: key);
+
+  final double directionInDegrees;
+  final double maxDistance;
+  final Animation<double> progress;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: progress,
+      builder: (context, child) {
+        final offset = Offset.fromDirection(
+          directionInDegrees * (math.pi / 180.0),
+          progress.value * maxDistance,
+        );
+        return Positioned(
+          left: 4.0 + offset.dx,
+          bottom: 4.0 + offset.dy,
+          child: Transform.rotate(
+            angle: (1.0 - progress.value) * math.pi / 2,
+            child: child!,
+          ),
+        );
+      },
+      child: FadeTransition(
+        opacity: progress,
+        child: child,
+      ),
+    );
+  }
+}
+
+@immutable
+class ActionButton extends StatelessWidget {
+  const ActionButton({
+    Key? key,
+    this.onPressed,
+    required this.title,
+  }) : super(key: key);
+
+  final VoidCallback? onPressed;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      shape: const CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      color: const Color(0xff757579),
+      elevation: 4.0,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.all(8.0),
+          primary: Colors.white,
+          textStyle: const TextStyle(fontSize: 16),
+        ),
+        onPressed: onPressed,
+        child: Text(title),
+      ),
+      // child: IconButton(
+      //   onPressed: onPressed,
+      //   icon: icon,
+      //   color: theme.colorScheme.secondary,
+      // ),
+    );
+  }
+}
+
+// language setting stateful widget
+class LanguageTransitionWidget extends StatefulWidget {
+  const LanguageTransitionWidget({Key? key}) : super(key: key);
+
+  @override
+  _LanguageTransitionWidget createState() => _LanguageTransitionWidget();
+}
+
+class _LanguageTransitionWidget extends State<LanguageTransitionWidget> {
+  // provider setting
+  late AppState _appState;
+  late AppLocale _appLocale;
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  void _init() {
+    _appState = Provider.of<AppState>(context, listen: false);
+    _appLocale = Provider.of<AppLocale>(context, listen: false);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _appState.getLocale().then((locale) {
+      _appLocale.changeLocale(Locale(locale.languageCode));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpandableFab(
+      distance: 80.0,
+      children: [
+        ActionButton(
+          onPressed: () {
+            _appState.setLocale("en");
+            _appLocale.changeLocale(const Locale("en"));
+          },
+          title: "EN",
+        ),
+        ActionButton(
+          onPressed: () {
+            _appState.setLocale("ar");
+            _appLocale.changeLocale(const Locale("ar"));
+          },
+          title: "AR",
+        ),
+      ],
     );
   }
 }

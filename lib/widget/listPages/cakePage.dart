@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:toy_app/model/details.dart';
+import 'package:toy_app/components/components.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
-import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
 import 'package:toy_app/model/product_model.dart';
 import 'package:toy_app/service/product_repo.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Cake extends StatefulWidget {
   const Cake({Key? key}) : super(key: key);
@@ -13,11 +14,9 @@ class Cake extends StatefulWidget {
 }
 
 class _Cake extends State<Cake> {
-  int currentIndex = 0;
   final List<bool> isTappedList = [true, false, false, false];
   final ProductService _productService = ProductService();
   late Future<List<Product>> products;
-  int _currentIndex = 0;
   @override
   void initState() {
     super.initState();
@@ -30,75 +29,19 @@ class _Cake extends State<Cake> {
     var height = MediaQuery.of(context).size.height;
     var itemHeight = height * 0.3;
     var itemWidth = width * 0.4;
-    void onTabTapped(int index) {
-      if (index == 0) {
-        Navigator.pushNamed(context, '/home');
-      }
-      if (index == 1) {
-        Navigator.pushNamed(context, '/categories');
-      }
-      if (index == 2) {
-        Navigator.pushNamed(context, '/cart');
-      }
-      if (index == 3) {
-        Navigator.pushNamed(context, '/saved');
-      }
-      if (index == 4) {
-        Navigator.pushNamed(context, '/profile');
-      }
-    }
 
     return Scaffold(
       // backgroundColor: Color(0xff283488),
-      bottomNavigationBar: BottomNavyBar(
+      bottomNavigationBar: CustomBottomNavbar(
+        context: context,
         selectedIndex: 0,
-        showElevation: true,
-        itemCornerRadius: 24,
-        curve: Curves.easeIn,
-        onItemSelected: (index) =>
-            {setState(() => _currentIndex = index), onTabTapped(index)},
-        items: <BottomNavyBarItem>[
-          BottomNavyBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.apps),
-            title: Text('Categories'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.shopping_cart),
-            title: Text('Shopping Cart Items'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.favorite_outline),
-            title: Text('Saved'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.account_circle_outlined),
-            title: Text('Profile'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-        ],
+      ),
+      floatingActionButton: const LanguageTransitionWidget(),
+      appBar: CustomAppBar(
+        title: const Text(""),
+        leadingAction: () {
+          Navigator.pop(context);
+        },
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -109,28 +52,14 @@ class _Cake extends State<Cake> {
               Row(
                 children: [
                   Container(
-                    padding:
-                        EdgeInsets.only(top: height * 0.1, left: width * 0.05),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                      ),
+                    padding: EdgeInsets.only(
+                      top: 30,
+                      left: width * 0.05,
+                      right: width * 0.05,
                     ),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                    padding:
-                        EdgeInsets.only(top: height * 0.05, left: width * 0.05),
-                    child: const Text(
-                      "Cakes",
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(context)!.cakepage_cakes,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 32,
@@ -144,13 +73,13 @@ class _Cake extends State<Cake> {
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.only(
-                      top: height * 0.02,
-                      left: width * 0.05,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: width * 0.05,
+                      vertical: 15,
                     ),
-                    child: const Text(
-                      "Toys collection",
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(context)!.cakepage_collection,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.normal,
                         fontSize: 14,

@@ -1,11 +1,12 @@
 // ignore_for_file: unnecessary_const
 
 import 'package:flutter/material.dart';
-import 'package:toy_app/model/details.dart';
+import 'package:toy_app/components/components.dart';
 import 'package:toy_app/model/product_model.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
-import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
 import 'package:toy_app/model/search_model.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Searchlist extends StatefulWidget {
   const Searchlist({Key? key}) : super(key: key);
@@ -15,9 +16,6 @@ class Searchlist extends StatefulWidget {
 }
 
 class _Searchlist extends State<Searchlist> {
-  int currentIndex = 0;
-  final List<bool> isTappedList = [true, false, false, false];
-  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -27,76 +25,18 @@ class _Searchlist extends State<Searchlist> {
     SearchData data = ModalRoute.of(context)!.settings.arguments as SearchData;
     late Future<List<Product>> products = data.products;
     String searchText = data.searchText;
-    void onTabTapped(int index) {
-      if (index == 0) {
-        Navigator.pushNamed(context, '/home');
-      }
-      if (index == 1) {
-        Navigator.pushNamed(context, '/categories');
-      }
-      if (index == 2) {
-        Navigator.pushNamed(context, '/cart');
-      }
-      if (index == 3) {
-        Navigator.pushNamed(context, '/saved');
-      }
-      if (index == 4) {
-        Navigator.pushNamed(context, '/profile');
-      }
-    }
 
     return Scaffold(
       // backgroundColor: Color(0xff283488),
-      bottomNavigationBar: BottomNavyBar(
-        selectedIndex: 0,
-        showElevation: true,
-        itemCornerRadius: 24,
-        curve: Curves.easeIn,
-        onItemSelected: (index) =>
-            {setState(() => _currentIndex = index), onTabTapped(index)},
-        items: <BottomNavyBarItem>[
-          BottomNavyBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.apps),
-            title: Text('Categories'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.shopping_cart),
-            title: Text('Shopping Cart Items'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.favorite_outline),
-            title: Text('Saved'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.account_circle_outlined),
-            title: Text('Profile'),
-            activeBackColor: const Color(0xFF283488),
-            activeColor: Colors.white,
-            textAlign: TextAlign.center,
-            inactiveColor: Colors.grey[600],
-          ),
-        ],
+      bottomNavigationBar:
+          CustomBottomNavbar(context: context, selectedIndex: 0),
+      appBar: CustomAppBar(
+        title: const Text(""),
+        leadingAction: () {
+          Navigator.pop(context);
+        },
       ),
+      floatingActionButton: const LanguageTransitionWidget(),
       body: SingleChildScrollView(
         child: Container(
           color: const Color(0xffffffff),
@@ -104,27 +44,11 @@ class _Searchlist extends State<Searchlist> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    padding:
-                        EdgeInsets.only(top: height * 0.1, left: width * 0.05),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                    padding:
-                        EdgeInsets.only(top: height * 0.05, left: width * 0.05),
+                    padding: EdgeInsets.symmetric(
+                        vertical: height * 0.02, horizontal: width * 0.05),
                     child: Text(
                       searchText,
                       style: const TextStyle(
@@ -139,15 +63,14 @@ class _Searchlist extends State<Searchlist> {
                 ],
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(
-                      top: height * 0.02,
-                      left: width * 0.05,
-                    ),
-                    child: const Text(
-                      "Search Results",
-                      style: TextStyle(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 0, horizontal: width * 0.05),
+                    child: Text(
+                      AppLocalizations.of(context)!.searchlistpage_result,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.normal,
                         fontSize: 14,
@@ -234,9 +157,11 @@ class _Searchlist extends State<Searchlist> {
                                                             8,
                                                             0,
                                                             0),
-                                                    child: const Text(
-                                                      "Lego",
-                                                      style: TextStyle(
+                                                    child: Text(
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .searchlistpage_lego,
+                                                      style: const TextStyle(
                                                         fontFamily:
                                                             'Avenir Next',
                                                         fontSize: 14,

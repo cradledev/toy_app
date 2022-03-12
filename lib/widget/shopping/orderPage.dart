@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class Order extends StatefulWidget {
   const Order({Key? key}) : super(key: key);
 
@@ -13,7 +15,7 @@ class _Order extends State<Order> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Color(0xff283488),
+      backgroundColor: const Color(0xff283488),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -48,11 +50,11 @@ class _Order extends State<Order> {
               ),
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Text(
-              "Order placed",
-              style: TextStyle(
+              AppLocalizations.of(context)!.orderpage_orderp,
+              style: const TextStyle(
                 fontSize: 32,
                 fontFamily: "Avenir Next",
                 fontWeight: FontWeight.bold,
@@ -60,22 +62,22 @@ class _Order extends State<Order> {
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: Text(
-              "Your order has been successfully processed! Stay",
-              style: TextStyle(
+              AppLocalizations.of(context)!.orderpage_text1,
+              style: const TextStyle(
                 fontSize: 14,
                 fontFamily: "Avenir Next",
                 color: Colors.white,
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Text(
-              "turned for delivery news.",
-              style: TextStyle(
+              AppLocalizations.of(context)!.orderpage_text2,
+              style: const TextStyle(
                 fontSize: 14,
                 fontFamily: "Avenir Next",
                 color: Colors.white,
@@ -101,9 +103,9 @@ class _Order extends State<Order> {
                   ),
                 ),
               ),
-              child: const Text(
-                'Okay',
-                style: TextStyle(color: Color(0xff283488), fontSize: 14),
+              child: Text(
+                AppLocalizations.of(context)!.orderpage_okay,
+                style: const TextStyle(color: Color(0xff283488), fontSize: 14),
               ),
             ),
           ),

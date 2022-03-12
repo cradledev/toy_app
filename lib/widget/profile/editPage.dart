@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toy_app/components/components.dart';
 import 'package:toy_app/service/user_auth.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Edit extends StatefulWidget {
   const Edit({Key? key}) : super(key: key);
@@ -66,7 +69,7 @@ class _Edit extends State<Edit> {
       setState(() {
         if (pickedFile != null) {
           _image = File(pickedFile.path);
-          print('hahaha');
+          // print('hahaha');
         } else {
           print('No image selected.');
         }
@@ -74,273 +77,286 @@ class _Edit extends State<Edit> {
     }
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Row(
+      appBar: CustomAppBar(
+        title: Image.asset(
+          'assets/img/LoginRegistration/header.png',
+          // height: height * 0.1,
+          width: width * 0.5,
+          fit: BoxFit.cover,
+        ),
+        leadingAction: () {
+          Navigator.pop(context);
+        },
+      ),
+      floatingActionButton: const LanguageTransitionWidget(),
+      body: SingleChildScrollView(
+        reverse: true,
+        child: Container(
+          height: MediaQuery.of(context).size.height - 100,
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.only(bottom: 25),
+          color: const Color(0xffffffff),
+          child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(20, height * 0.1, 0, 0),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, '/profile');
-                    // Navigator.pop(context);
-                  },
-                  child: const Icon(Icons.arrow_back, color: Colors.black),
-                ),
-              ),
-            ],
-          ),
-          Column(
-            children: [
-              Column(
+              Row(
                 children: [
-                  Row(
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
-                        child: Text(
-                          "Edit Your Profile",
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
-                    child: Row(
-                      children: const [
-                        Text(
-                          "You can edit your profile details and save it here.",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xff999999),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: height * 0.01,
-                  ),
-                  Container(
-                    width: width * 0.3,
-                    height: height * 0.2,
-                    margin: EdgeInsets.only(
-                        left: width * 0.05, right: width * 0.02),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(32),
-                      color: Colors.white,
-                    ),
-                    child: InkWell(
-                      onTap: getImage,
-                      child: CircleAvatar(
-                        radius: 38.0,
-                        child: ClipOval(
-                          child: _image == null
-                              ? (imagePath == ''
-                                  ? Image.asset(
-                                      "assets/img/home/avatar.jpg",
-                                      fit: BoxFit.fill,
-                                    )
-                                  : Image.file(
-                                      File(imagePath),
-                                      fit: BoxFit.fill,
-                                    ))
-                              : Image.file(
-                                  _image!,
-                                  fit: BoxFit.fill,
-                                ),
-                        ),
-                        backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: Text(
+                      AppLocalizations.of(context)!.editpage_text1,
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
               ),
-              Form(
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                child: Row(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.editpage_text2,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xff999999),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: height * 0.01,
+              ),
+              Container(
+                width: width * 0.3,
+                height: height * 0.2,
+                margin:
+                    EdgeInsets.only(left: width * 0.05, right: width * 0.02),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(32),
+                  color: Colors.white,
+                ),
+                child: InkWell(
+                  onTap: getImage,
+                  child: CircleAvatar(
+                    radius: 38.0,
+                    child: ClipOval(
+                      child: _image == null
+                          ? (imagePath == ''
+                              ? Image.asset(
+                                  "assets/img/home/avatar.jpg",
+                                  fit: BoxFit.fill,
+                                )
+                              : Image.file(
+                                  File(imagePath),
+                                  fit: BoxFit.fill,
+                                ))
+                          : Image.file(
+                              _image!,
+                              fit: BoxFit.fill,
+                            ),
+                    ),
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.zero,
+                  width: MediaQuery.of(context).size.width,
                   child: Column(
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "First name",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black87),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          TextFormField(
-                            controller: savedFirstName,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 10),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Form(
+                              key: _formKey,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 40),
+                                child: Column(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!
+                                              .editpage_firstname,
+                                          style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black87),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        TextFormField(
+                                          controller: savedFirstName,
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 0,
+                                                    horizontal: 10),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                color: Colors.grey,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(32),
+                                            ),
+                                            border: const OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey)),
+                                          ),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.trim().isEmpty) {
+                                              return AppLocalizations.of(
+                                                      context)!
+                                                  .editpage_pfirstname;
+                                            }
+                                            // Return null if the entered email is valid
+                                            return null;
+                                          },
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        )
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!
+                                              .editpage_lastname,
+                                          style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black87),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        TextFormField(
+                                          controller: savedLastName,
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 0,
+                                                    horizontal: 10),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                color: Colors.grey,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(32),
+                                            ),
+                                            border: const OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey)),
+                                          ),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.trim().isEmpty) {
+                                              return AppLocalizations.of(
+                                                      context)!
+                                                  .editpage_plastname;
+                                            }
+                                            // Return null if the entered email is valid
+                                            return null;
+                                          },
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        )
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!
+                                              .editpage_bio,
+                                          style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black87),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        TextField(
+                                          maxLines: 5,
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 0,
+                                                    horizontal: 10),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                color: Colors.grey,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(32),
+                                            ),
+                                            border: const OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey)),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                borderRadius: BorderRadius.circular(32),
                               ),
-                              border: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey)),
                             ),
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return 'Please enter your first name';
-                              }
-                              // Return null if the entered email is valid
-                              return null;
-                            },
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          )
-                        ],
+                          ],
+                        ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Last name",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black87),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          TextFormField(
-                            controller: savedLastName,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 10),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                ),
-                                borderRadius: BorderRadius.circular(32),
+                      SizedBox(
+                        height: height * 0.07,
+                        width: width * 0.9,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            submitInfo();
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color(0xff283488)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(83.0),
+                                side:
+                                    const BorderSide(color: Color(0xff283488)),
                               ),
-                              border: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey)),
                             ),
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return 'Please enter your last name';
-                              }
-                              // Return null if the entered email is valid
-                              return null;
-                            },
                           ),
-                          const SizedBox(
-                            height: 10,
-                          )
-                        ],
-                      ),
-                      const Text(
-                        "Your bio",
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black87),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      TextField(
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 10),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.grey,
-                            ),
-                            borderRadius: BorderRadius.circular(32),
+                          child: Text(
+                            AppLocalizations.of(context)!.editpage_save,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 14),
                           ),
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey)),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(
-                height: height * 0.05,
-              ),
-              SizedBox(
-                height: height * 0.07,
-                width: width * 0.9,
-                child: ElevatedButton(
-                  onPressed: () {
-                    submitInfo();
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(const Color(0xff283488)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(83.0),
-                        side: const BorderSide(color: Color(0xff283488)),
-                      ),
-                    ),
-                  ),
-                  child: const Text(
-                    'Save Changes',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
-                ),
-              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
-}
-
-Widget makeInput({label, obsureText = false}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: const TextStyle(
-            fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87),
-      ),
-      const SizedBox(
-        height: 5,
-      ),
-      TextField(
-        obscureText: obsureText,
-        decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.grey,
-            ),
-            borderRadius: BorderRadius.circular(32),
-          ),
-          border: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey)),
-        ),
-      ),
-      const SizedBox(
-        height: 10,
-      )
-    ],
-  );
 }

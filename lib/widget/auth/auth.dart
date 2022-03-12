@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Auth extends StatefulWidget {
   const Auth({Key? key}) : super(key: key);
@@ -16,57 +17,61 @@ class _Auth extends State<Auth> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            height: height * 0.35,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Image(
-              image: const AssetImage(
-                'assets/img/LoginRegistration/header.png',
-              ),
-              fit: BoxFit.scaleDown,
-              height: height * 0.1,
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: Image(
+                    image: const AssetImage(
+                      'assets/img/LoginRegistration/header.png',
+                    ),
+                    fit: BoxFit.scaleDown,
+                    height: height * 0.1,
+                  ),
+                ),
+                SizedBox(
+                  height: height * 0.15,
+                ),
+                Text(
+                  AppLocalizations.of(context)!.auth_welcome,
+                  style: const TextStyle(
+                    fontFamily: 'Avenir Next',
+                    fontSize: 32,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                Text(
+                  AppLocalizations.of(context)!.auth_description1,
+                  style: const TextStyle(
+                    fontFamily: 'Avenir Next',
+                    fontSize: 14,
+                    color: Color(0xff999999),
+                    fontWeight: FontWeight.normal,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  AppLocalizations.of(context)!.auth_description2,
+                  style: const TextStyle(
+                    fontFamily: 'Avenir Next',
+                    fontSize: 14,
+                    color: Color(0xff999999),
+                    fontWeight: FontWeight.normal,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: height * 0.1,
+                ),
+              ],
             ),
-          ),
-          SizedBox(
-            height: height * 0.15,
-          ),
-          const Text(
-            "Welcome",
-            style: TextStyle(
-              fontFamily: 'Avenir Next',
-              fontSize: 32,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: height * 0.01,
-          ),
-          const Text(
-            "Welcome back! Login with your data that you",
-            style: TextStyle(
-              fontFamily: 'Avenir Next',
-              fontSize: 14,
-              color: Color(0xff999999),
-              fontWeight: FontWeight.normal,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const Text(
-            "entered during registration.",
-            style: TextStyle(
-              fontFamily: 'Avenir Next',
-              fontSize: 14,
-              color: Color(0xff999999),
-              fontWeight: FontWeight.normal,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: height * 0.1,
           ),
           SizedBox(
             height: height * 0.07,
@@ -84,9 +89,9 @@ class _Auth extends State<Auth> {
                   ),
                 ),
               ),
-              child: const Text(
-                'Log in',
-                style: TextStyle(color: const Color(0xff283488), fontSize: 14),
+              child: Text(
+                AppLocalizations.of(context)!.auth_login,
+                style: const TextStyle(color: Color(0xff283488), fontSize: 14),
               ),
             ),
           ),
@@ -110,12 +115,15 @@ class _Auth extends State<Auth> {
                   ),
                 ),
               ),
-              child: const Text(
-                'Sign up',
-                style: TextStyle(color: Colors.white, fontSize: 14),
+              child: Text(
+                AppLocalizations.of(context)!.auth_signup,
+                style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
           ),
+          const SizedBox(
+            height: 30,
+          )
         ],
       ),
     );

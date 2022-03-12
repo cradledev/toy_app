@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 import 'package:toy_app/model/product_model.dart';
 import 'package:toy_app/service/product_repo.dart';
-// import 'package:toy_app/model/details.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DetailPageTest extends StatefulWidget {
   const DetailPageTest({Key? key}) : super(key: key);
@@ -23,11 +24,11 @@ class _DetailPageTest extends State<DetailPageTest> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text("Success"),
-              content: const Text("This product is added in favourite list!"),
+              title: Text(AppLocalizations.of(context)!.detailpage_success),
+              content: Text(AppLocalizations.of(context)!.detailpage_text1),
               actions: [
                 ElevatedButton(
-                  child: const Text("Ok"),
+                  child: Text(AppLocalizations.of(context)!.detailpage_ok),
                   onPressed: () {
                     Navigator.pushNamed(context, '/saved');
                   },
@@ -40,12 +41,11 @@ class _DetailPageTest extends State<DetailPageTest> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text("Failed!"),
-              content:
-                  const Text("Adding this product to favourite list failed!"),
+              title: Text(AppLocalizations.of(context)!.detailpage_failed),
+              content: Text(AppLocalizations.of(context)!.detailpage_text2),
               actions: [
                 ElevatedButton(
-                  child: const Text("Ok"),
+                  child: Text(AppLocalizations.of(context)!.detailpage_ok),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -66,11 +66,11 @@ class _DetailPageTest extends State<DetailPageTest> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text("Success"),
-                content: const Text("This product is added in cart!"),
+                title: Text(AppLocalizations.of(context)!.detailpage_success),
+                content: Text(AppLocalizations.of(context)!.detailpage_text1),
                 actions: [
                   ElevatedButton(
-                    child: const Text("Ok"),
+                    child: Text(AppLocalizations.of(context)!.detailpage_ok),
                     onPressed: () {
                       Navigator.pushNamed(context, '/cart');
                     },
@@ -83,11 +83,11 @@ class _DetailPageTest extends State<DetailPageTest> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text("Failed!"),
-                content: const Text("Adding this product to cart failed!"),
+                title: Text(AppLocalizations.of(context)!.detailpage_failed),
+                content: Text(AppLocalizations.of(context)!.detailpage_text2),
                 actions: [
                   ElevatedButton(
-                    child: const Text("Ok"),
+                    child: Text(AppLocalizations.of(context)!.detailpage_ok),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -101,11 +101,11 @@ class _DetailPageTest extends State<DetailPageTest> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text("Alert"),
-              content: const Text("Select quantity please!"),
+              title: Text(AppLocalizations.of(context)!.detailpage_alert),
+              content: Text(AppLocalizations.of(context)!.detailpage_text4),
               actions: [
                 ElevatedButton(
-                  child: const Text("Ok"),
+                  child: Text(AppLocalizations.of(context)!.detailpage_ok),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -202,11 +202,11 @@ class _DetailPageTest extends State<DetailPageTest> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(
                       mq.width * 0.085, 16, 0, mq.height * 0.02),
-                  child: const Align(
+                  child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Quantity",
-                      style: TextStyle(
+                      AppLocalizations.of(context)!.detailpage_quantity,
+                      style: const TextStyle(
                         fontFamily: "Avenir Next",
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -241,11 +241,11 @@ class _DetailPageTest extends State<DetailPageTest> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(
                       mq.width * 0.085, 16, 0, mq.height * 0.02),
-                  child: const Align(
+                  child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Description",
-                      style: TextStyle(
+                      AppLocalizations.of(context)!.detailpage_description,
+                      style: const TextStyle(
                         fontFamily: "Avenir Next",
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -295,9 +295,10 @@ class _DetailPageTest extends State<DetailPageTest> {
                               ),
                             ),
                           ),
-                          child: const Text(
-                            'Add to Cart',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          child: Text(
+                            AppLocalizations.of(context)!.detailpage_acart,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 14),
                           ),
                         ),
                       ),
@@ -332,7 +333,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                 color: Color(0xffF8C327),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(6, 0, 0, 0),
+                padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
                 child: Text(
                   args.approvedratingsum.toString(),
                   style: const TextStyle(

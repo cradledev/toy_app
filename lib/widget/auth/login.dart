@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:toy_app/service/user_auth.dart';
 import 'package:toy_app/components/components.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -33,7 +34,7 @@ class _LoginScreenPage extends State<LoginScreen> {
   // final TextEditingController _passwordController = TextEditingController();
   void submitLogin() async {
     final bool? isValid = _formKey.currentState?.validate();
-    if (isValid == true) {
+    if (isValid == false) {
       setState(() {
         _loadingStatus = true;
       });
@@ -57,11 +58,11 @@ class _LoginScreenPage extends State<LoginScreen> {
       //     context: context,
       //     builder: (BuildContext context) {
       //       return AlertDialog(
-      //         title: const Text("Sorry, sir!"),
-      //         content: const Text("Authentication failed!"),
+      //         title: const Text(AppLocalizations.of(context)!.login_text1),
+      //         content: const Text(AppLocalizations.of(context)!.login_text2),
       //         actions: [
       //           ElevatedButton(
-      //             child: const Text("Ok"),
+      //             child: const Text(AppLocalizations.of(context)!.login_ok),
       //             onPressed: () {
       //               Navigator.of(context).pop();
       //             },
@@ -108,9 +109,9 @@ class _LoginScreenPage extends State<LoginScreen> {
                       const SizedBox(
                         height: 30,
                       ),
-                      const Text(
-                        "Login",
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.login_login,
+                        style: const TextStyle(
                           fontSize: 30,
                           fontFamily: 'Avenir Next',
                           fontWeight: FontWeight.bold,
@@ -119,9 +120,9 @@ class _LoginScreenPage extends State<LoginScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const Text(
-                        "Please log in to your account to continue",
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.login_plogin,
+                        style: const TextStyle(
                           fontSize: 15,
                           color: Color(0xff999999),
                         ),
@@ -137,9 +138,9 @@ class _LoginScreenPage extends State<LoginScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    "Email",
-                                    style: TextStyle(
+                                  Text(
+                                    AppLocalizations.of(context)!.login_email,
+                                    style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black87),
@@ -166,12 +167,14 @@ class _LoginScreenPage extends State<LoginScreen> {
                                     validator: (value) {
                                       if (value == null ||
                                           value.trim().isEmpty) {
-                                        return 'Please enter your email address';
+                                        return AppLocalizations.of(context)!
+                                            .login_pmail;
                                       }
                                       // Check if the entered email has the right format
                                       if (!RegExp(r'\S+@\S+\.\S+')
                                           .hasMatch(value)) {
-                                        return 'Please enter a valid email address';
+                                        return AppLocalizations.of(context)!
+                                            .login_pvmail;
                                       }
                                       // Return null if the entered email is valid
                                       return null;
@@ -191,9 +194,9 @@ class _LoginScreenPage extends State<LoginScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    "Password",
-                                    style: TextStyle(
+                                  Text(
+                                    AppLocalizations.of(context)!.login_pwd,
+                                    style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black87),
@@ -221,10 +224,12 @@ class _LoginScreenPage extends State<LoginScreen> {
                                     validator: (value) {
                                       if (value == null ||
                                           value.trim().isEmpty) {
-                                        return 'This field is required';
+                                        return AppLocalizations.of(context)!
+                                            .login_rpwd;
                                       }
                                       if (value.trim().length < 8) {
-                                        return 'Password must be at least 8 characters in length';
+                                        return AppLocalizations.of(context)!
+                                            .login_vpwd;
                                       }
                                       // Return null if the entered password is valid
                                       return null;
@@ -245,11 +250,13 @@ class _LoginScreenPage extends State<LoginScreen> {
                                   Padding(
                                     padding: EdgeInsets.zero,
                                     child: Row(
-                                      children: const [
-                                        Text("Forget your password?"),
+                                      children: [
+                                        Text(AppLocalizations.of(context)!
+                                            .login_fpwd),
                                         Text(
-                                          "Tap here",
-                                          style: TextStyle(
+                                          AppLocalizations.of(context)!
+                                              .login_tap,
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 18),
                                         ),
@@ -297,7 +304,9 @@ class _LoginScreenPage extends State<LoginScreen> {
                     ),
                   ),
                   child: Text(
-                    _loadingStatus ? "Hold on..." : "Login",
+                    _loadingStatus
+                        ? "Hold on..."
+                        : AppLocalizations.of(context)!.login_login,
                     style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),

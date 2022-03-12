@@ -6,7 +6,7 @@ import 'package:toy_app/provider/app_locale.dart';
 import 'package:toy_app/provider/index.dart';
 import 'package:provider/provider.dart';
 
-import 'package:toy_app/model/app_language.dart';
+// import 'package:toy_app/model/app_language.dart';
 
 // import componenet
 import 'package:toy_app/components/components.dart';
@@ -115,14 +115,14 @@ class _Onboarding extends State<Onboarding> {
       },
       child: Scaffold(
         body: Container(
-          padding: const EdgeInsets.only(bottom: 0, top: 30),
+          padding: const EdgeInsets.only(bottom: 0, top: 30, left: 0, right: 0),
           decoration: BoxDecoration(
             color: _activeBackgroundColor,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Expanded(
                   // padding: EdgeInsets.zero,
@@ -301,8 +301,9 @@ class _Onboarding extends State<Onboarding> {
                         width: 140,
                         child: RoundedButton(
                           text: (_currentPage != _numPages - 1)
-                              ? "Next"
-                              : "Explorer",
+                              ? AppLocalizations.of(context)!.onboarding_next
+                              : AppLocalizations.of(context)!
+                                  .onboarding_explorer,
                           press: _onNextPage,
                           textColor: Colors.black,
                           color: Colors.white,
@@ -315,6 +316,7 @@ class _Onboarding extends State<Onboarding> {
             ),
           ),
         ),
+        floatingActionButton: const LanguageTransitionWidget(),
       ),
     );
   }
