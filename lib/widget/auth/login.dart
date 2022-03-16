@@ -34,7 +34,7 @@ class _LoginScreenPage extends State<LoginScreen> {
   // final TextEditingController _passwordController = TextEditingController();
   void submitLogin() async {
     final bool? isValid = _formKey.currentState?.validate();
-    if (isValid == false) {
+    if (isValid == true) {
       setState(() {
         _loadingStatus = true;
       });

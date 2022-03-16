@@ -20,6 +20,7 @@ class _Order extends State<Order> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
                 padding: EdgeInsets.fromLTRB(width * 0.25, height * 0.05, 0, 0),
@@ -37,6 +38,7 @@ class _Order extends State<Order> {
             height: height * 0.1,
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
                 padding: EdgeInsets.fromLTRB(width * 0.35, 0, 0, 0),

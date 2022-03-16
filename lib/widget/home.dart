@@ -8,6 +8,8 @@ import 'package:toy_app/service/product_repo.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:toy_app/provider/index.dart';
 
+import 'package:carousel_slider/carousel_slider.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -24,9 +26,20 @@ class _Home extends State<Home> {
   late Future<List<Product>> babyProducts;
   late Future<List<Product>> recommendedProducts;
 
+  // slider setting
+  final List<String> imgList = [
+    'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
+    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=94a1e718d89ca60a6337a6008341ca50&auto=format&fit=crop&w=1950&q=80',
+    'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
+    'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
+    'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
+  ];
+  final themeMode = ValueNotifier(2);
+
   // provider setting
   late AppState _appState;
   late String _languageCode = "en";
+
   @override
   void initState() {
     super.initState();
@@ -104,21 +117,76 @@ class _Home extends State<Home> {
                         ],
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            padding: const EdgeInsets.only(top: 30, bottom: 30),
-                            child: Image.asset(
-                              "assets/img/home/1-4.png",
-                              scale: 2,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15, bottom: 30),
+                      child: Column(
+                        children: [
+                          CarouselSlider(
+                            options: CarouselOptions(
+                              height: 250.0,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 3),
+                              autoPlayAnimationDuration:
+                                  const Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enlargeCenterPage: true,
                             ),
+                            items: imgList.map((item) {
+                              return Builder(
+                                builder: (BuildContext context) {
+                                  return Stack(children: <Widget>[
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(35.0),
+                                      child: const Image(
+                                        image: AssetImage(
+                                          'assets/img/home/1-4.png',
+                                        ),
+                                        height: 250.0,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      // child: Image.network(
+                                      //   item,
+                                      //   height: 250.0,
+                                      //   fit: BoxFit.cover,
+                                      // ),
+                                    ),
+                                    // Container(
+                                    //   margin: const EdgeInsets.only(top: 30),
+                                    //   alignment: Alignment.topCenter,
+                                    //   child: const Text(
+                                    //     "Your Favorite Car",
+                                    //     style: TextStyle(
+                                    //         fontSize: 28,
+                                    //         color: Colors.black,
+                                    //         fontWeight: FontWeight.bold),
+                                    //   ),
+                                    // ),
+                                  ]);
+                                  // return Container(
+                                  //   height: 250,
+                                  //   margin: const EdgeInsets.symmetric(
+                                  //       horizontal: 5.0),
+                                  //   decoration: const BoxDecoration(
+                                  //     color: Colors.amber,
+                                  //     borderRadius: BorderRadius.all(
+                                  //       Radius.circular(35.0),
+                                  //     ),
+                                  //   ),
+                                  //   child: ClipRRect(
+                                  //     borderRadius: BorderRadius.circular(35.0),
+                                  //     child: Image.network(
+                                  //       item,
+                                  //       height: 250.0,
+                                  //       fit: BoxFit.cover,
+                                  //     ),
+                                  //   ),
+                                  // );
+                                },
+                              );
+                            }).toList(),
                           ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
