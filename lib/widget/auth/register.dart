@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:toy_app/service/user_auth.dart';
+import 'package:toy_app/service/mailchimp_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'dart:convert';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -11,7 +13,8 @@ class Register extends StatefulWidget {
 
 class _Register extends State<Register> {
   // user service
-  final userService = UserService();
+  late UserService userService;
+  late MailChimpService mailChimpService;
   // page slide setting
   final int _numPages = 2;
   final PageController _pageController = PageController(initialPage: 0);
@@ -47,6 +50,8 @@ class _Register extends State<Register> {
     _passwordController = TextEditingController();
     _confirmController = TextEditingController();
     _loadingStatus = false;
+    userService = UserService();
+    mailChimpService = MailChimpService();
   }
 
   List<Widget> _buildPageIndicator() {
@@ -105,10 +110,28 @@ class _Register extends State<Register> {
       _loadingStatus = true;
     });
     Future.delayed(const Duration(seconds: 4), () {
-      setState(() {
-        _loadingStatus = false;
+      mailChimpService.addContact(_email, _firstName, _lastName).then((data) {
+        var body = jsonDecode(data.body);
+        print(body);
+        // setState(() {
+        //   _loadingStatus = false;
+        // });
+        // if (data.statusCode == 200) {
+        //   setState(() {
+        //     _loadingStatus = false;
+        //   });
+        //   Navigator.pushReplacementNamed(context, '/home');
+        // }
+        setState(() {
+          _loadingStatus = false;
+        });
+        // Navigator.pushReplacementNamed(context, '/home');
+      }).catchError((onError) {
+        print(onError);
+        setState(() {
+          _loadingStatus = false;
+        });
       });
-      Navigator.pushReplacementNamed(context, '/home');
     });
     // info.add(_firstName);
     // info.add(_lastName);
