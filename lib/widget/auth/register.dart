@@ -112,7 +112,6 @@ class _Register extends State<Register> {
     Future.delayed(const Duration(seconds: 4), () {
       mailChimpService.addContact(_email, _firstName, _lastName).then((data) {
         var body = jsonDecode(data.body);
-        print(body);
         // setState(() {
         //   _loadingStatus = false;
         // });
@@ -125,12 +124,13 @@ class _Register extends State<Register> {
         setState(() {
           _loadingStatus = false;
         });
-        // Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(context, '/home');
       }).catchError((onError) {
         print(onError);
         setState(() {
           _loadingStatus = false;
         });
+        Navigator.pushReplacementNamed(context, '/home');
       });
     });
     // info.add(_firstName);

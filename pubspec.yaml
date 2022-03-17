@@ -38,7 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   number_inc_dec: ^0.8.0
   carousel_slider: ^4.0.0
-  http: ^0.13.0
+  http: 
   localstorage: 
   shared_preferences: 2.0.0
   provider: ^4.0.5+1
