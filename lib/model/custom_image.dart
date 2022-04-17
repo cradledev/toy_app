@@ -4,10 +4,10 @@ class CustomImage {
   final int position;
   final String src;
   CustomImage({
-    required this.id,
-    required this.pictureid,
-    required this.position,
-    required this.src,
+    this.id,
+    this.pictureid,
+    this.position,
+    this.src,
   });
   factory CustomImage.fromJson(Map<String, dynamic> json) {
     return CustomImage(

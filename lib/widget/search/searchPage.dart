@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
-import 'package:toy_app/model/product_model.dart';
-import 'package:toy_app/service/product_repo.dart';
-import 'package:toy_app/model/search_model.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Search extends StatefulWidget {
-  const Search({Key? key}) : super(key: key);
+  const Search({Key key}) : super(key: key);
 
   @override
   State<Search> createState() => _Search();
@@ -15,10 +12,7 @@ class Search extends StatefulWidget {
 
 class _Search extends State<Search> {
   final _formKey = GlobalKey<FormState>();
-
   String _searchText = '';
-  final ProductService _productService = ProductService();
-  late Future<List<Product>> products;
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +20,9 @@ class _Search extends State<Search> {
     var height = MediaQuery.of(context).size.height;
 
     void searchSubmit() async {
-      final bool? isValid = _formKey.currentState?.validate();
+      final bool isValid = _formKey.currentState?.validate();
       if (isValid == true) {
-        products = _productService.getSearch(_searchText);
-        Navigator.pushNamed(context, '/searchlist',
-            arguments: SearchData(_searchText, products));
+        Navigator.pushNamed(context, '/searchlist', arguments: _searchText);
       }
     }
 
@@ -48,9 +40,6 @@ class _Search extends State<Search> {
       floatingActionButton: const LanguageTransitionWidget(),
       body: Column(
         children: [
-          SizedBox(
-            height: height * 0.05,
-          ),
           Form(
             key: _formKey,
             child: Column(
@@ -65,7 +54,7 @@ class _Search extends State<Search> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!
+                            AppLocalizations.of(context)
                                 .searchlistpage_find_toy,
                             style: const TextStyle(
                               fontSize: 30,
@@ -77,7 +66,7 @@ class _Search extends State<Search> {
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
                         child: Text(
-                          AppLocalizations.of(context)!
+                          AppLocalizations.of(context)
                               .searchlistpage_everythting,
                           style: const TextStyle(
                             fontSize: 15,
@@ -117,7 +106,7 @@ class _Search extends State<Search> {
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return AppLocalizations.of(context)!
+                                return AppLocalizations.of(context)
                                     .searchpage_psearch;
                               }
                               return null;
@@ -153,7 +142,7 @@ class _Search extends State<Search> {
                       ),
                     ),
                     child: Text(
-                      AppLocalizations.of(context)!.searchpage_search,
+                      AppLocalizations.of(context).searchpage_search,
                       style: const TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   ),

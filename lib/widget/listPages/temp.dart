@@ -8,7 +8,7 @@ import 'package:toy_app/service/product_repo.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Popular extends StatefulWidget {
-  const Popular({Key? key}) : super(key: key);
+  const Popular({Key key}) : super(key: key);
 
   @override
   State<Popular> createState() => _Popular();
@@ -16,7 +16,7 @@ class Popular extends StatefulWidget {
 
 class _Popular extends State<Popular> {
   final ProductService _productService = ProductService();
-  late Future<List<Product>> products;
+  Future<List<Product>> products;
   @override
   void initState() {
     super.initState();
@@ -52,7 +52,7 @@ class _Popular extends State<Popular> {
                     right: width * 0.05,
                   ),
                   child: Text(
-                    AppLocalizations.of(context)!.temp_temp,
+                    AppLocalizations.of(context).temp_temp,
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class _Popular extends State<Popular> {
                       right: width * 0.05,
                       bottom: height * 0.05),
                   child: Text(
-                    AppLocalizations.of(context)!.temp_collection,
+                    AppLocalizations.of(context).temp_collection,
                     style: const TextStyle(
                       color: Color(0xff999999),
                       fontWeight: FontWeight.normal,

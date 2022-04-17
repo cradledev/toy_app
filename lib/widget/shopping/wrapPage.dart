@@ -5,7 +5,7 @@ import 'package:toy_app/service/product_repo.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WrapPage extends StatefulWidget {
-  const WrapPage({Key? key}) : super(key: key);
+  const WrapPage({Key key}) : super(key: key);
 
   @override
   State<WrapPage> createState() => _WrapPage();
@@ -13,7 +13,7 @@ class WrapPage extends StatefulWidget {
 
 class _WrapPage extends State<WrapPage> {
   final ProductService _productService = ProductService();
-  late Future<List<Product>> products;
+  Future<List<Product>> products;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class _WrapPage extends State<WrapPage> {
                   padding:
                       EdgeInsets.only(top: height * 0.05, left: width * 0.05),
                   child: Text(
-                    AppLocalizations.of(context)!.wrappage_options,
+                    AppLocalizations.of(context).wrappage_options,
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -74,7 +74,7 @@ class _WrapPage extends State<WrapPage> {
                     left: width * 0.05,
                   ),
                   child: Text(
-                    AppLocalizations.of(context)!.wrappage_design,
+                    AppLocalizations.of(context).wrappage_design,
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.normal,
@@ -96,7 +96,7 @@ class _WrapPage extends State<WrapPage> {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     childAspectRatio: itemWidth / itemHeight),
-                            itemCount: snapshot.data!.length,
+                            itemCount: snapshot.data.length,
                             itemBuilder: (BuildContext context, index) =>
                                 InkWell(
                               hoverColor: Colors.pink,
@@ -120,7 +120,7 @@ class _WrapPage extends State<WrapPage> {
                                         color: Colors.white,
                                       ),
                                       child: Image.network(
-                                        snapshot.data![index].images[0].src,
+                                        snapshot.data[index].images[0].src,
                                         fit: BoxFit.fill,
                                       ),
                                     ),
@@ -146,7 +146,7 @@ class _WrapPage extends State<WrapPage> {
                                                   0,
                                                   0),
                                               child: Text(
-                                                snapshot.data![index].name,
+                                                snapshot.data[index].name,
                                                 style: const TextStyle(
                                                   fontFamily: 'Avenir Next',
                                                   fontSize: 14,
@@ -159,7 +159,7 @@ class _WrapPage extends State<WrapPage> {
                                                   width * 0.05, 10, 0, 0),
                                               child: Text(
                                                 '\$' +
-                                                    snapshot.data![index].price
+                                                    snapshot.data[index].price
                                                         .toString(),
                                                 style: const TextStyle(
                                                   fontFamily: 'Avenir Next',
@@ -212,7 +212,7 @@ class _WrapPage extends State<WrapPage> {
                     ),
                   ),
                   child: Text(
-                    AppLocalizations.of(context)!.wrappage_next,
+                    AppLocalizations.of(context).wrappage_next,
                     style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),

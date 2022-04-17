@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class DetailPage extends StatefulWidget {
   // final ToyDetail detail;
 
-  const DetailPage({Key? key}) : super(key: key);
+  const DetailPage({Key key}) : super(key: key);
 
   @override
   State<DetailPage> createState() => _DetailPage();
@@ -24,20 +24,19 @@ class _DetailPage extends State<DetailPage> {
     // Future<String> response = _productService.setFavourite(id);
   }
 
-  void submitCartItem(int productId) async {
-    String response = await _productService.addCartItem(productId, _quantity);
+  void submitCartItem(String productId) async {
+    String response =
+        await _productService.addCartItem(productId, _quantity, 0, "");
     if (response == 'success') {
       showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title:
-                  Text(AppLocalizations.of(context)!.saveddetailpage_success),
-              content:
-                  Text(AppLocalizations.of(context)!.saveddetailpage_text1),
+              title: Text(AppLocalizations.of(context).saveddetailpage_success),
+              content: Text(AppLocalizations.of(context).saveddetailpage_text1),
               actions: [
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context)!.saveddetailpage_ok),
+                  child: Text(AppLocalizations.of(context).saveddetailpage_ok),
                   onPressed: () {
                     Navigator.pushNamed(context, '/cart');
                   },
@@ -50,12 +49,11 @@ class _DetailPage extends State<DetailPage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text(AppLocalizations.of(context)!.saveddetailpage_failed),
-              content:
-                  Text(AppLocalizations.of(context)!.saveddetailpage_text2),
+              title: Text(AppLocalizations.of(context).saveddetailpage_failed),
+              content: Text(AppLocalizations.of(context).saveddetailpage_text2),
               actions: [
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context)!.saveddetailpage_ok),
+                  child: Text(AppLocalizations.of(context).saveddetailpage_ok),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -69,7 +67,7 @@ class _DetailPage extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
-    final args = ModalRoute.of(context)!.settings.arguments as Product;
+    final args = ModalRoute.of(context).settings.arguments as Product;
     String url = args.images[0].src;
     if (args.images.length > 1) url = args.images[1].src;
     final avatarContent = Stack(
@@ -152,7 +150,7 @@ class _DetailPage extends State<DetailPage> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      AppLocalizations.of(context)!.saveddetailpage_quantity,
+                      AppLocalizations.of(context).saveddetailpage_quantity,
                       style: const TextStyle(
                         fontFamily: "Avenir Next",
                         fontSize: 14,
@@ -191,7 +189,7 @@ class _DetailPage extends State<DetailPage> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      AppLocalizations.of(context)!.saveddetailpage_description,
+                      AppLocalizations.of(context).saveddetailpage_description,
                       style: const TextStyle(
                         fontFamily: "Avenir Next",
                         fontSize: 14,
@@ -228,7 +226,7 @@ class _DetailPage extends State<DetailPage> {
                         child: ElevatedButton(
                           onPressed: () {
                             // Navigator.pushNamed(context, '/home');
-                            submitCartItem(args.id);
+                            submitCartItem(args.id.toString());
                           },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
@@ -243,7 +241,7 @@ class _DetailPage extends State<DetailPage> {
                             ),
                           ),
                           child: Text(
-                            AppLocalizations.of(context)!.saveddetailpage_acart,
+                            AppLocalizations.of(context).saveddetailpage_acart,
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 14),
                           ),

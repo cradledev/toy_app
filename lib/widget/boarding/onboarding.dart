@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:toy_app/components/components.dart';
 
 class Onboarding extends StatefulWidget {
-  const Onboarding({Key? key}) : super(key: key);
+  const Onboarding({Key key}) : super(key: key);
 
   @override
   _Onboarding createState() => _Onboarding();
@@ -22,12 +22,12 @@ class _Onboarding extends State<Onboarding> {
   // slide setting
   final int _numPages = 3;
   final PageController _pageController = PageController(initialPage: 0);
-  late Color _activeBackgroundColor;
+  Color _activeBackgroundColor;
   int _currentPage = 0;
 
   // provider setting
-  late AppState _appState;
-  late AppLocale _appLocale;
+  AppState _appState;
+  AppLocale _appLocale;
   @override
   void initState() {
     super.initState();
@@ -90,7 +90,11 @@ class _Onboarding extends State<Onboarding> {
         curve: Curves.ease,
       );
     } else {
-      Navigator.pushNamed(context, '/auth');
+      if (_appState.user == null) {
+        Navigator.pushNamed(context, '/auth');
+      } else {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
     }
   }
 
@@ -146,7 +150,7 @@ class _Onboarding extends State<Onboarding> {
                               padding: const EdgeInsets.only(
                                   left: 20, right: 20, top: 50),
                               child: Text(
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context)
                                     .onboarding_explorer,
                                 style: const TextStyle(
                                   fontFamily: 'Avenir Next',
@@ -160,7 +164,7 @@ class _Onboarding extends State<Onboarding> {
                               padding:
                                   const EdgeInsets.fromLTRB(20, 10, 20, 10),
                               child: Text(
-                                AppLocalizations.of(context)!.onboarding_text1,
+                                AppLocalizations.of(context).onboarding_text1,
                                 style: const TextStyle(
                                   fontFamily: 'Avenir Next',
                                   fontSize: 32,
@@ -195,7 +199,7 @@ class _Onboarding extends State<Onboarding> {
                               padding: const EdgeInsets.only(
                                   left: 20, right: 20, top: 50),
                               child: Text(
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context)
                                     .onboarding_toys_title,
                                 style: const TextStyle(
                                   fontFamily: 'Avenir Next',
@@ -209,7 +213,7 @@ class _Onboarding extends State<Onboarding> {
                               padding:
                                   const EdgeInsets.fromLTRB(20, 10, 20, 10),
                               child: Text(
-                                AppLocalizations.of(context)!.onboarding_toys,
+                                AppLocalizations.of(context).onboarding_toys,
                                 style: const TextStyle(
                                   fontFamily: 'Avenir Next',
                                   fontSize: 32,
@@ -244,7 +248,7 @@ class _Onboarding extends State<Onboarding> {
                               padding: const EdgeInsets.only(
                                   left: 20, right: 20, top: 50),
                               child: Text(
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context)
                                     .onboarding_shopping_title,
                                 style: const TextStyle(
                                   fontFamily: 'Avenir Next',
@@ -258,7 +262,7 @@ class _Onboarding extends State<Onboarding> {
                               padding:
                                   const EdgeInsets.fromLTRB(20, 10, 20, 10),
                               child: Text(
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context)
                                     .onboarding_shopping,
                                 style: const TextStyle(
                                   fontFamily: 'Avenir Next',
@@ -301,8 +305,8 @@ class _Onboarding extends State<Onboarding> {
                         width: 140,
                         child: RoundedButton(
                           text: (_currentPage != _numPages - 1)
-                              ? AppLocalizations.of(context)!.onboarding_next
-                              : AppLocalizations.of(context)!
+                              ? AppLocalizations.of(context).onboarding_next
+                              : AppLocalizations.of(context)
                                   .onboarding_explorer,
                           press: _onNextPage,
                           textColor: Colors.black,

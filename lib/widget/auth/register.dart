@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
-import 'package:toy_app/service/user_auth.dart';
 import 'package:toy_app/service/mailchimp_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:toy_app/helper/constant.dart';
+
+import 'package:provider/provider.dart';
+import 'package:toy_app/provider/index.dart';
+
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+  const Register({Key key}) : super(key: key);
   @override
   State<Register> createState() => _Register();
 }
 
 class _Register extends State<Register> {
+  // app state
+  AppState _appState;
   // user service
-  late UserService userService;
-  late MailChimpService mailChimpService;
+  MailChimpService mailChimpService;
   // page slide setting
   final int _numPages = 2;
   final PageController _pageController = PageController(initialPage: 0);
-  late TextEditingController _firstnameController;
-  late TextEditingController _lastnameController;
-  late TextEditingController _emailController;
-  late TextEditingController _passwordController;
-  late TextEditingController _confirmController;
+  TextEditingController _firstnameController;
+  TextEditingController _lastnameController;
+  TextEditingController _emailController;
+  TextEditingController _passwordController;
+  TextEditingController _confirmController;
   int _currentPage = 0;
-  bool? isValid = false;
-  bool? isValid1 = false;
+  bool isValid = false;
+  bool isValid1 = false;
   // form setting
   final _formKey = GlobalKey<FormState>();
   final _formKey1 = GlobalKey<FormState>();
@@ -34,9 +40,9 @@ class _Register extends State<Register> {
   String _email = '';
   String _password = '';
   String _confirmpassword = '';
-  List<String> info = [];
+  Map userInfo;
   // loading status
-  late bool _loadingStatus = false;
+  bool _loadingStatus = false;
   @override
   void initState() {
     super.initState();
@@ -50,8 +56,8 @@ class _Register extends State<Register> {
     _passwordController = TextEditingController();
     _confirmController = TextEditingController();
     _loadingStatus = false;
-    userService = UserService();
     mailChimpService = MailChimpService();
+    _appState = Provider.of<AppState>(context, listen: false);
   }
 
   List<Widget> _buildPageIndicator() {
@@ -105,48 +111,59 @@ class _Register extends State<Register> {
     );
   }
 
-  void submitRegister() async {
+  void submitRegister() {
     setState(() {
       _loadingStatus = true;
     });
-    Future.delayed(const Duration(seconds: 4), () {
-      mailChimpService.addContact(_email, _firstName, _lastName).then((data) {
-        var body = jsonDecode(data.body);
-        // setState(() {
-        //   _loadingStatus = false;
-        // });
-        // if (data.statusCode == 200) {
-        //   setState(() {
-        //     _loadingStatus = false;
-        //   });
-        //   Navigator.pushReplacementNamed(context, '/home');
-        // }
+    userInfo = {
+      'firstname': _firstName,
+      'lastname': _lastName,
+      'email': _email,
+      'password': _password
+    };
+    // mailChimpService.addContact(_email, _firstName, _lastName).then((data) {
+    //   _registerHandler(userInfo);
+    // }).catchError((onError) {
+    //   _registerHandler(userInfo);
+    // });
+    _registerHandler(userInfo);
+  }
+
+  void _registerHandler(Map _userInfo) async {
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Access-Control-Allow-Origin': '*',
+      };
+      var response = await http.post(Uri.parse("$apiEndPoint/auth/signup"),
+          body: jsonEncode(_userInfo), headers: headers);
+      var body = jsonDecode(response.body);
+
+      if (body['ok'] == true) {
         setState(() {
           _loadingStatus = false;
         });
+        _appState.user = body['user'];
+        _appState.token = body['token'];
         Navigator.pushReplacementNamed(context, '/home');
-      }).catchError((onError) {
-        print(onError);
+      } else {
+        _appState.notifyToastDanger(context: context, message: body['err']);
         setState(() {
           _loadingStatus = false;
         });
-        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } catch (err) {
+      _appState.notifyToastDanger(
+          context: context, message: "Error occured while registering");
+      setState(() {
+        _loadingStatus = false;
       });
-    });
-    // info.add(_firstName);
-    // info.add(_lastName);
-    // info.add(_email);
-    // info.add(_password);
-    // String response = await userService.register(info);
-    // if (response == 'success') {
-    //   setState(() {
-    //     _loadingStatus = false;
-    //   });
-    //   Navigator.pushReplacementNamed(context, '/home');
-    // }
+    }
+
     // setState(() {
     //   _loadingStatus = false;
     // });
+    // Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
@@ -189,7 +206,8 @@ class _Register extends State<Register> {
                 physics: const ClampingScrollPhysics(),
                 controller: _pageController,
                 onPageChanged: (int page) {
-                  WidgetsBinding.instance?.focusManager.primaryFocus?.unfocus();
+                  WidgetsBinding.instance?.focusManager?.primaryFocus
+                      ?.unfocus();
                   _checkValidation();
                   if (isValid == false && _currentPage == 0) {
                     // _pageController.jumpTo(0);
@@ -213,7 +231,7 @@ class _Register extends State<Register> {
                             height: 30,
                           ),
                           Text(
-                            AppLocalizations.of(context)!.register_create,
+                            AppLocalizations.of(context).register_create,
                             style: const TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
@@ -223,7 +241,7 @@ class _Register extends State<Register> {
                             height: 20,
                           ),
                           Text(
-                            AppLocalizations.of(context)!.register_description1,
+                            AppLocalizations.of(context).register_description1,
                             style: const TextStyle(
                               fontSize: 15,
                               color: Color(0xff999999),
@@ -231,7 +249,7 @@ class _Register extends State<Register> {
                             ),
                           ),
                           Text(
-                            AppLocalizations.of(context)!.register_description2,
+                            AppLocalizations.of(context).register_description2,
                             style: const TextStyle(
                               fontSize: 15,
                               color: Color(0xff999999),
@@ -251,7 +269,7 @@ class _Register extends State<Register> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        AppLocalizations.of(context)!
+                                        AppLocalizations.of(context)
                                             .register_fname,
                                         style: const TextStyle(
                                             fontSize: 15,
@@ -273,9 +291,8 @@ class _Register extends State<Register> {
                                             borderRadius:
                                                 BorderRadius.circular(32),
                                           ),
-                                          hintText:
-                                              AppLocalizations.of(context)!
-                                                  .register_fname,
+                                          hintText: AppLocalizations.of(context)
+                                              .register_fname,
                                           hintStyle: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.normal),
@@ -286,7 +303,7 @@ class _Register extends State<Register> {
                                         validator: (value) {
                                           if (value == null ||
                                               value.trim().isEmpty) {
-                                            return AppLocalizations.of(context)!
+                                            return AppLocalizations.of(context)
                                                 .register_pfname;
                                           }
                                           // Return null if the entered email is valid
@@ -309,7 +326,7 @@ class _Register extends State<Register> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        AppLocalizations.of(context)!
+                                        AppLocalizations.of(context)
                                             .register_lname,
                                         style: const TextStyle(
                                             fontSize: 15,
@@ -331,9 +348,8 @@ class _Register extends State<Register> {
                                             borderRadius:
                                                 BorderRadius.circular(32),
                                           ),
-                                          hintText:
-                                              AppLocalizations.of(context)!
-                                                  .register_lname,
+                                          hintText: AppLocalizations.of(context)
+                                              .register_lname,
                                           hintStyle: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.normal),
@@ -345,7 +361,7 @@ class _Register extends State<Register> {
                                         validator: (value) {
                                           if (value == null ||
                                               value.trim().isEmpty) {
-                                            return AppLocalizations.of(context)!
+                                            return AppLocalizations.of(context)
                                                 .register_plname;
                                           }
                                           // Return null if the entered email is valid
@@ -386,7 +402,7 @@ class _Register extends State<Register> {
                               height: 30,
                             ),
                             Text(
-                              AppLocalizations.of(context)!
+                              AppLocalizations.of(context)
                                   .registeremail_caccount,
                               style: const TextStyle(
                                 fontSize: 30,
@@ -397,7 +413,7 @@ class _Register extends State<Register> {
                               height: 20,
                             ),
                             Text(
-                              AppLocalizations.of(context)!
+                              AppLocalizations.of(context)
                                   .registeremail_description1,
                               style: const TextStyle(
                                 fontSize: 15,
@@ -406,7 +422,7 @@ class _Register extends State<Register> {
                               ),
                             ),
                             Text(
-                              AppLocalizations.of(context)!.registeremail_tap,
+                              AppLocalizations.of(context).registeremail_tap,
                               style: const TextStyle(
                                 fontSize: 15,
                                 color: Color(0xff999999),
@@ -426,7 +442,7 @@ class _Register extends State<Register> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
+                                          AppLocalizations.of(context)
                                               .registeremail_email,
                                           style: const TextStyle(
                                               fontSize: 15,
@@ -457,14 +473,14 @@ class _Register extends State<Register> {
                                             if (value == null ||
                                                 value.trim().isEmpty) {
                                               return AppLocalizations.of(
-                                                      context)!
+                                                      context)
                                                   .registeremail_pmail;
                                             }
                                             // Check if the entered email has the right format
                                             if (!RegExp(r'\S+@\S+\.\S+')
                                                 .hasMatch(value)) {
                                               return AppLocalizations.of(
-                                                      context)!
+                                                      context)
                                                   .registeremail_vmail;
                                             }
                                             // Return null if the entered email is valid
@@ -487,7 +503,7 @@ class _Register extends State<Register> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
+                                          AppLocalizations.of(context)
                                               .registeremail_pwd,
                                           style: const TextStyle(
                                               fontSize: 15,
@@ -522,12 +538,12 @@ class _Register extends State<Register> {
                                             if (value == null ||
                                                 value.trim().isEmpty) {
                                               return AppLocalizations.of(
-                                                      context)!
+                                                      context)
                                                   .registeremail_ppwd;
                                             }
                                             if (value.trim().length < 8) {
                                               return AppLocalizations.of(
-                                                      context)!
+                                                      context)
                                                   .registeremail_lpwd;
                                             }
                                             return null;
@@ -548,7 +564,7 @@ class _Register extends State<Register> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
+                                          AppLocalizations.of(context)
                                               .registeremail_cpwd,
                                           style: const TextStyle(
                                               fontSize: 15,
@@ -583,12 +599,12 @@ class _Register extends State<Register> {
                                             if (value == null ||
                                                 value.trim().isEmpty) {
                                               return AppLocalizations.of(
-                                                      context)!
+                                                      context)
                                                   .registeremail_pcpwd;
                                             }
                                             if (value != _password) {
                                               return AppLocalizations.of(
-                                                      context)!
+                                                      context)
                                                   .registeremail_ipwd;
                                             }
 
@@ -615,182 +631,6 @@ class _Register extends State<Register> {
                       ),
                     ),
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 0),
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.symmetric(
-                  //         horizontal: 20, vertical: 10),
-                  //     child: Form(
-                  //       key: _formKey1,
-                  //       child: Column(
-                  //         crossAxisAlignment: CrossAxisAlignment.start,
-                  //         children: [
-                  //           const SizedBox(
-                  //             height: 30,
-                  //           ),
-                  //           const Text(
-                  //             "Input your address",
-                  //             style: TextStyle(
-                  //               fontSize: 30,
-                  //               fontWeight: FontWeight.bold,
-                  //             ),
-                  //           ),
-                  //           const SizedBox(
-                  //             height: 40,
-                  //           ),
-                  //           Expanded(
-                  //             child: Padding(
-                  //               padding: EdgeInsets.zero,
-                  //               child: Column(
-                  //                 children: [
-                  //                   Column(
-                  //                     crossAxisAlignment:
-                  //                         CrossAxisAlignment.start,
-                  //                     children: [
-                  //                       const Text(
-                  //                         "Address",
-                  //                         style: TextStyle(
-                  //                             fontSize: 15,
-                  //                             fontWeight: FontWeight.w400,
-                  //                             color: Colors.black87),
-                  //                       ),
-                  //                       const SizedBox(
-                  //                         height: 5,
-                  //                       ),
-                  //                       TextFormField(
-                  //                         decoration: InputDecoration(
-                  //                           contentPadding:
-                  //                               const EdgeInsets.symmetric(
-                  //                                   vertical: 0,
-                  //                                   horizontal: 10),
-                  //                           enabledBorder: OutlineInputBorder(
-                  //                             borderSide: const BorderSide(
-                  //                               color: Colors.grey,
-                  //                             ),
-                  //                             borderRadius:
-                  //                                 BorderRadius.circular(32),
-                  //                           ),
-                  //                           border: const OutlineInputBorder(
-                  //                               borderSide: BorderSide(
-                  //                                   color: Colors.grey)),
-                  //                         ),
-                  //                         controller: _addressController,
-                  //                         validator: (value) {
-                  //                           if (value == null ||
-                  //                               value.trim().isEmpty) {
-                  //                             return 'Please enter your address';
-                  //                           }
-                  //                           return null;
-                  //                         },
-                  //                         onChanged: (value) =>
-                  //                             _address = value,
-                  //                       ),
-                  //                       const SizedBox(
-                  //                         height: 30,
-                  //                       )
-                  //                     ],
-                  //                   ),
-                  //                   Column(
-                  //                     crossAxisAlignment:
-                  //                         CrossAxisAlignment.start,
-                  //                     children: [
-                  //                       const Text(
-                  //                         "City",
-                  //                         style: TextStyle(
-                  //                             fontSize: 15,
-                  //                             fontWeight: FontWeight.w400,
-                  //                             color: Colors.black87),
-                  //                       ),
-                  //                       const SizedBox(
-                  //                         height: 5,
-                  //                       ),
-                  //                       TextFormField(
-                  //                         decoration: InputDecoration(
-                  //                           contentPadding:
-                  //                               const EdgeInsets.symmetric(
-                  //                                   vertical: 0,
-                  //                                   horizontal: 10),
-                  //                           enabledBorder: OutlineInputBorder(
-                  //                             borderSide: const BorderSide(
-                  //                               color: Colors.grey,
-                  //                             ),
-                  //                             borderRadius:
-                  //                                 BorderRadius.circular(32),
-                  //                           ),
-                  //                           border: const OutlineInputBorder(
-                  //                               borderSide: BorderSide(
-                  //                                   color: Colors.grey)),
-                  //                         ),
-                  //                         controller: _cityController,
-                  //                         validator: (value) {
-                  //                           if (value == null ||
-                  //                               value.trim().isEmpty) {
-                  //                             return 'Please enter your city';
-                  //                           }
-                  //                           return null;
-                  //                         },
-                  //                         onChanged: (value) => _city = value,
-                  //                       ),
-                  //                       const SizedBox(
-                  //                         height: 30,
-                  //                       )
-                  //                     ],
-                  //                   ),
-                  //                   Column(
-                  //                     crossAxisAlignment:
-                  //                         CrossAxisAlignment.start,
-                  //                     children: [
-                  //                       const Text(
-                  //                         "Index",
-                  //                         style: TextStyle(
-                  //                             fontSize: 15,
-                  //                             fontWeight: FontWeight.w400,
-                  //                             color: Colors.black87),
-                  //                       ),
-                  //                       const SizedBox(
-                  //                         height: 5,
-                  //                       ),
-                  //                       TextFormField(
-                  //                         decoration: InputDecoration(
-                  //                           contentPadding:
-                  //                               const EdgeInsets.symmetric(
-                  //                                   vertical: 0,
-                  //                                   horizontal: 10),
-                  //                           enabledBorder: OutlineInputBorder(
-                  //                             borderSide: const BorderSide(
-                  //                               color: Colors.grey,
-                  //                             ),
-                  //                             borderRadius:
-                  //                                 BorderRadius.circular(32),
-                  //                           ),
-                  //                           border: const OutlineInputBorder(
-                  //                               borderSide: BorderSide(
-                  //                                   color: Colors.grey)),
-                  //                         ),
-                  //                         controller: _indexController,
-                  //                         validator: (value) {
-                  //                           if (value == null ||
-                  //                               value.trim().isEmpty) {
-                  //                             return 'Please enter your index';
-                  //                           }
-                  //                           return null;
-                  //                         },
-                  //                         onChanged: (value) => _index = value,
-                  //                       ),
-                  //                       const SizedBox(
-                  //                         height: 30,
-                  //                       )
-                  //                     ],
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -837,10 +677,10 @@ class _Register extends State<Register> {
                       ),
                       child: Text(
                         (_currentPage != _numPages - 1)
-                            ? AppLocalizations.of(context)!.registeremail_next
+                            ? AppLocalizations.of(context).registeremail_next
                             : _loadingStatus
                                 ? "Hold on..."
-                                : AppLocalizations.of(context)!
+                                : AppLocalizations.of(context)
                                     .registeremail_register_button,
                         style:
                             const TextStyle(color: Colors.white, fontSize: 14),

@@ -1,36 +1,33 @@
-import 'dart:ui';
 import 'package:http/http.dart' as http;
 import 'package:toast/toast.dart';
-import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppState extends ChangeNotifier {
-  final String _endpoint = 'http://23.21.117.81:5000/';
-  // final String _url = 'http://kotari.online/';
+  final String _endpoint = "http://147.182.244.82:80/api/v1";
 
   final String selectedLang = "selectedLang";
-  late Map _user;
+  Map _user;
   String _token = '';
-  String _sku = '';
-  String _productName = '';
-  late SharedPreferences _sp;
+  SharedPreferences _sp;
+  String _city = "";
+  String _address = "";
+  String _index = "";
+  String _cartTotalPrice = "";
   //get
   get endpoint => _endpoint;
   get user => _user;
   get sp => _sp;
   get token => _token;
-  get sku => _sku;
-  get productName => _productName;
+  get cartTotalPrice => _cartTotalPrice;
+
+  get city => _city;
+  get address => _address;
+  get index => _index;
   // set
   set user(value) {
     _user = value;
-    notifyListeners();
-  }
-
-  set sku(value) {
-    _sku = value;
     notifyListeners();
   }
 
@@ -44,26 +41,24 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set productName(value) {
-    _productName = value;
+  set city(value) {
+    _city = value;
     notifyListeners();
   }
 
-  void getUserFromStorage() {
-    var result = sp.getString('user');
-    var token = sp.getString('token');
+  set address(value) {
+    _address = value;
+    notifyListeners();
+  }
 
-    if (result != null) {
-      var result2 = jsonDecode(result);
-      user = result2;
-    }
+  set index(value) {
+    _index = value;
+    notifyListeners();
+  }
 
-    if (token != null) {
-      var token2 = jsonDecode(token);
-      this.token = token2;
-    }
-
-    //    print('done done');
+  set cartTotalPrice(value) {
+    _cartTotalPrice = value;
+    notifyListeners();
   }
 
   void notifyToast({context, message}) {
@@ -92,16 +87,9 @@ class AppState extends ChangeNotifier {
   }
 
   Future<http.Response> post(url, payload) async {
-    var response = await http.post(endpoint + url, body: payload, headers: {
-      "accept": "application/json",
-    });
-
-    return response;
-  }
-
-  Future<http.Response> postURL(url, payload) async {
     var response = await http.post(url, body: payload, headers: {
-      "accept": "application/json",
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Access-Control-Allow-Origin': '*'
     });
 
     return response;
@@ -115,21 +103,8 @@ class AppState extends ChangeNotifier {
     return response;
   }
 
-  Future<http.Response> postAuthWithContentType(url, payload) async {
-    var response = await http.post(url, body: payload, headers: {
-      'Content-type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer ' + token
-    });
-    return response;
-  }
-
   Future<http.Response> get(url, {context}) async {
     var response = await http.get(url, headers: {"accept": "application/json"});
-    if (response.statusCode == 401 && context != null) {
-      // Navigator.push(context,
-      //     new MaterialPageRoute(builder: (context) => new LoginPage()));
-    }
-
     return response;
   }
 

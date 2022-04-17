@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 /// [selectedIndex] is required and must not be null.
 class BottomNavyBar extends StatelessWidget {
   BottomNavyBar({
-    Key? key,
+    Key key,
     this.selectedIndex = 0,
     this.showElevation = true,
     this.iconSize = 24,
@@ -19,8 +19,8 @@ class BottomNavyBar extends StatelessWidget {
     this.containerHeight = 56,
     this.animationDuration = const Duration(milliseconds: 270),
     this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
-    required this.items,
-    required this.onItemSelected,
+    this.items,
+    this.onItemSelected,
     this.curve = Curves.linear,
   })  : assert(items.length >= 2 && items.length <= 5),
         super(key: key);
@@ -34,7 +34,7 @@ class BottomNavyBar extends StatelessWidget {
 
   /// The background color of the navigation bar. It defaults to
   /// [Theme.bottomAppBarColor] if not provided.
-  final Color? backgroundColor;
+  final Color backgroundColor;
 
   /// Whether this navigation bar should show a elevation. Defaults to true.
   final bool showElevation;
@@ -121,13 +121,13 @@ class _ItemWidget extends StatelessWidget {
   final Curve curve;
 
   const _ItemWidget({
-    Key? key,
-    required this.item,
-    required this.isSelected,
-    required this.backgroundColor,
-    required this.animationDuration,
-    required this.itemCornerRadius,
-    required this.iconSize,
+    Key key,
+    this.item,
+    this.isSelected,
+    this.backgroundColor,
+    this.animationDuration,
+    this.itemCornerRadius,
+    this.iconSize,
     this.curve = Curves.linear,
   }) : super(key: key);
 
@@ -195,8 +195,8 @@ class _ItemWidget extends StatelessWidget {
 /// The [BottomNavyBar.items] definition.
 class BottomNavyBarItem {
   BottomNavyBarItem({
-    required this.icon,
-    required this.title,
+    this.icon,
+    this.title,
     this.activeColor = Colors.blue,
     this.activeBackColor = Colors.blue,
     this.textAlign,
@@ -214,12 +214,12 @@ class BottomNavyBarItem {
   final Color activeColor;
 
   /// The [icon] and [title] color defined when this item is not selected.
-  final Color? inactiveColor;
+  final Color inactiveColor;
 
-  final Color? activeBackColor;
+  final Color activeBackColor;
 
   /// The alignment for the [title].
   ///
   /// This will take effect only if [title] it a [Text] widget.
-  final TextAlign? textAlign;
+  final TextAlign textAlign;
 }

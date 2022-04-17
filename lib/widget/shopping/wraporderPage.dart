@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Wraporder extends StatefulWidget {
-  const Wraporder({Key? key}) : super(key: key);
+  const Wraporder({Key key}) : super(key: key);
 
   @override
   State<Wraporder> createState() => _Wraporder();
@@ -53,7 +53,7 @@ class _Wraporder extends State<Wraporder> {
                 Container(
                   padding: EdgeInsets.only(top: 10, left: width * 0.05),
                   child: Text(
-                    AppLocalizations.of(context)!.wraporderpage_cart,
+                    AppLocalizations.of(context).wraporderpage_cart,
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class _Wraporder extends State<Wraporder> {
                       left: width * 0.05,
                       bottom: height * 0.05),
                   child: Text(
-                    AppLocalizations.of(context)!.wraporderpage_text1,
+                    AppLocalizations.of(context).wraporderpage_text1,
                     style: const TextStyle(
                       color: Color(0xff999999),
                       fontWeight: FontWeight.normal,
@@ -115,7 +115,7 @@ class _Wraporder extends State<Wraporder> {
                                       padding: EdgeInsets.fromLTRB(
                                           width * 0.05, height * 0.03, 0, 0),
                                       child: Text(
-                                        AppLocalizations.of(context)!
+                                        AppLocalizations.of(context)
                                             .wraporderpage_rocker,
                                         style: const TextStyle(
                                           fontFamily: 'Avenir Next',
@@ -189,7 +189,7 @@ class _Wraporder extends State<Wraporder> {
                                       padding: EdgeInsets.fromLTRB(
                                           width * 0.05, height * 0.03, 0, 0),
                                       child: Text(
-                                        AppLocalizations.of(context)!
+                                        AppLocalizations.of(context)
                                             .wraporderpage_paper,
                                         style: const TextStyle(
                                           fontFamily: 'Avenir Next',
@@ -237,7 +237,7 @@ class _Wraporder extends State<Wraporder> {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(width * 0.05, 8, 0, 0),
                 child: Text(
-                  AppLocalizations.of(context)!.wraporderpage_coupon,
+                  AppLocalizations.of(context).wraporderpage_coupon,
                   style: const TextStyle(
                     fontFamily: 'Avenir Next',
                     fontSize: 14,
@@ -252,7 +252,7 @@ class _Wraporder extends State<Wraporder> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(width * 0.05, 8, 0, 0),
                   child: Text(
-                    AppLocalizations.of(context)!.wraporderpage_subtotal,
+                    AppLocalizations.of(context).wraporderpage_subtotal,
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 14,
@@ -297,7 +297,7 @@ class _Wraporder extends State<Wraporder> {
                     ),
                   ),
                   child: Text(
-                    AppLocalizations.of(context)!.wraporderpage_checkout,
+                    AppLocalizations.of(context).wraporderpage_checkout,
                     style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),

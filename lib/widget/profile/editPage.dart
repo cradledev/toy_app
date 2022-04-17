@@ -8,7 +8,7 @@ import 'package:toy_app/service/user_auth.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Edit extends StatefulWidget {
-  const Edit({Key? key}) : super(key: key);
+  const Edit({Key key}) : super(key: key);
 
   @override
   State<Edit> createState() => _Edit();
@@ -21,7 +21,7 @@ class _Edit extends State<Edit> {
   var savedBio = TextEditingController();
   final picker = ImagePicker();
   final userService = UserService();
-  File? _image;
+  File _image;
   String imagePath = '';
   @override
   void initState() {
@@ -40,14 +40,14 @@ class _Edit extends State<Edit> {
   }
 
   void submitInfo() async {
-    final bool? isValid = _formKey.currentState?.validate();
+    final bool isValid = _formKey.currentState?.validate();
     if (isValid == true) {
       List<String> list = [];
       list.add(savedFirstName.text);
       list.add(savedLastName.text);
       list.add(savedBio.text);
-      if (_image != null) {
-        list.add(_image!.path);
+      if (_image = null) {
+        list.add(_image.path);
       } else {
         list.add(imagePath);
       }
@@ -65,9 +65,9 @@ class _Edit extends State<Edit> {
     var height = MediaQuery.of(context).size.height;
 
     Future getImage() async {
-      final pickedFile = await picker.getImage(source: ImageSource.gallery);
+      var pickedFile = await picker.getImage(source: ImageSource.gallery);
       setState(() {
-        if (pickedFile != null) {
+        if (pickedFile = null) {
           _image = File(pickedFile.path);
           // print('hahaha');
         } else {
@@ -106,7 +106,7 @@ class _Edit extends State<Edit> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
                     child: Text(
-                      AppLocalizations.of(context)!.editpage_text1,
+                      AppLocalizations.of(context).editpage_text1,
                       style: const TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
@@ -121,7 +121,7 @@ class _Edit extends State<Edit> {
                 child: Row(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.editpage_text2,
+                      AppLocalizations.of(context).editpage_text2,
                       style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xff999999),
@@ -158,7 +158,7 @@ class _Edit extends State<Edit> {
                                   fit: BoxFit.fill,
                                 ))
                           : Image.file(
-                              _image!,
+                              _image,
                               fit: BoxFit.fill,
                             ),
                     ),
@@ -187,7 +187,7 @@ class _Edit extends State<Edit> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
+                                          AppLocalizations.of(context)
                                               .editpage_firstname,
                                           style: const TextStyle(
                                               fontSize: 15,
@@ -219,7 +219,7 @@ class _Edit extends State<Edit> {
                                             if (value == null ||
                                                 value.trim().isEmpty) {
                                               return AppLocalizations.of(
-                                                      context)!
+                                                      context)
                                                   .editpage_pfirstname;
                                             }
                                             // Return null if the entered email is valid
@@ -236,7 +236,7 @@ class _Edit extends State<Edit> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
+                                          AppLocalizations.of(context)
                                               .editpage_lastname,
                                           style: const TextStyle(
                                               fontSize: 15,
@@ -268,7 +268,7 @@ class _Edit extends State<Edit> {
                                             if (value == null ||
                                                 value.trim().isEmpty) {
                                               return AppLocalizations.of(
-                                                      context)!
+                                                      context)
                                                   .editpage_plastname;
                                             }
                                             // Return null if the entered email is valid
@@ -285,7 +285,7 @@ class _Edit extends State<Edit> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
+                                          AppLocalizations.of(context)
                                               .editpage_bio,
                                           style: const TextStyle(
                                               fontSize: 15,
@@ -343,7 +343,7 @@ class _Edit extends State<Edit> {
                             ),
                           ),
                           child: Text(
-                            AppLocalizations.of(context)!.editpage_save,
+                            AppLocalizations.of(context).editpage_save,
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 14),
                           ),

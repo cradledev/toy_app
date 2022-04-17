@@ -1,25 +1,31 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:toy_app/service/user_auth.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:toy_app/provider/index.dart';
+import 'package:provider/provider.dart';
+
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({Key key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenPage();
 }
 
 class _LoginScreenPage extends State<LoginScreen> {
+  // app state
+  AppState _appState;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _useremail = TextEditingController();
   final TextEditingController _userpwd = TextEditingController();
   String _userEmail = '';
   String _userPwd = '';
 
+  Map userInfo;
   // indicator status
   bool _loadingStatus = false;
-  late UserService _userService;
   @override
   void initState() {
     super.initState();
@@ -27,23 +33,78 @@ class _LoginScreenPage extends State<LoginScreen> {
   }
 
   void _init() {
-    _userService = UserService();
     _loadingStatus = false;
+    _appState = Provider.of<AppState>(context, listen: false);
   }
 
   // final TextEditingController _passwordController = TextEditingController();
-  void submitLogin() async {
-    final bool? isValid = _formKey.currentState?.validate();
+  void submitLogin() {
+    final bool isValid = _formKey.currentState.validate();
     if (isValid == true) {
       setState(() {
         _loadingStatus = true;
       });
-      Future.delayed(const Duration(seconds: 4), () {
+      userInfo = {'email': _userEmail, 'password': _userPwd};
+      print(userInfo);
+      _appState
+          .post(Uri.parse("${_appState.endpoint}/auth/login"),
+              jsonEncode(userInfo))
+          .then((res) {
+        var body = jsonDecode(res.body);
+        print(body);
+        if (body['ok']) {
+          setState(() {
+            _loadingStatus = false;
+          });
+          _appState.user = body['user'];
+          _appState.token = body['token'];
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          setState(() {
+            _loadingStatus = false;
+          });
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(AppLocalizations.of(context).login_text1),
+                content: Text(AppLocalizations.of(context).login_text2),
+                actions: [
+                  ElevatedButton(
+                    child: Text(AppLocalizations.of(context).login_ok),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+        }
+      }).catchError((error) {
+        print(error);
         setState(() {
           _loadingStatus = false;
         });
-        Navigator.pushReplacementNamed(context, '/home');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(AppLocalizations.of(context).login_text1),
+              content: Text(AppLocalizations.of(context).login_text2),
+              actions: [
+                ElevatedButton(
+                  child: Text(AppLocalizations.of(context).login_ok),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
       });
+
       // String response = await _userService.login(_userEmail, _userPwd);
       // if (response == 'success') {
       //   setState(() {
@@ -58,11 +119,11 @@ class _LoginScreenPage extends State<LoginScreen> {
       //     context: context,
       //     builder: (BuildContext context) {
       //       return AlertDialog(
-      //         title: const Text(AppLocalizations.of(context)!.login_text1),
-      //         content: const Text(AppLocalizations.of(context)!.login_text2),
+      //         title: const Text(AppLocalizations.of(context).login_text1),
+      //         content: const Text(AppLocalizations.of(context).login_text2),
       //         actions: [
       //           ElevatedButton(
-      //             child: const Text(AppLocalizations.of(context)!.login_ok),
+      //             child: const Text(AppLocalizations.of(context).login_ok),
       //             onPressed: () {
       //               Navigator.of(context).pop();
       //             },
@@ -110,7 +171,7 @@ class _LoginScreenPage extends State<LoginScreen> {
                         height: 30,
                       ),
                       Text(
-                        AppLocalizations.of(context)!.login_login,
+                        AppLocalizations.of(context).login_login,
                         style: const TextStyle(
                           fontSize: 30,
                           fontFamily: 'Avenir Next',
@@ -121,7 +182,7 @@ class _LoginScreenPage extends State<LoginScreen> {
                         height: 20,
                       ),
                       Text(
-                        AppLocalizations.of(context)!.login_plogin,
+                        AppLocalizations.of(context).login_plogin,
                         style: const TextStyle(
                           fontSize: 15,
                           color: Color(0xff999999),
@@ -139,7 +200,7 @@ class _LoginScreenPage extends State<LoginScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.login_email,
+                                    AppLocalizations.of(context).login_email,
                                     style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w400,
@@ -167,13 +228,13 @@ class _LoginScreenPage extends State<LoginScreen> {
                                     validator: (value) {
                                       if (value == null ||
                                           value.trim().isEmpty) {
-                                        return AppLocalizations.of(context)!
+                                        return AppLocalizations.of(context)
                                             .login_pmail;
                                       }
                                       // Check if the entered email has the right format
                                       if (!RegExp(r'\S+@\S+\.\S+')
                                           .hasMatch(value)) {
-                                        return AppLocalizations.of(context)!
+                                        return AppLocalizations.of(context)
                                             .login_pvmail;
                                       }
                                       // Return null if the entered email is valid
@@ -195,7 +256,7 @@ class _LoginScreenPage extends State<LoginScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.login_pwd,
+                                    AppLocalizations.of(context).login_pwd,
                                     style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w400,
@@ -224,11 +285,11 @@ class _LoginScreenPage extends State<LoginScreen> {
                                     validator: (value) {
                                       if (value == null ||
                                           value.trim().isEmpty) {
-                                        return AppLocalizations.of(context)!
+                                        return AppLocalizations.of(context)
                                             .login_rpwd;
                                       }
                                       if (value.trim().length < 8) {
-                                        return AppLocalizations.of(context)!
+                                        return AppLocalizations.of(context)
                                             .login_vpwd;
                                       }
                                       // Return null if the entered password is valid
@@ -251,10 +312,10 @@ class _LoginScreenPage extends State<LoginScreen> {
                                     padding: EdgeInsets.zero,
                                     child: Row(
                                       children: [
-                                        Text(AppLocalizations.of(context)!
+                                        Text(AppLocalizations.of(context)
                                             .login_fpwd),
                                         Text(
-                                          AppLocalizations.of(context)!
+                                          AppLocalizations.of(context)
                                               .login_tap,
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w600,
@@ -306,7 +367,7 @@ class _LoginScreenPage extends State<LoginScreen> {
                   child: Text(
                     _loadingStatus
                         ? "Hold on..."
-                        : AppLocalizations.of(context)!.login_login,
+                        : AppLocalizations.of(context).login_login,
                     style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),

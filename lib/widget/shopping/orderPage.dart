@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Order extends StatefulWidget {
-  const Order({Key? key}) : super(key: key);
+  const Order({Key key}) : super(key: key);
 
   @override
   State<Order> createState() => _Order();
@@ -55,7 +55,7 @@ class _Order extends State<Order> {
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Text(
-              AppLocalizations.of(context)!.orderpage_orderp,
+              AppLocalizations.of(context).orderpage_orderp,
               style: const TextStyle(
                 fontSize: 32,
                 fontFamily: "Avenir Next",
@@ -67,7 +67,7 @@ class _Order extends State<Order> {
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
             child: Text(
-              AppLocalizations.of(context)!.orderpage_text1,
+              AppLocalizations.of(context).orderpage_text1,
               style: const TextStyle(
                 fontSize: 14,
                 fontFamily: "Avenir Next",
@@ -78,7 +78,7 @@ class _Order extends State<Order> {
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Text(
-              AppLocalizations.of(context)!.orderpage_text2,
+              AppLocalizations.of(context).orderpage_text2,
               style: const TextStyle(
                 fontSize: 14,
                 fontFamily: "Avenir Next",
@@ -106,7 +106,7 @@ class _Order extends State<Order> {
                 ),
               ),
               child: Text(
-                AppLocalizations.of(context)!.orderpage_okay,
+                AppLocalizations.of(context).orderpage_okay,
                 style: const TextStyle(color: Color(0xff283488), fontSize: 14),
               ),
             ),

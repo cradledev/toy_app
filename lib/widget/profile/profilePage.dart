@@ -6,7 +6,7 @@ import 'package:toy_app/components/components.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({Key key}) : super(key: key);
 
   @override
   State<Profile> createState() => _Profile();
@@ -136,7 +136,7 @@ class _Profile extends State<Profile> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context)!.profilepage_info,
+                    AppLocalizations.of(context).profilepage_info,
                     style: const TextStyle(
                       fontSize: 18,
                     ),
@@ -165,7 +165,7 @@ class _Profile extends State<Profile> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context)!.profilepage_bank,
+                    AppLocalizations.of(context).profilepage_bank,
                     style: const TextStyle(
                       fontSize: 18,
                     ),
@@ -194,7 +194,7 @@ class _Profile extends State<Profile> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context)!.profilepage_address,
+                    AppLocalizations.of(context).profilepage_address,
                     style: const TextStyle(
                       fontSize: 18,
                     ),
@@ -223,7 +223,7 @@ class _Profile extends State<Profile> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context)!.profilepage_history,
+                    AppLocalizations.of(context).profilepage_history,
                     style: const TextStyle(
                       fontSize: 18,
                     ),
@@ -252,7 +252,7 @@ class _Profile extends State<Profile> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context)!.profilepage_setting,
+                    AppLocalizations.of(context).profilepage_setting,
                     style: const TextStyle(
                       fontSize: 18,
                     ),

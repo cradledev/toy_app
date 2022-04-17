@@ -1,6 +1,6 @@
 class Manumapping {
   final int productId;
-  Manumapping({required this.productId});
+  Manumapping({this.productId});
 
   factory Manumapping.fromJson(Map<String, dynamic> json) {
     return Manumapping(

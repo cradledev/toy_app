@@ -2,8 +2,8 @@ class Manufacturer {
   final int id;
   final String name;
   Manufacturer({
-    required this.id,
-    required this.name,
+    this.id,
+    this.name,
   });
 
   factory Manufacturer.fromJson(Map<String, dynamic> json) {

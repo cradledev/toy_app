@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
-import 'package:toy_app/model/product_model.dart';
 import 'package:toy_app/service/product_repo.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:toy_app/model/product.dart';
+
+import 'package:provider/provider.dart';
+import 'package:toy_app/provider/index.dart';
+
 class DetailPageTest extends StatefulWidget {
-  const DetailPageTest({Key? key}) : super(key: key);
+  const DetailPageTest({Key key}) : super(key: key);
   static const routeName = '/test';
 
   @override
@@ -14,21 +18,38 @@ class DetailPageTest extends StatefulWidget {
 }
 
 class _DetailPageTest extends State<DetailPageTest> {
+  // app state import
+  // provider setting
+  AppState _appState;
+
   int _quantity = 1;
   final ProductService _productService = ProductService();
   var quantity = TextEditingController();
-  void submitFavourite(int id) async {
-    String response = await _productService.setFavouriteItem(id);
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  void _init() {
+    // app state
+    _appState = Provider.of<AppState>(context, listen: false);
+  }
+
+  void submitFavourite(id) async {
+    String response =
+        await _productService.setFavouriteItem(_appState.user['_id'], id);
     if (response == 'success') {
       showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text(AppLocalizations.of(context)!.detailpage_success),
-              content: Text(AppLocalizations.of(context)!.detailpage_text1),
+              title: Text(AppLocalizations.of(context).detailpage_success),
+              content: Text(AppLocalizations.of(context).detailpage_text1),
               actions: [
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context)!.detailpage_ok),
+                  child: Text(AppLocalizations.of(context).detailpage_ok),
                   onPressed: () {
                     Navigator.pushNamed(context, '/saved');
                   },
@@ -41,11 +62,11 @@ class _DetailPageTest extends State<DetailPageTest> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text(AppLocalizations.of(context)!.detailpage_failed),
-              content: Text(AppLocalizations.of(context)!.detailpage_text2),
+              title: Text(AppLocalizations.of(context).detailpage_failed),
+              content: Text(AppLocalizations.of(context).detailpage_text2),
               actions: [
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context)!.detailpage_ok),
+                  child: Text(AppLocalizations.of(context).detailpage_ok),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -57,20 +78,22 @@ class _DetailPageTest extends State<DetailPageTest> {
     // Future<String> response = _productService.setFavourite(id);
   }
 
-  void submitCartItem(int productId) async {
+  void submitCartItem(productId, price) async {
     _quantity = int.parse(quantity.text);
+    // print(_appState.user['_id']);
     if (_quantity != 0) {
-      String response = await _productService.addCartItem(productId, _quantity);
+      String response = await _productService.addCartItem(
+          productId, _quantity, price, _appState.user['_id']);
       if (response == 'success') {
         showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text(AppLocalizations.of(context)!.detailpage_success),
-                content: Text(AppLocalizations.of(context)!.detailpage_text1),
+                title: Text(AppLocalizations.of(context).detailpage_success),
+                content: Text(AppLocalizations.of(context).detailpage_text1),
                 actions: [
                   ElevatedButton(
-                    child: Text(AppLocalizations.of(context)!.detailpage_ok),
+                    child: Text(AppLocalizations.of(context).detailpage_ok),
                     onPressed: () {
                       Navigator.pushNamed(context, '/cart');
                     },
@@ -83,11 +106,11 @@ class _DetailPageTest extends State<DetailPageTest> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text(AppLocalizations.of(context)!.detailpage_failed),
-                content: Text(AppLocalizations.of(context)!.detailpage_text2),
+                title: Text(AppLocalizations.of(context).detailpage_failed),
+                content: Text(AppLocalizations.of(context).detailpage_text2),
                 actions: [
                   ElevatedButton(
-                    child: Text(AppLocalizations.of(context)!.detailpage_ok),
+                    child: Text(AppLocalizations.of(context).detailpage_ok),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -101,11 +124,11 @@ class _DetailPageTest extends State<DetailPageTest> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text(AppLocalizations.of(context)!.detailpage_alert),
-              content: Text(AppLocalizations.of(context)!.detailpage_text4),
+              title: Text(AppLocalizations.of(context).detailpage_alert),
+              content: Text(AppLocalizations.of(context).detailpage_text4),
               actions: [
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context)!.detailpage_ok),
+                  child: Text(AppLocalizations.of(context).detailpage_ok),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -116,19 +139,28 @@ class _DetailPageTest extends State<DetailPageTest> {
     }
   }
 
+  void getCartByProductId(String id, String productId) async {
+    int response = await _productService.getCartByProductId(id, productId);
+    if (response > 0) {
+      quantity.text = response.toString();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
-    final args = ModalRoute.of(context)!.settings.arguments as Product;
-    String url = args.images[0].src;
-    if (args.images.length > 1) url = args.images[1].src;
+    final args = ModalRoute.of(context).settings.arguments as ProductModel;
+    String url = "${_appState.endpoint}/products/image/${args.image}";
+    getCartByProductId(_appState.user['_id'], args.id);
     final avatarContent = Stack(
       children: <Widget>[
         SizedBox(
           height: mq.height,
         ),
-        SizedBox(
+        Container(
           width: mq.width,
+          padding: EdgeInsets.zero,
+          color: const Color.fromARGB(255, 233, 232, 232),
           child: Image.network(
             url,
             fit: BoxFit.fitWidth,
@@ -190,7 +222,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      args.shortdescription,
+                      args.category ?? "",
                       style: const TextStyle(
                         fontFamily: 'Avenir Next',
                         fontSize: 14,
@@ -205,7 +237,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      AppLocalizations.of(context)!.detailpage_quantity,
+                      AppLocalizations.of(context).detailpage_quantity,
                       style: const TextStyle(
                         fontFamily: "Avenir Next",
                         fontSize: 14,
@@ -222,7 +254,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                     width: mq.width * 0.3,
                     child: NumberInputPrefabbed.roundedButtons(
                       controller: quantity,
-                      incDecBgColor: const Color(0xff808080),
+                      incDecBgColor: const Color.fromARGB(255, 223, 240, 253),
                       buttonArrangement: ButtonArrangement.incRightDecLeft,
                       incIcon: Icons.add,
                       decIcon: Icons.remove,
@@ -231,7 +263,8 @@ class _DetailPageTest extends State<DetailPageTest> {
                       incIconSize: 35,
                       decIconSize: 35,
                       min: 1,
-                      initialValue: 0,
+                      max: args.stock,
+                      initialValue: _quantity,
                       numberFieldDecoration: const InputDecoration(
                         border: InputBorder.none,
                       ),
@@ -244,7 +277,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      AppLocalizations.of(context)!.detailpage_description,
+                      AppLocalizations.of(context).detailpage_description,
                       style: const TextStyle(
                         fontFamily: "Avenir Next",
                         fontSize: 14,
@@ -260,7 +293,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      args.fulldescription,
+                      args.description ?? "",
                       style: const TextStyle(
                         fontFamily: "Avenir Next",
                         fontSize: 14,
@@ -281,7 +314,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                         child: ElevatedButton(
                           onPressed: () {
                             // Navigator.pushNamed(context, '/home');
-                            submitCartItem(args.id);
+                            submitCartItem(args.id, args.price);
                           },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
@@ -296,7 +329,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                             ),
                           ),
                           child: Text(
-                            AppLocalizations.of(context)!.detailpage_acart,
+                            AppLocalizations.of(context).detailpage_acart,
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 14),
                           ),
@@ -327,15 +360,26 @@ class _DetailPageTest extends State<DetailPageTest> {
           right: mq.width * 0.08,
           child: Row(
             children: [
-              const Icon(
-                Icons.star,
-                size: 30,
-                color: Color(0xffF8C327),
+              const Text(
+                // args.approvedratingsum.toString(),
+                "stock",
+                style: TextStyle(
+                  fontFamily: 'Avenir Next',
+                  fontSize: 16,
+                  color: Color(0xff1d1d1d),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
+              // Icon(
+              //   Icons.star,
+              //   size: 30,
+              //   color: Color(0xffF8C327),
+              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
                 child: Text(
-                  args.approvedratingsum.toString(),
+                  // args.approvedratingsum.toString(),
+                  args.stock.toString(),
                   style: const TextStyle(
                     fontFamily: 'Avenir Next',
                     fontSize: 16,
@@ -352,10 +396,12 @@ class _DetailPageTest extends State<DetailPageTest> {
 
     return Scaffold(
       // appBar: AppBar(),
-      body: Column(
-        children: <Widget>[
-          Container(child: avatarContent),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(child: avatarContent),
+          ],
+        ),
       ),
     );
   }

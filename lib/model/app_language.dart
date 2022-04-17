@@ -12,8 +12,7 @@ class AppLanguage {
   }
 
   @override
-  bool operator ==(dynamic other) =>
-      other != null && other is AppLanguage && name == other.name;
+  bool operator ==(dynamic other) => other is AppLanguage && name == other.name;
 
   @override
   int get hashCode => super.hashCode;

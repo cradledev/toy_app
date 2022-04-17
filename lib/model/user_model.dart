@@ -10,16 +10,16 @@ class UserModel {
   final bool active;
   final String pass;
   UserModel({
-    required this.id,
-    required this.userName,
-    required this.userEmail,
-    required this.firstName,
-    required this.lastName,
-    required this.bio,
-    required this.path,
-    required this.customerId,
-    required this.active,
-    required this.pass,
+    this.id,
+    this.userName,
+    this.userEmail,
+    this.firstName,
+    this.lastName,
+    this.bio,
+    this.path,
+    this.customerId,
+    this.active,
+    this.pass,
   });
   factory UserModel.fromJson(Map<String, dynamic> json) {
     String _username = json['username'] ?? "";

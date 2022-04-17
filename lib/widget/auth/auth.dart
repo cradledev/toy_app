@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Auth extends StatefulWidget {
-  const Auth({Key? key}) : super(key: key);
+  const Auth({Key key}) : super(key: key);
 
   @override
   State<Auth> createState() => _Auth();
@@ -35,7 +35,7 @@ class _Auth extends State<Auth> {
                   height: height * 0.15,
                 ),
                 Text(
-                  AppLocalizations.of(context)!.auth_welcome,
+                  AppLocalizations.of(context).auth_welcome,
                   style: const TextStyle(
                     fontFamily: 'Avenir Next',
                     fontSize: 32,
@@ -48,7 +48,7 @@ class _Auth extends State<Auth> {
                   height: height * 0.01,
                 ),
                 Text(
-                  AppLocalizations.of(context)!.auth_description1,
+                  AppLocalizations.of(context).auth_description1,
                   style: const TextStyle(
                     fontFamily: 'Avenir Next',
                     fontSize: 14,
@@ -58,7 +58,7 @@ class _Auth extends State<Auth> {
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  AppLocalizations.of(context)!.auth_description2,
+                  AppLocalizations.of(context).auth_description2,
                   style: const TextStyle(
                     fontFamily: 'Avenir Next',
                     fontSize: 14,
@@ -90,7 +90,7 @@ class _Auth extends State<Auth> {
                 ),
               ),
               child: Text(
-                AppLocalizations.of(context)!.auth_login,
+                AppLocalizations.of(context).auth_login,
                 style: const TextStyle(color: Color(0xff283488), fontSize: 14),
               ),
             ),
@@ -116,7 +116,7 @@ class _Auth extends State<Auth> {
                 ),
               ),
               child: Text(
-                AppLocalizations.of(context)!.auth_signup,
+                AppLocalizations.of(context).auth_signup,
                 style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),

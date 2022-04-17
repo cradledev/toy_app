@@ -3,29 +3,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:toy_app/components/components.dart';
 
+import 'package:provider/provider.dart';
+import 'package:toy_app/provider/index.dart';
+
 class Delivery extends StatefulWidget {
-  const Delivery({Key? key}) : super(key: key);
+  const Delivery({Key key}) : super(key: key);
 
   @override
   State<Delivery> createState() => _DeliveryPage();
 }
 
 class _DeliveryPage extends State<Delivery> {
+  // provider setting
+  AppState _appState;
+
   final _formKey = GlobalKey<FormState>();
   String _address = '';
   String _city = '';
   String _index = '';
 
   @override
+  void initState() {
+    super.initState();
+    _appState = Provider.of<AppState>(context, listen: false);
+  }
+
+  @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     void submitDelivery() async {
-      final bool? isValid = _formKey.currentState?.validate();
+      final bool isValid = _formKey.currentState?.validate();
       if (isValid == true) {
         print(_address);
         print(_city);
         print(_index);
+        _appState.address = _address;
+        _appState.city = _city;
+        _appState.index = _index;
         Navigator.pushNamed(context, '/payment');
       }
     }
@@ -61,7 +76,7 @@ class _DeliveryPage extends State<Delivery> {
                                 padding:
                                     const EdgeInsets.fromLTRB(20, 10, 20, 0),
                                 child: Text(
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context)
                                       .deliverypage_daddress,
                                   style: const TextStyle(
                                     fontSize: 30,
@@ -76,7 +91,7 @@ class _DeliveryPage extends State<Delivery> {
                             child: Row(
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context)
                                       .deliverypage_aaddress,
                                   style: const TextStyle(
                                     fontSize: 15,
@@ -99,7 +114,7 @@ class _DeliveryPage extends State<Delivery> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context)
                                       .deliverypage_address,
                                   style: const TextStyle(
                                       fontSize: 15,
@@ -125,7 +140,7 @@ class _DeliveryPage extends State<Delivery> {
                                   ),
                                   validator: (value) {
                                     if (value == null || value.trim().isEmpty) {
-                                      return AppLocalizations.of(context)!
+                                      return AppLocalizations.of(context)
                                           .deliverypage_paddress;
                                     }
                                     return null;
@@ -141,7 +156,7 @@ class _DeliveryPage extends State<Delivery> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context)
                                       .deliverypage_city,
                                   style: const TextStyle(
                                       fontSize: 15,
@@ -167,7 +182,7 @@ class _DeliveryPage extends State<Delivery> {
                                   ),
                                   validator: (value) {
                                     if (value == null || value.trim().isEmpty) {
-                                      return AppLocalizations.of(context)!
+                                      return AppLocalizations.of(context)
                                           .deliverypage_pcity;
                                     }
                                     return null;
@@ -183,7 +198,7 @@ class _DeliveryPage extends State<Delivery> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context)
                                       .deliverypage_index_title,
                                   style: const TextStyle(
                                       fontSize: 15,
@@ -209,7 +224,7 @@ class _DeliveryPage extends State<Delivery> {
                                   ),
                                   validator: (value) {
                                     if (value == null || value.trim().isEmpty) {
-                                      return AppLocalizations.of(context)!
+                                      return AppLocalizations.of(context)
                                           .deliverypage_index;
                                     }
                                     return null;
@@ -243,7 +258,7 @@ class _DeliveryPage extends State<Delivery> {
                     ),
                   ),
                   child: Text(
-                    AppLocalizations.of(context)!.deliverypage_next,
+                    AppLocalizations.of(context).deliverypage_next,
                     style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),

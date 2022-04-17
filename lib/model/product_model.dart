@@ -9,13 +9,13 @@ class Product {
   final int approvedratingsum;
   final List<CustomImage> images;
   Product({
-    required this.id,
-    required this.name,
-    required this.shortdescription,
-    required this.fulldescription,
-    required this.price,
-    required this.approvedratingsum,
-    required this.images,
+    this.id,
+    this.name,
+    this.shortdescription,
+    this.fulldescription,
+    this.price,
+    this.approvedratingsum,
+    this.images,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {

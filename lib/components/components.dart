@@ -11,12 +11,12 @@ import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
 class RoundedButton extends StatelessWidget {
-  final String? text;
-  final Function()? press;
-  final Color? color, textColor;
+  final String text;
+  final Function() press;
+  final Color color, textColor;
 
   const RoundedButton(
-      {Key? key, this.text, this.press, this.color, this.textColor})
+      {Key key, this.text, this.press, this.color, this.textColor})
       : super(key: key);
 
   @override
@@ -38,7 +38,7 @@ class RoundedButton extends StatelessWidget {
         ),
         onPressed: press,
         child: Text(
-          text!,
+          text,
           style: TextStyle(color: textColor),
         ),
       ),
@@ -49,13 +49,13 @@ class RoundedButton extends StatelessWidget {
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   final Size preferredSize;
-  final Widget? title;
-  final Function()? leadingAction;
-  final Widget? leadingIcon;
-  final Color? backgroundColor;
-  final Color? leadingIconColor;
+  final Widget title;
+  final Function() leadingAction;
+  final Widget leadingIcon;
+  final Color backgroundColor;
+  final Color leadingIconColor;
   const CustomAppBar(
-      {Key? key,
+      {Key key,
       this.title,
       this.leadingAction,
       this.leadingIcon,
@@ -110,8 +110,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 class CustomBottomNavbar extends StatelessWidget {
   final BuildContext context;
   final int selectedIndex;
-  const CustomBottomNavbar(
-      {Key? key, required this.context, required this.selectedIndex})
+  const CustomBottomNavbar({Key key, this.context, this.selectedIndex})
       : super(key: key);
 
   void onTabTapped(int index) {
@@ -143,7 +142,7 @@ class CustomBottomNavbar extends StatelessWidget {
       items: <BottomNavyBarItem>[
         BottomNavyBarItem(
           icon: const Icon(Icons.home),
-          title: Text(AppLocalizations.of(context)!.babytoyspage_home),
+          title: Text(AppLocalizations.of(context).babytoyspage_home),
           activeBackColor: const Color(0xFF283488),
           activeColor: Colors.white,
           textAlign: TextAlign.center,
@@ -151,7 +150,7 @@ class CustomBottomNavbar extends StatelessWidget {
         ),
         BottomNavyBarItem(
           icon: const Icon(Icons.apps),
-          title: Text(AppLocalizations.of(context)!.babytoyspage_categories),
+          title: Text(AppLocalizations.of(context).babytoyspage_categories),
           activeBackColor: const Color(0xFF283488),
           activeColor: Colors.white,
           textAlign: TextAlign.center,
@@ -159,7 +158,7 @@ class CustomBottomNavbar extends StatelessWidget {
         ),
         BottomNavyBarItem(
           icon: const Icon(Icons.shopping_cart),
-          title: Text(AppLocalizations.of(context)!.babytoyspage_scart),
+          title: Text(AppLocalizations.of(context).babytoyspage_scart),
           activeBackColor: const Color(0xFF283488),
           activeColor: Colors.white,
           textAlign: TextAlign.center,
@@ -167,7 +166,7 @@ class CustomBottomNavbar extends StatelessWidget {
         ),
         BottomNavyBarItem(
           icon: const Icon(Icons.favorite_outline),
-          title: Text(AppLocalizations.of(context)!.babytoyspage_saved),
+          title: Text(AppLocalizations.of(context).babytoyspage_saved),
           activeBackColor: const Color(0xFF283488),
           activeColor: Colors.white,
           textAlign: TextAlign.center,
@@ -175,7 +174,7 @@ class CustomBottomNavbar extends StatelessWidget {
         ),
         BottomNavyBarItem(
           icon: const Icon(Icons.account_circle_outlined),
-          title: Text(AppLocalizations.of(context)!.babytoyspage_profile),
+          title: Text(AppLocalizations.of(context).babytoyspage_profile),
           activeBackColor: const Color(0xFF283488),
           activeColor: Colors.white,
           textAlign: TextAlign.center,
@@ -190,13 +189,13 @@ class CustomBottomNavbar extends StatelessWidget {
 @immutable
 class ExpandableFab extends StatefulWidget {
   const ExpandableFab({
-    Key? key,
+    Key key,
     this.initialOpen,
-    required this.distance,
-    required this.children,
+    this.distance,
+    this.children,
   }) : super(key: key);
 
-  final bool? initialOpen;
+  final bool initialOpen;
   final double distance;
   final List<Widget> children;
 
@@ -206,12 +205,12 @@ class ExpandableFab extends StatefulWidget {
 
 class _ExpandableFabState extends State<ExpandableFab>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _expandAnimation;
+  AnimationController _controller;
+  Animation<double> _expandAnimation;
   bool _open = false;
 
-  late AppState _appState;
-  late String _languageCode = "en";
+  AppState _appState;
+  String _languageCode = "en";
   @override
   void initState() {
     super.initState();
@@ -364,11 +363,11 @@ class _ExpandableFabState extends State<ExpandableFab>
 @immutable
 class _ExpandingActionButton extends StatelessWidget {
   const _ExpandingActionButton({
-    Key? key,
-    required this.directionInDegrees,
-    required this.maxDistance,
-    required this.progress,
-    required this.child,
+    Key key,
+    this.directionInDegrees,
+    this.maxDistance,
+    this.progress,
+    this.child,
   }) : super(key: key);
 
   final double directionInDegrees;
@@ -390,7 +389,7 @@ class _ExpandingActionButton extends StatelessWidget {
           bottom: 4.0 + offset.dy,
           child: Transform.rotate(
             angle: (1.0 - progress.value) * math.pi / 2,
-            child: child!,
+            child: child,
           ),
         );
       },
@@ -405,12 +404,12 @@ class _ExpandingActionButton extends StatelessWidget {
 @immutable
 class ActionButton extends StatelessWidget {
   const ActionButton({
-    Key? key,
+    Key key,
     this.onPressed,
-    required this.title,
+    this.title,
   }) : super(key: key);
 
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
   final String title;
 
   @override
@@ -440,7 +439,7 @@ class ActionButton extends StatelessWidget {
 
 // language setting stateful widget
 class LanguageTransitionWidget extends StatefulWidget {
-  const LanguageTransitionWidget({Key? key}) : super(key: key);
+  const LanguageTransitionWidget({Key key}) : super(key: key);
 
   @override
   _LanguageTransitionWidget createState() => _LanguageTransitionWidget();
@@ -448,8 +447,8 @@ class LanguageTransitionWidget extends StatefulWidget {
 
 class _LanguageTransitionWidget extends State<LanguageTransitionWidget> {
   // provider setting
-  late AppState _appState;
-  late AppLocale _appLocale;
+  AppState _appState;
+  AppLocale _appLocale;
   @override
   void initState() {
     super.initState();

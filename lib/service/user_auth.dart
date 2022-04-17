@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:toy_app/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:toy_app/helper/constant.dart';
 
 class UserService {
   Future<String> getToken() async {
@@ -76,12 +77,12 @@ class UserService {
   Future<String> userinfoChange(List<String> list) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('bearer_token');
-      String? id = prefs.getString('auth_userid');
-      String? email = prefs.getString('auth_name');
-      String? customerId = prefs.getString('customerId');
-      String? pass = prefs.getString('password');
-      int ids = int.parse(id!);
+      String token = prefs.getString('bearer_token');
+      String id = prefs.getString('auth_userid');
+      String email = prefs.getString('auth_name');
+      String customerId = prefs.getString('customerId');
+      String pass = prefs.getString('password');
+      int ids = int.parse(id);
       final response = await http.put(
         Uri.parse("http://23.21.117.81:5000/api/customers/$id"),
         headers: {

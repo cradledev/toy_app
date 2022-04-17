@@ -1,428 +1,276 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:myfatoorah_flutter/model/initsession/SDKInitSessionResponse.dart';
+import 'package:myfatoorah_flutter/myfatoorah_flutter.dart';
+import 'package:myfatoorah_flutter/utils/MFCountry.dart';
+import 'package:myfatoorah_flutter/utils/MFEnvironment.dart';
 import 'package:toy_app/components/components.dart';
 
+import 'package:toy_app/helper/constant.dart';
+
+import 'package:provider/provider.dart';
+import 'package:toy_app/provider/index.dart';
+
 class Payment extends StatefulWidget {
-  const Payment({Key? key}) : super(key: key);
+  const Payment({Key key}) : super(key: key);
 
   @override
-  State<Payment> createState() => _Payment();
+  _PaymentState createState() => _PaymentState();
 }
 
-class _Payment extends State<Payment> {
-  bool isClickedCredit = true;
-  final _formKey = GlobalKey<FormState>();
-  @override
-  Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    String _cardnumber = '';
-    String _expiry = '';
-    String _cvv = '';
+class _PaymentState extends State<Payment> {
+  // provider setting
+  AppState _appState;
 
-    void submitPayment() async {
-      final bool? isValid = _formKey.currentState?.validate();
-      if (isValid == true) {
-        Navigator.pushReplacementNamed(context, '/order');
-      }
+  String _response = '';
+  final String _loading = "Loading...";
+  var sessionIdValue = "";
+  MFPaymentCardView mfPaymentCardView;
+
+  @override
+  void initState() {
+    super.initState();
+    _appState = Provider.of<AppState>(context, listen: false);
+    if (paymentAPIKey.isEmpty) {
+      setState(() {
+        _response =
+            "Missing API Token Key.. You can get it from here: https://myfatoorah.readme.io/docs/test-token";
+      });
+      return;
     }
 
+    MFSDK.init(paymentAPIKey, MFCountry.KUWAIT, MFEnvironment.TEST);
+    initiateSession();
+    // (Optional) un comment the following lines if you want to set up properties of AppBar.
+
+    // MFSDK.setUpAppBar(
+    //     title: AppLocalizations.of(context).paymentpage_atext,
+    //     titleColor: Colors.black, // Color(0xFFFFFFFF)
+    //     backgroundColor: Colors.lightBlue, // Color(0xFF000000)
+    //     isShowAppBar: true); // For Android platform only
+
+    // (Optional) un comment this line, if you want to hide the AppBar.
+    // Note, if the platform is iOS, this line will not affected
+
+    MFSDK.setUpAppBar(isShowAppBar: false);
+  }
+
+  void initiateSession() {
+    MFSDK.initiateSession((MFResult<MFInitiateSessionResponse> result) => {
+          if (result.isSuccess())
+            {mfPaymentCardView.load(result.response)}
+          else
+            {
+              setState(() {
+                print(
+                    "Response: " + result.error.toJson().toString().toString());
+                _response = result.error.message;
+              })
+            }
+        });
+  }
+
+  void payWithEmbeddedPayment() {
+    double totalPrice = double.parse(_appState.cartTotalPrice);
+    var request =
+        MFInitiatePaymentRequest(totalPrice, MFCurrencyISO.UNITED_STATE_USD);
+
+    MFSDK.initiatePayment(
+        request,
+        MFAPILanguage.EN,
+        (MFResult<MFInitiatePaymentResponse> result) => {
+              if (result.isSuccess())
+                {print(result.response.toJson().toString())}
+              else
+                {print(result.error.message)}
+            });
+    var request1 = MFExecutePaymentRequest.constructor(totalPrice);
+
+    mfPaymentCardView.pay(
+        request1,
+        MFAPILanguage.EN,
+        (String invoiceId, MFResult<MFPaymentStatusResponse> result) => {
+              if (result.isSuccess())
+                {
+                  setState(() {
+                    print("invoiceId: " + invoiceId);
+                    print("Response: " + result.response.toJson().toString());
+                    _response = result.response.toJson().toString();
+                  })
+                }
+              else
+                {
+                  setState(() {
+                    print("invoiceId: " + invoiceId);
+                    print("Error: " + result.error.toJson().toString());
+                    _response = result.error.message;
+                  })
+                }
+            });
+  }
+
+  void getPaymentStatus() {
+    var request = MFPaymentStatusRequest(invoiceId: "1209756"); // 1209773
+
+    MFSDK.getPaymentStatus(
+        MFAPILanguage.EN,
+        request,
+        (MFResult<MFPaymentStatusResponse> result) => {
+              if (result.isSuccess())
+                {
+                  setState(() {
+                    print("Response: " + result.response.toJson().toString());
+                    _response = result.response.toJson().toString().toString();
+                  })
+                }
+              else
+                {
+                  setState(() {
+                    print("Response: " + result.error.toJson().toString());
+                    _response = result.error.message;
+                  })
+                }
+            });
+
+    setState(() {
+      _response = _loading;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
-      floatingActionButton: const LanguageTransitionWidget(),
       appBar: CustomAppBar(
-        title: const Text(""),
+        title: Text(
+          AppLocalizations.of(context).paymentpage_pdetail,
+          style: const TextStyle(color: Colors.black),
+        ),
         leadingAction: () {
           Navigator.pop(context);
         },
       ),
-      body: SingleChildScrollView(
-        reverse: true,
-        child: Container(
-          height: MediaQuery.of(context).size.height - 150,
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.only(bottom: 20),
-          child: Column(
-            children: [
-              Expanded(
-                child: Form(
-                  key: _formKey,
+      body: Container(
+        margin: const EdgeInsets.all(10.0),
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.only(bottom: 25),
+            height: MediaQuery.of(context).size.height - 150,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Expanded(
                   child: Column(
                     children: [
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                child: Text(
-                                  AppLocalizations.of(context)!
-                                      .paymentpage_pdetail,
-                                  style: const TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                            child: Row(
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .paymentpage_atext,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    color: Color(0xff999999),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: height * 0.05,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                            child: Row(
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .paymentpage_select,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    color: Color(0xff1d1d1d),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: height * 0.06,
-                                  width: width * 0.46,
-                                  padding: const EdgeInsets.only(
-                                      left: 10, right: 10),
-                                  margin: EdgeInsets.only(
-                                      left: width * 0.02, right: width * 0.02),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isClickedCredit = true;
-                                      });
-                                    },
-                                    style: ButtonStyle(
-                                      // backgroundColor:
-                                      //     MaterialStateProperty.all(_creditColor),
-                                      backgroundColor: isClickedCredit
-                                          ? MaterialStateProperty.all(
-                                              const Color(0xff283488))
-                                          : MaterialStateProperty.all(
-                                              Colors.white),
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(83.0),
-                                          side: const BorderSide(
-                                              color: Color(0xff283488)),
-                                        ),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      AppLocalizations.of(context)!
-                                          .paymentpage_credit,
-                                      style: TextStyle(
-                                        color: isClickedCredit
-                                            ? Colors.white
-                                            : const Color(0xff283488),
-                                        fontSize: 14,
-                                        fontFamily: "Avenir Next",
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(32.0),
-                                        topRight: Radius.circular(32.0)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: height * 0.06,
-                                  width: width * 0.46,
-                                  padding: const EdgeInsets.only(
-                                      right: 10, left: 10),
-                                  margin: EdgeInsets.only(
-                                      left: width * 0.02, right: width * 0.02),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isClickedCredit = false;
-                                      });
-                                    },
-                                    style: ButtonStyle(
-                                      backgroundColor: isClickedCredit
-                                          ? MaterialStateProperty.all(
-                                              Colors.white)
-                                          : MaterialStateProperty.all(
-                                              const Color(0xff283488)),
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(83.0),
-                                          side: const BorderSide(
-                                              color: Color(0xff283488)),
-                                        ),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      AppLocalizations.of(context)!
-                                          .paymentpage_debit,
-                                      style: TextStyle(
-                                          color: isClickedCredit
-                                              ? const Color(0xff283488)
-                                              : Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(32.0),
-                                        topRight: Radius.circular(32.0)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: height * 0.03,
+                      const Padding(
+                        padding: EdgeInsets.all(5.0),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .paymentpage_number,
-                                  style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black87),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                TextFormField(
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 10),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        color: Colors.grey,
-                                      ),
-                                      borderRadius: BorderRadius.circular(32),
-                                    ),
-                                    border: const OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.grey)),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return AppLocalizations.of(context)!
-                                          .paymentpage_pnumber;
-                                    }
-                                    return null;
-                                  },
-                                  onChanged: (value) => _cardnumber = value,
-                                ),
-                                const SizedBox(
-                                  height: 30,
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      Text(
-                                        AppLocalizations.of(context)!
-                                            .paymentpage_expiry,
-                                        style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black87),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      TextFormField(
-                                        decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 0, horizontal: 10),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Colors.grey,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(32),
-                                          ),
-                                          border: const OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey)),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null ||
-                                              value.trim().isEmpty) {
-                                            return AppLocalizations.of(context)!
-                                                .paymentpage_pexpiry;
-                                          }
-                                          return null;
-                                        },
-                                        onChanged: (value) => _expiry = value,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'CVV',
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black87),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      TextFormField(
-                                        decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 0, horizontal: 10),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Colors.grey,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(32),
-                                          ),
-                                          border: const OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey)),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null ||
-                                              value.trim().isEmpty) {
-                                            return AppLocalizations.of(context)!
-                                                .paymentpage_cvv;
-                                          }
-                                          return null;
-                                        },
-                                        onChanged: (value) => _cvv = value,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!
-                                  .paymentpage_subtotal,
-                              style: const TextStyle(
-                                fontFamily: 'Avenir Next',
-                                fontSize: 14,
-                                color: Color(0xff999999),
-                              ),
-                            ),
-                            const Text(
-                              "\$41.98",
-                              style: TextStyle(
-                                fontFamily: 'Avenir Next',
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xff1d1d1d),
-                              ),
-                            ),
-                          ],
-                        ),
+                        padding: const EdgeInsets.all(8),
+                        child: createPaymentCardView(),
                       ),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(
-                height: height * 0.07,
-                width: width * 0.9,
-                child: ElevatedButton(
-                  onPressed: () {
-                    submitPayment();
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(const Color(0xff283488)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(83.0),
-                        side: const BorderSide(color: Color(0xff283488)),
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context).paymentpage_subtotal,
+                            style: const TextStyle(
+                              fontFamily: 'Avenir Next',
+                              fontSize: 14,
+                              color: Color(0xff999999),
+                            ),
+                          ),
+                          Text(
+                            "\$" + _appState.cartTotalPrice ?? "0",
+                            style: const TextStyle(
+                              fontFamily: 'Avenir Next',
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff1d1d1d),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.paymentpage_confirm,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                  ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          payWithEmbeddedPayment();
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color(0xff283488)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(83.0),
+                              side: const BorderSide(color: Color(0xff283488)),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context).paymentpage_confirm,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 14),
+                        ),
+                      ),
+                    ),
+                    // ElevatedButton(
+                    //   child: Text('Pay (Embedded Payment)'),
+                    //   onPressed: payWithEmbeddedPayment,
+                    // ),
+                    // ElevatedButton(
+                    //   child: Text('Get Payment Status'),
+                    //   onPressed: getPaymentStatus,
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Text(
+                        _response,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  createPaymentCardView() {
+    mfPaymentCardView = MFPaymentCardView(
+//      inputColor: Colors.red,
+//      labelColor: Colors.yellow,
+//      errorColor: Colors.blue,
+//      borderColor: Colors.green,
+//      fontSize: 14,
+//      borderWidth: 1,
+//      borderRadius: 10,
+//      cardHeight: 220,
+//      cardHolderNameHint: "card holder name hint",
+//      cardNumberHint: "card number hint",
+//      expiryDateHint: "expiry date hint",
+//      cvvHint: "cvv hint",
+//      showLabels: true,
+//      cardHolderNameLabel: "card holder name label",
+//      cardNumberLabel: "card number label",
+//      expiryDateLabel: "expiry date label",
+//      cvvLabel: "cvv label",
+        );
+
+    return mfPaymentCardView;
   }
 }

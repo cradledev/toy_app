@@ -8,7 +8,7 @@ import 'package:toy_app/service/product_repo.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Saved extends StatefulWidget {
-  const Saved({Key? key}) : super(key: key);
+  const Saved({Key key}) : super(key: key);
 
   @override
   State<Saved> createState() => _Saved();
@@ -16,7 +16,7 @@ class Saved extends StatefulWidget {
 
 class _Saved extends State<Saved> {
   final ProductService _productService = ProductService();
-  late Future<List<CartModel>> favouriteItems;
+  Future<List<CartModel>> favouriteItems;
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class _Saved extends State<Saved> {
                   padding: EdgeInsets.only(
                       top: 30, left: width * 0.05, right: width * 0.05),
                   child: Text(
-                    AppLocalizations.of(context)!.categoryitempage_saved,
+                    AppLocalizations.of(context).categoryitempage_saved,
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -78,7 +78,7 @@ class _Saved extends State<Saved> {
                     vertical: 15,
                   ),
                   child: Text(
-                    AppLocalizations.of(context)!.savedpage_text,
+                    AppLocalizations.of(context).savedpage_text,
                     style: const TextStyle(
                       color: Color(0xff999999),
                       fontWeight: FontWeight.normal,
@@ -100,7 +100,7 @@ class _Saved extends State<Saved> {
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     childAspectRatio: itemWidth / itemHeight),
-                            itemCount: snapshot.data!.length,
+                            itemCount: snapshot.data.length,
                             itemBuilder: (BuildContext context, index) =>
                                 InkWell(
                               hoverColor: Colors.pink,
@@ -108,7 +108,7 @@ class _Saved extends State<Saved> {
                                 Navigator.pushNamed(
                                   context,
                                   '/detail',
-                                  arguments: snapshot.data![index].product,
+                                  arguments: snapshot.data[index].product,
                                 );
                               },
                               child: Padding(
@@ -126,7 +126,7 @@ class _Saved extends State<Saved> {
                                         color: Colors.white,
                                       ),
                                       child: Image.network(snapshot
-                                          .data![index].product.images[0].src),
+                                          .data[index].product.images[0].src),
                                     ),
                                     Positioned(
                                       top: height * 0.22,
@@ -151,7 +151,7 @@ class _Saved extends State<Saved> {
                                                   0),
                                               child: Text(
                                                 snapshot
-                                                    .data![index].product.name,
+                                                    .data[index].product.name,
                                                 style: const TextStyle(
                                                   fontFamily: 'Avenir Next',
                                                   fontSize: 14,
@@ -164,8 +164,8 @@ class _Saved extends State<Saved> {
                                                   width * 0.05, 10, 0, 0),
                                               child: Text(
                                                 '\$' +
-                                                    snapshot.data![index]
-                                                        .product.price
+                                                    snapshot.data[index].product
+                                                        .price
                                                         .toString(),
                                                 style: const TextStyle(
                                                   fontFamily: 'Avenir Next',
