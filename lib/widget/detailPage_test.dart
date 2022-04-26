@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
+import 'package:toy_app/model/product.model.dart';
 import 'package:toy_app/service/product_repo.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:toy_app/model/product.dart';
 
 import 'package:provider/provider.dart';
 import 'package:toy_app/provider/index.dart';
@@ -25,7 +24,11 @@ class _DetailPageTest extends State<DetailPageTest> {
   int _quantity = 1;
   final ProductService _productService = ProductService();
   var quantity = TextEditingController();
-
+  int categoryId = 0;
+  String categoryName = "";
+  int shoppingCartItemId = 0;
+  bool processing = false;
+  bool isProcessingFavour = false;
   @override
   void initState() {
     super.initState();
@@ -37,54 +40,18 @@ class _DetailPageTest extends State<DetailPageTest> {
     _appState = Provider.of<AppState>(context, listen: false);
   }
 
-  void submitFavourite(id) async {
-    String response =
-        await _productService.setFavouriteItem(_appState.user['_id'], id);
-    if (response == 'success') {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(AppLocalizations.of(context).detailpage_success),
-              content: Text(AppLocalizations.of(context).detailpage_text1),
-              actions: [
-                ElevatedButton(
-                  child: Text(AppLocalizations.of(context).detailpage_ok),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/saved');
-                  },
-                )
-              ],
-            );
-          });
-    } else {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(AppLocalizations.of(context).detailpage_failed),
-              content: Text(AppLocalizations.of(context).detailpage_text2),
-              actions: [
-                ElevatedButton(
-                  child: Text(AppLocalizations.of(context).detailpage_ok),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            );
-          });
-    }
-    // Future<String> response = _productService.setFavourite(id);
-  }
-
-  void submitCartItem(productId, price) async {
+  void submitFavourite(id) {
     _quantity = int.parse(quantity.text);
-    // print(_appState.user['_id']);
-    if (_quantity != 0) {
-      String response = await _productService.addCartItem(
-          productId, _quantity, price, _appState.user['_id']);
+    setState(() {
+      isProcessingFavour = true;
+    });
+    _productService
+        .setFavouriteItem(_appState.user['customer_id'], id, _quantity)
+        .then((response) {
       if (response == 'success') {
+        setState(() {
+          isProcessingFavour = false;
+        });
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -95,7 +62,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                   ElevatedButton(
                     child: Text(AppLocalizations.of(context).detailpage_ok),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/cart');
+                      Navigator.pushNamed(context, '/saved');
                     },
                   )
                 ],
@@ -119,6 +86,77 @@ class _DetailPageTest extends State<DetailPageTest> {
               );
             });
       }
+    }).catchError((err) {
+      print(err);
+      setState(() {
+        isProcessingFavour = false;
+      });
+    });
+
+    // Future<String> response = _productService.setFavourite(id);
+  }
+
+  void submitCartItem(productId, price) {
+    _quantity = int.parse(quantity.text);
+    // print(_appState.user['_id']);
+    if (_quantity != 0) {
+      setState(() {
+        processing = true;
+      });
+
+      _productService
+          .addCartItem(productId, _quantity, shoppingCartItemId,
+              _appState.user['customer_id'])
+          .then((response) {
+        if (response == 'success') {
+          setState(() {
+            processing = false;
+          });
+
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(AppLocalizations.of(context).detailpage_success),
+                  content: Text(AppLocalizations.of(context).detailpage_text1),
+                  actions: [
+                    ElevatedButton(
+                      child: Text(AppLocalizations.of(context).detailpage_ok),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/cart');
+                      },
+                    )
+                  ],
+                );
+              });
+        } else {
+          setState(() {
+            processing = false;
+          });
+
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(AppLocalizations.of(context).detailpage_failed),
+                  content: Text(AppLocalizations.of(context).detailpage_text2),
+                  actions: [
+                    ElevatedButton(
+                      child: Text(AppLocalizations.of(context).detailpage_ok),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )
+                  ],
+                );
+              });
+        }
+      }).catchError((err) {
+        print(err);
+        setState(() {
+          processing = false;
+        });
+      });
     } else {
       showDialog(
           context: context,
@@ -139,19 +177,24 @@ class _DetailPageTest extends State<DetailPageTest> {
     }
   }
 
-  void getCartByProductId(String id, String productId) async {
-    int response = await _productService.getCartByProductId(id, productId);
-    if (response > 0) {
-      quantity.text = response.toString();
+  void getCartByProductId(int id, int productId) async {
+    var response = await _productService.getShoppingMiniCart(productId);
+    shoppingCartItemId = response['shoppingCartItemId'];
+    if (response['quantity'] > 0) {
+      quantity.text = response['quantity'].toString();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
-    final args = ModalRoute.of(context).settings.arguments as ProductModel;
-    String url = "${_appState.endpoint}/products/image/${args.image}";
-    getCartByProductId(_appState.user['_id'], args.id);
+    final args = ModalRoute.of(context).settings.arguments as ProductM;
+    String productImageUrl =
+        args?.images?.isEmpty ?? true ? "" : args?.images[0];
+    categoryId = args?.categoryId?.isNaN ?? true ? 0 : args?.categoryId;
+    categoryName =
+        args?.categoryName?.isEmpty ?? true ? "" : args?.categoryName;
+    getCartByProductId(_appState.user['customer_id'], args?.id);
     final avatarContent = Stack(
       children: <Widget>[
         SizedBox(
@@ -161,10 +204,12 @@ class _DetailPageTest extends State<DetailPageTest> {
           width: mq.width,
           padding: EdgeInsets.zero,
           color: const Color.fromARGB(255, 233, 232, 232),
-          child: Image.network(
-            url,
-            fit: BoxFit.fitWidth,
-          ),
+          child: productImageUrl?.isEmpty ?? true
+              ? const Text("")
+              : Image.network(
+                  productImageUrl,
+                  fit: BoxFit.fitWidth,
+                ),
         ),
         Positioned(
           left: 12.0,
@@ -180,15 +225,24 @@ class _DetailPageTest extends State<DetailPageTest> {
           right: 12.0,
           top: 80.0,
           child: InkWell(
-            onTap: () {
-              // Navigator.pushNamed(context, '/home');
-              // Navigator.pop(context);
-              submitFavourite(args.id);
-            },
-            child: const Icon(
-              Icons.favorite_border,
-              color: Colors.black,
-            ),
+            onTap: isProcessingFavour
+                ? null
+                : () {
+                    // Navigator.pushNamed(context, '/home');
+                    submitFavourite(args?.id);
+                  },
+            child: isProcessingFavour
+                ? const Center(
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : const Icon(
+                    Icons.favorite_border,
+                    color: Colors.black,
+                  ),
           ),
         ),
         Positioned(
@@ -208,7 +262,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(mq.width * 0.085, 0, 0, 10),
                   child: Text(
-                    args.name,
+                    args?.name?.isEmpty ?? true ? "" : args?.name,
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 32,
@@ -222,7 +276,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      args.category ?? "",
+                      categoryName ?? "",
                       style: const TextStyle(
                         fontFamily: 'Avenir Next',
                         fontSize: 14,
@@ -262,6 +316,13 @@ class _DetailPageTest extends State<DetailPageTest> {
                       decIconColor: const Color(0xff283488),
                       incIconSize: 35,
                       decIconSize: 35,
+                      onChanged: (value) {
+                        print(value);
+                        if (!value.isNaN) {
+                          quantity.text = value.toString();
+                          _quantity = value;
+                        }
+                      },
                       min: 1,
                       max: args.stock,
                       initialValue: _quantity,
@@ -293,7 +354,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      args.description ?? "",
+                      args.shortdescription ?? "",
                       style: const TextStyle(
                         fontFamily: "Avenir Next",
                         fontSize: 14,
@@ -312,10 +373,12 @@ class _DetailPageTest extends State<DetailPageTest> {
                         padding: EdgeInsets.fromLTRB(
                             mq.width * 0.085, 16, 16, mq.height * 0.02),
                         child: ElevatedButton(
-                          onPressed: () {
-                            // Navigator.pushNamed(context, '/home');
-                            submitCartItem(args.id, args.price);
-                          },
+                          onPressed: processing
+                              ? null
+                              : () {
+                                  // Navigator.pushNamed(context, '/home');
+                                  submitCartItem(args?.id, args?.price);
+                                },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
                                 const Color(0xff283488)),
@@ -329,7 +392,9 @@ class _DetailPageTest extends State<DetailPageTest> {
                             ),
                           ),
                           child: Text(
-                            AppLocalizations.of(context).detailpage_acart,
+                            processing
+                                ? "...processing"
+                                : AppLocalizations.of(context).detailpage_acart,
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 14),
                           ),

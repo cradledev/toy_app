@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toy_app/model/product.model.dart';
 import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -9,6 +9,8 @@ import 'package:toy_app/provider/index.dart';
 import 'package:provider/provider.dart';
 
 import 'dart:math' as math;
+
+import 'package:toy_app/widget/detailPage_test.dart';
 
 class RoundedButton extends StatelessWidget {
   final String text;
@@ -490,4 +492,158 @@ class _LanguageTransitionWidget extends State<LanguageTransitionWidget> {
       ],
     );
   }
+}
+
+class ProductSearchItemBuilder extends StatelessWidget {
+  const ProductSearchItemBuilder({
+    this.entry,
+    Key key,
+  }) : super(key: key);
+
+  final ProductM entry;
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+        hoverColor: Colors.pink,
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            DetailPageTest.routeName,
+            arguments: entry,
+          );
+        },
+        child: Container(
+          padding: EdgeInsets.zero,
+          height: MediaQuery.of(context).size.height * 0.2,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(32),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                offset: const Offset(0, 1),
+                blurRadius: 5,
+                color: Colors.black.withOpacity(0.1),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(32.0),
+                    bottomLeft: Radius.circular(32.0)),
+                child: entry?.images?.isEmpty ?? true
+                    ? const Text("")
+                    : Image.network(
+                        entry?.images[0],
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        fit: BoxFit.cover,
+                      ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.2,
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 20, bottom: 5),
+                          child: Text(
+                            entry?.name?.isEmpty ?? true
+                                ? ""
+                                : entry?.name.toString(),
+                            style: const TextStyle(
+                              fontFamily: 'Avenir Next',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Text(
+                            entry?.categoryName?.isEmpty ?? true
+                                ? ""
+                                : entry?.categoryName,
+                            style: const TextStyle(
+                              fontFamily: 'Avenir Next',
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.zero,
+                                child: Text(
+                                  entry?.price?.isNaN ?? true
+                                      ? ""
+                                      : '\$' + entry?.price.toString(),
+                                  style: const TextStyle(
+                                    fontFamily: 'Avenir Next',
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.zero,
+                                child: SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: RawMaterialButton(
+                                    onPressed: () {},
+                                    elevation: 1.0,
+                                    fillColor: const Color(0xff283488),
+                                    child: const Icon(
+                                      Icons.shopping_cart_outlined,
+                                      size: 16.0,
+                                      color: Colors.white,
+                                    ),
+                                    padding: const EdgeInsets.all(0),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(32.0),
+                      bottomRight: Radius.circular(32.0)),
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 }

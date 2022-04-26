@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppState extends ChangeNotifier {
-  final String _endpoint = "http://147.182.244.82:80/api/v1";
+  final String _endpoint = "http://147.182.244.82:80/api-frontend";
+  final String _backendEndpint = "http://147.182.244.82:80/api-backend";
 
   final String selectedLang = "selectedLang";
+  bool _flag = false;
   Map _user;
   String _token = '';
   SharedPreferences _sp;
@@ -15,17 +17,66 @@ class AppState extends ChangeNotifier {
   String _address = "";
   String _index = "";
   String _cartTotalPrice = "";
+  String _firstName = "";
+  String _lastName = "";
+  Map _bio;
+  int _countyId = 234;
+  String _profileCity = "";
+  String _profileAddress1 = "";
   //get
+  get flag => _flag;
   get endpoint => _endpoint;
+  get backendEndpoint => _backendEndpint;
   get user => _user;
   get sp => _sp;
   get token => _token;
   get cartTotalPrice => _cartTotalPrice;
-
+  get countryId => _countyId;
   get city => _city;
+
+  get profileCity => _profileCity;
+  get profileAddress1 => _profileAddress1;
   get address => _address;
   get index => _index;
+  get firstName => _firstName;
+  get lastName => _lastName;
+  get bio => _bio;
   // set
+  set countryId(value) {
+    _countyId = value;
+    notifyListeners();
+  }
+
+  set profileCity(value) {
+    _profileCity = value;
+    notifyListeners();
+  }
+
+  set profileAddress1(value) {
+    _profileAddress1 = value;
+    notifyListeners();
+  }
+
+  set firstName(value) {
+    _firstName = value;
+    notifyListeners();
+  }
+
+  set lastName(value) {
+    _lastName = value;
+    notifyListeners();
+  }
+
+  set bio(value) {
+    _bio = value;
+    notifyListeners();
+  }
+
+  set flag(value) {
+    _flag = value;
+    notifyListeners();
+  }
+
   set user(value) {
     _user = value;
     notifyListeners();
@@ -89,7 +140,7 @@ class AppState extends ChangeNotifier {
   Future<http.Response> post(url, payload) async {
     var response = await http.post(url, body: payload, headers: {
       'Content-Type': 'application/json; charset=UTF-8',
-      'Access-Control-Allow-Origin': '*'
+      'accept': "*/*"
     });
 
     return response;
@@ -97,8 +148,9 @@ class AppState extends ChangeNotifier {
 
   Future<http.Response> postAuth(url, payload) async {
     var response = await http.post(url, body: payload, headers: {
-      "accept": "application/json",
-      'Authorization': 'Bearer ' + token
+      "accept": "*/*",
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': "Bearer $token"
     });
     return response;
   }
@@ -110,8 +162,8 @@ class AppState extends ChangeNotifier {
 
   Future<http.Response> getAuth(url) async {
     var response = await http.get(url, headers: {
-      "Accept": "*/*",
-      "Content-Type": "application/json",
+      "accept": "*/*",
+      'Content-Type': 'application/json; charset=UTF-8',
       "Authorization": "Bearer $token"
     });
     return response;

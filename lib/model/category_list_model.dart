@@ -1,16 +1,14 @@
 class CategoryList {
-  final String id;
+  final int id;
   final String name;
-  final String slug;
   final String image;
-  CategoryList({this.id, this.name, this.slug, this.image});
+  CategoryList({this.id, this.name, this.image});
 
-  factory CategoryList.fromJson(Map<String, dynamic> json) {
+  factory CategoryList.fromJson(Map<String, dynamic> json, String _pImgUrl) {
     return CategoryList(
-      id: json['_id'],
+      id: json['id'],
       name: json['name'],
-      slug: json['slug'],
-      image: json['image'] ?? "",
+      image: _pImgUrl ?? "",
     );
   }
 }

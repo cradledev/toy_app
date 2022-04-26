@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:toy_app/service/mailchimp_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:toy_app/helper/constant.dart';
 
 import 'package:provider/provider.dart';
 import 'package:toy_app/provider/index.dart';
 
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Register extends StatefulWidget {
@@ -131,39 +129,246 @@ class _Register extends State<Register> {
 
   void _registerHandler(Map _userInfo) async {
     try {
-      Map<String, String> headers = {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Access-Control-Allow-Origin': '*',
+      var tokenPutData = {
+        'is_guest': true,
+        'email': _userInfo['email'],
+        'password': _userInfo['password']
       };
-      var response = await http.post(Uri.parse("$apiEndPoint/auth/signup"),
-          body: jsonEncode(_userInfo), headers: headers);
-      var body = jsonDecode(response.body);
-
-      if (body['ok'] == true) {
-        setState(() {
-          _loadingStatus = false;
-        });
-        _appState.user = body['user'];
-        _appState.token = body['token'];
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        _appState.notifyToastDanger(context: context, message: body['err']);
-        setState(() {
-          _loadingStatus = false;
-        });
+      var tokenResponse = await _appState.post(
+          Uri.parse("${_appState.endpoint}/Authenticate/GetToken"),
+          jsonEncode(tokenPutData));
+      var body = jsonDecode(tokenResponse.body);
+      _appState.token = body['token'];
+      var putData = {
+        "model": {
+          "email": _userInfo['email'],
+          "entering_email_twice": true,
+          "confirm_email": _userInfo['email'],
+          "usernames_enabled": true,
+          "username": _userInfo['firstname'] + _userInfo['lastname'],
+          "check_username_availability_enabled": true,
+          "password": _userInfo['password'],
+          "confirm_password": _userInfo['password'],
+          "gender_enabled": false,
+          "gender": "string",
+          "first_name_enabled": true,
+          "first_name": _userInfo['firstname'],
+          "first_name_required": true,
+          "last_name_enabled": true,
+          "last_name": _userInfo['lastname'],
+          "last_name_required": true,
+          "date_of_birth_enabled": true,
+          "date_of_birth_day": 0,
+          "date_of_birth_month": 0,
+          "date_of_birth_year": 0,
+          "date_of_birth_required": true,
+          "company_enabled": false,
+          "company_required": false,
+          "company": "string",
+          "street_address_enabled": true,
+          "street_address_required": true,
+          "street_address": "string",
+          "street_address2_enabled": true,
+          "street_address2_required": true,
+          "street_address2": "string",
+          "zip_postal_code_enabled": true,
+          "zip_postal_code_required": true,
+          "zip_postal_code": "string",
+          "city_enabled": true,
+          "city_required": true,
+          "city": "string",
+          "county_enabled": true,
+          "county_required": true,
+          "county": "string",
+          "country_enabled": true,
+          "country_required": true,
+          "country_id": 0,
+          "available_countries": [
+            {
+              "disabled": true,
+              "group": {"disabled": true, "name": "string"},
+              "selected": true,
+              "text": "string",
+              "value": "string"
+            }
+          ],
+          "state_province_enabled": true,
+          "state_province_required": true,
+          "state_province_id": 0,
+          "available_states": [
+            {
+              "disabled": true,
+              "group": {"disabled": true, "name": "string"},
+              "selected": true,
+              "text": "string",
+              "value": "string"
+            }
+          ],
+          "phone_enabled": true,
+          "phone_required": true,
+          "phone": "string",
+          "fax_enabled": true,
+          "fax_required": true,
+          "fax": "string",
+          "newsletter_enabled": true,
+          "newsletter": true,
+          "accept_privacy_policy_enabled": false,
+          "accept_privacy_policy_popup": false,
+          "time_zone_id": "string",
+          "allow_customers_to_set_time_zone": false,
+          "available_time_zones": [
+            {
+              "disabled": true,
+              "group": {"disabled": true, "name": "string"},
+              "selected": true,
+              "text": "string",
+              "value": "string"
+            }
+          ],
+          "vat_number": "string",
+          "display_vat_number": true,
+          "honeypot_enabled": true,
+          "display_captcha": true,
+          "customer_attributes": [
+            {
+              "name": "string",
+              "is_required": true,
+              "default_value": "string",
+              "attribute_control_type": "DropdownList",
+              "values": [
+                {
+                  "name": "string",
+                  "is_pre_selected": true,
+                  "id": 0,
+                  "custom_properties": {
+                    "additionalProp1": "string",
+                    "additionalProp2": "string",
+                    "additionalProp3": "string"
+                  }
+                }
+              ],
+              "id": 0,
+              "custom_properties": {
+                "additionalProp1": "string",
+                "additionalProp2": "string",
+                "additionalProp3": "string"
+              }
+            }
+          ],
+          "gdpr_consents": [
+            {
+              "message": "string",
+              "is_required": true,
+              "required_message": "string",
+              "accepted": true,
+              "id": 0,
+              "custom_properties": {
+                "additionalProp1": "string",
+                "additionalProp2": "string",
+                "additionalProp3": "string"
+              }
+            }
+          ],
+          "custom_properties": {
+            "additionalProp1": "string",
+            "additionalProp2": "string",
+            "additionalProp3": "string"
+          }
+        },
+        "form": {
+          "additionalProp1": "string",
+          "additionalProp2": "string",
+          "additionalProp3": "string"
+        }
+      };
+      var response = await _appState.postAuth(
+          Uri.parse("${_appState.endpoint}/Customer/Register?returnUrl=false"),
+          jsonEncode(putData));
+      if (response.statusCode == 302) {
+        var putUserInfo = {
+          'email': _userInfo['email'],
+          'password': _userInfo['password']
+        };
+        var fResult = await _appState.post(
+            Uri.parse("${_appState.endpoint}/Authenticate/GetToken"),
+            jsonEncode(putUserInfo));
+        var body = jsonDecode(fResult.body);
+        if (fResult.statusCode == 200) {
+          setState(() {
+            _loadingStatus = false;
+          });
+          _appState.user = body;
+          _appState.token = body['token'];
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          setState(() {
+            _loadingStatus = false;
+          });
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(AppLocalizations.of(context).login_text1),
+                content: Text(AppLocalizations.of(context).login_text2),
+                actions: [
+                  ElevatedButton(
+                    child: Text(AppLocalizations.of(context).login_ok),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            },
+          );
+        }
       }
+      if (response.statusCode == 400) {
+        var temp = jsonDecode(response.body);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Error!"),
+              content: Text(temp[0]),
+              actions: [
+                ElevatedButton(
+                  child: Text(AppLocalizations.of(context).login_ok),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
+      }
+
+      setState(() {
+        _loadingStatus = false;
+      });
     } catch (err) {
-      _appState.notifyToastDanger(
-          context: context, message: "Error occured while registering");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Error!"),
+            content: const Text("Error is occured while registering."),
+            actions: [
+              ElevatedButton(
+                child: Text(AppLocalizations.of(context).login_ok),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
       setState(() {
         _loadingStatus = false;
       });
     }
-
-    // setState(() {
-    //   _loadingStatus = false;
-    // });
-    // Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override

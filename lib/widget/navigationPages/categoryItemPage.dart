@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
-import 'package:toy_app/model/product.dart';
+import 'package:toy_app/model/product.model.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
 
 import 'package:toy_app/service/product_repo.dart';
@@ -26,8 +26,8 @@ class _CategoryItems extends State<CategoryItems> {
   static const int PAGE_SIZE = 4;
   // provider setting
   AppState _appState;
-  Widget _build(String _title) {
-    return PagewiseGridView<ProductModel>.count(
+  Widget _build(int _title) {
+    return PagewiseGridView<ProductM>.count(
       pageSize: PAGE_SIZE,
       crossAxisCount: 2,
       mainAxisSpacing: 20.0,
@@ -73,13 +73,13 @@ class _CategoryItems extends State<CategoryItems> {
         );
       },
       pageFuture: (pageIndex) {
-        return ProductService.getProductsByCategorySlug(
-            pageIndex + 1, PAGE_SIZE, _title);
+        return ProductService.getProductsByDirectCategoryId(
+            pageIndex, PAGE_SIZE, _title);
       },
     );
   }
 
-  Widget _itemBuilder(context, ProductModel entry, _) {
+  Widget _itemBuilder(context, ProductM entry, _) {
     return InkWell(
       // hoverColor: Colors.pink,
       onTap: () {
@@ -118,12 +118,14 @@ class _CategoryItems extends State<CategoryItems> {
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
-                      child: Image.network(
-                        "${_appState.endpoint}/products/image/${entry.image}",
-                        height: MediaQuery.of(context).size.height * 0.23,
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        fit: BoxFit.cover,
-                      ),
+                      child: entry?.images?.isEmpty ?? true
+                          ? const Text("")
+                          : Image.network(
+                              entry?.images[0],
+                              height: MediaQuery.of(context).size.height * 0.23,
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   )
                 ],
@@ -155,7 +157,7 @@ class _CategoryItems extends State<CategoryItems> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 5),
                                     child: Text(
-                                      entry.name,
+                                      entry?.name.toString(),
                                       style: const TextStyle(
                                         fontFamily: 'Avenir Next',
                                         fontSize: 14,
@@ -220,8 +222,10 @@ class _CategoryItems extends State<CategoryItems> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    String title = ModalRoute.of(context).settings.arguments as String;
-
+    var args =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    int title = args['id'];
+    String cateName = args['name'];
     return Scaffold(
       // backgroundColor: Color(0xff283488),
       bottomNavigationBar:
@@ -250,7 +254,7 @@ class _CategoryItems extends State<CategoryItems> {
                     padding: EdgeInsets.only(
                         top: 30, left: width * 0.05, right: width * 0.05),
                     child: Text(
-                      title,
+                      cateName.isEmpty ?? true ? "" : cateName,
                       style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,

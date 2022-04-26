@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toy_app/components/components.dart';
+import 'package:toy_app/model/product.model.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
 import 'package:toy_app/service/product_repo.dart';
 
@@ -11,8 +12,6 @@ import 'package:toy_app/provider/index.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 
-// custom
-import 'package:toy_app/model/product.dart';
 import 'package:flutter_pagewise/flutter_pagewise.dart';
 
 class Home extends StatefulWidget {
@@ -27,13 +26,14 @@ class _Home extends State<Home> {
   static const int PAGE_SIZE = 10;
   // slider setting
   List<String> imgList = [];
+  List<int> bannerProductIds = [];
   // provider setting
   AppState _appState;
   String _languageCode = "en";
 
   Widget _buildNewArrival() {
-    return PagewiseListView<ProductModel>(
-      pageSize: PAGE_SIZE,
+    return PagewiseListView<ProductM>(
+      pageSize: 100,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(15.0),
       itemBuilder: _itemBuilder,
@@ -75,14 +75,14 @@ class _Home extends State<Home> {
         );
       },
       pageFuture: (pageIndex) {
-        return ProductService.getNewArrival(pageIndex + 1, PAGE_SIZE);
+        return ProductService.getNewArrival(pageIndex, 100);
       },
     );
   }
 
   Widget _buildRecommend() {
-    return PagewiseListView<ProductModel>(
-      pageSize: PAGE_SIZE,
+    return PagewiseListView<ProductM>(
+      pageSize: 100,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(15.0),
       itemBuilder: _recommendItemBuilder,
@@ -124,12 +124,12 @@ class _Home extends State<Home> {
         );
       },
       pageFuture: (pageIndex) {
-        return ProductService.getRecommendProduct(pageIndex + 1, PAGE_SIZE);
+        return ProductService.getRecommendProduct(pageIndex, 100);
       },
     );
   }
 
-  Widget _recommendItemBuilder(context, ProductModel entry, _) {
+  Widget _recommendItemBuilder(context, ProductM entry, _) {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(
@@ -159,12 +159,14 @@ class _Home extends State<Home> {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(32),
                         topRight: Radius.circular(32)),
-                    child: Image.network(
-                      "${_appState.endpoint}/products/image/${entry.image}",
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      fit: BoxFit.cover,
-                    ),
+                    child: entry?.images?.isEmpty ?? true
+                        ? const Text("")
+                        : Image.network(
+                            entry?.images[0],
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 )
               ],
@@ -189,35 +191,39 @@ class _Home extends State<Home> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  child: Text(
-                                    entry.name,
-                                    style: const TextStyle(
-                                      fontFamily: 'Avenir Next',
-                                      fontSize: 14,
-                                      color: Colors.white,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: Text(
+                                      entry?.name?.isEmpty ?? true
+                                          ? ""
+                                          : entry?.name,
+                                      style: const TextStyle(
+                                        fontFamily: 'Avenir Next',
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  child: Text(
-                                    '\$' + entry.price.toString(),
-                                    style: const TextStyle(
-                                      fontFamily: 'Avenir Next',
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: Text(
+                                      '\$' + entry?.price.toString(),
+                                      style: const TextStyle(
+                                        fontFamily: 'Avenir Next',
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             SizedBox(
                               height: 30,
@@ -250,7 +256,7 @@ class _Home extends State<Home> {
     );
   }
 
-  Widget _itemBuilder(context, ProductModel entry, _) {
+  Widget _itemBuilder(context, ProductM entry, _) {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(
@@ -281,12 +287,14 @@ class _Home extends State<Home> {
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
-                      child: Image.network(
-                        "${_appState.endpoint}/products/image/${entry.image}",
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        fit: BoxFit.cover,
-                      ),
+                      child: entry?.images?.isEmpty ?? true
+                          ? const Text("")
+                          : Image.network(
+                              entry?.images[0],
+                              height: MediaQuery.of(context).size.height * 0.2,
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   )
                 ],
@@ -318,7 +326,9 @@ class _Home extends State<Home> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 5),
                                     child: Text(
-                                      entry.name,
+                                      entry?.name?.isEmpty ?? true
+                                          ? ""
+                                          : entry?.name,
                                       style: const TextStyle(
                                         fontFamily: 'Avenir Next',
                                         fontSize: 14,
@@ -330,7 +340,7 @@ class _Home extends State<Home> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 5),
                                     child: Text(
-                                      '\$' + entry.price.toString(),
+                                      '\$' + entry?.price.toString(),
                                       style: const TextStyle(
                                         fontFamily: 'Avenir Next',
                                         fontSize: 16,
@@ -374,7 +384,7 @@ class _Home extends State<Home> {
   }
 
   Widget _buildRobots() {
-    return PagewiseListView<ProductModel>(
+    return PagewiseListView<ProductM>(
       pageSize: PAGE_SIZE,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(15.0),
@@ -416,13 +426,13 @@ class _Home extends State<Home> {
               )),
         );
       },
-      pageFuture: (pageIndex) => ProductService.getProductsByCategorySlug(
-          pageIndex + 1, PAGE_SIZE, "robot"),
+      pageFuture: (pageIndex) =>
+          ProductService.getProductsByCategoryId(pageIndex, PAGE_SIZE, "robot"),
     );
   }
 
   Widget _buildBabyToys() {
-    return PagewiseListView<ProductModel>(
+    return PagewiseListView<ProductM>(
       pageSize: PAGE_SIZE,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(15.0),
@@ -464,8 +474,8 @@ class _Home extends State<Home> {
               )),
         );
       },
-      pageFuture: (pageIndex) => ProductService.getProductsByCategorySlug(
-          pageIndex + 1, PAGE_SIZE, "baby"),
+      pageFuture: (pageIndex) =>
+          ProductService.getProductsByCategoryId(pageIndex, PAGE_SIZE, "baby"),
     );
   }
 
@@ -479,15 +489,35 @@ class _Home extends State<Home> {
 
   void _init() async {
     try {
-      var _result =
-          await _appState.get(Uri.parse("${_appState.endpoint}/config/slider"));
+      var _result = await _appState.getAuth(Uri.parse(
+          "${_appState.backendEndpoint}/Product/GetAllProductsDisplayedOnHomepage"));
       var _sliderResult = jsonDecode(_result.body);
-      setState(() {
-        imgList = (_sliderResult['sliders'] as List)
-            .map((e) => e['image'] as String)
-            .toList();
-      });
+      bannerProductIds =
+          (_sliderResult as List).map((e) => e['id'] as int).toList();
+      bannerProductIds ?? List<int>.empty();
+      if (bannerProductIds.isNotEmpty) {
+        String _implodeBannerProdIds = bannerProductIds.join(";");
+        var _bannerImgIds = await _appState.getAuth(Uri.parse(
+            "${_appState.backendEndpoint}/ProductPictures/GetProductsImagesIds/$_implodeBannerProdIds"));
+        var _body = jsonDecode(_bannerImgIds.body);
+        List<int> _imgIds = [];
+        for (int element in bannerProductIds) {
+          var _temp = _body[element.toString()];
+          for (int secElement in _temp) {
+            _imgIds.add(secElement);
+          }
+        }
+        for (int item in _imgIds) {
+          var _tmpResult = await _appState.getAuth(Uri.parse(
+              "${_appState.backendEndpoint}/Picture/GetPictureUrl/$item?targetSize=0&showDefaultPicture=true"));
+          var _tmpBody = jsonDecode(_tmpResult.body);
+          setState(() {
+            imgList.add(_tmpBody['url']);
+          });
+        }
+      }
     } catch (e) {
+      print(123);
       print(e);
     }
   }
@@ -581,17 +611,30 @@ class _Home extends State<Home> {
                                           borderRadius:
                                               BorderRadius.circular(35.0),
                                           child: Image.network(
-                                            "${_appState.endpoint}/config/sliderimage/$item",
+                                            item,
                                             height: 250.0,
-                                            fit: BoxFit.cover,
+                                            fit: BoxFit.fitHeight,
                                           ),
                                         ),
                                         Container(
-                                          margin:
-                                              const EdgeInsets.only(top: 30),
-                                          alignment: Alignment.topCenter,
+                                          padding: EdgeInsets.zero,
+                                          decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                offset: const Offset(0, 1),
+                                                blurRadius: 5,
+                                                color: Colors.black
+                                                    .withOpacity(0.1),
+                                              ),
+                                            ],
+                                            borderRadius:
+                                                BorderRadius.circular(35.0),
+                                          ),
+                                          // margin:
+                                          //     const EdgeInsets.only(top: 30),
+                                          // alignment: Alignment.topCenter,
                                           child: const Text(
-                                            "Your Favorite Car",
+                                            "",
                                             style: TextStyle(
                                                 fontSize: 28,
                                                 color: Colors.black,

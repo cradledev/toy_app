@@ -74,115 +74,161 @@ class UserService {
     }
   }
 
-  Future<String> userinfoChange(List<String> list) async {
+  Future<Map<String, dynamic>> passwordChange(Map list) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String token = prefs.getString('bearer_token');
-      String id = prefs.getString('auth_userid');
-      String email = prefs.getString('auth_name');
-      String customerId = prefs.getString('customerId');
-      String pass = prefs.getString('password');
-      int ids = int.parse(id);
-      final response = await http.put(
-        Uri.parse("http://23.21.117.81:5000/api/customers/$id"),
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      String token = _prefs.getString("token") ?? '';
+
+      final response = await http.post(
+        Uri.parse("$apiEndPoint/Customer/ChangePassword"),
         headers: {
-          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          "Authorization": "Bearer $token"
         },
-        body: jsonEncode(<String, dynamic>{
-          "ObjectPropertyNameValuePairs": {},
-          "customer": {
-            "billing_address": {
-              "first_name": list[0],
-              "last_name": list[1],
-              "email": email,
-              "company": "",
-              "country_id": 237,
-              "country": "United States of America",
-              "state_province_id": 41,
-              "city": "NewYork",
-              "address1": "NewYork",
-              "address2": "NewYork",
-              "zip_postal_code": "123",
-              "phone_number": "123",
-              "fax_number": "123",
-              "customer_attributes": "123",
-              "created_on_utc": "2022-02-07T04:21:33.362Z",
-              "province": "123",
-              "id": 5
-            },
-            "shipping_address": {
-              "first_name": list[0],
-              "last_name": list[1],
-              "email": email,
-              "company": "",
-              "country_id": 237,
-              "country": "United States of America",
-              "state_province_id": 41,
-              "city": "NewYork",
-              "address1": "NewYork",
-              "address2": "NewYork",
-              "zip_postal_code": "123",
-              "phone_number": "123",
-              "fax_number": "123",
-              "customer_attributes": "123",
-              "created_on_utc": "2022-02-07T04:21:33.362Z",
-              "province": "123",
-              "id": 5
-            },
-            "addresses": [
+        body: jsonEncode({
+          "old_password": list['old_password'],
+          "new_password": list['new_password'],
+          "confirm_new_password": list['confirm_new_password'],
+        }),
+      );
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        return {'ok': true, 'message': jsonDecode(response.body)};
+      } else {
+        return {'ok': false, 'message': jsonDecode(response.body)};
+      }
+    } catch (err) {
+      print(err);
+      rethrow;
+    }
+  }
+
+  Future<String> userinfoChange(Map list, Map userBio) async {
+    try {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      String token = _prefs.getString("token") ?? '';
+      String email = _prefs.getString('userEmail') ?? '';
+      final response = await http.post(
+        Uri.parse("$apiEndPoint/Customer/Info"),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Access-Control-Allow-Origin': '*',
+          "Authorization": "Bearer $token"
+        },
+        body: jsonEncode({
+          "model": {
+            "email": list['userEmail'] ?? email,
+            "email_to_revalidate": null,
+            "check_username_availability_enabled": true,
+            "allow_users_to_change_usernames": true,
+            "usernames_enabled": true,
+            "username": list['userEmail'] ?? email,
+            "gender_enabled": false,
+            "gender": null,
+            "first_name_enabled": true,
+            "first_name": list['firstname'],
+            "first_name_required": true,
+            "last_name_enabled": true,
+            "last_name": list['lastname'],
+            "last_name_required": true,
+            "date_of_birth_enabled": false,
+            "date_of_birth_day": 0,
+            "date_of_birth_month": 0,
+            "date_of_birth_year": 0,
+            "date_of_birth_required": false,
+            "company_enabled": false,
+            "company_required": false,
+            "company": "string",
+            "street_address_enabled": true,
+            "street_address_required": false,
+            "street_address": list['address1'],
+            "street_address2_enabled": false,
+            "street_address2_required": false,
+            "street_address2": "string",
+            "zip_postal_code_enabled": false,
+            "zip_postal_code_required": false,
+            "zip_postal_code": null,
+            "city_enabled": true,
+            "city_required": false,
+            "city": list['city'],
+            "county_enabled": false,
+            "county_required": false,
+            "county": "string",
+            "country_enabled": true,
+            "country_required": false,
+            "country_id": list['country_id'],
+            "available_countries": [
               {
-                "first_name": list[0],
-                "last_name": list[1],
-                "email": email,
-                "company": "",
-                "country_id": 237,
-                "country": "United States of America",
-                "state_province_id": 41,
-                "city": "NewYork",
-                "address1": "NewYork",
-                "address2": "NewYork",
-                "zip_postal_code": "123",
-                "phone_number": "123",
-                "fax_number": "123",
-                "customer_attributes": "123",
-                "created_on_utc": "2022-02-07T04:21:33.362Z",
-                "province": "123",
-                "id": 5
+                "disabled": true,
+                "group": {"disabled": true, "name": "string"},
+                "selected": true,
+                "text": "string",
+                "value": "string"
               }
             ],
-            "customer_guid": customerId,
-            "username": email,
-            "email": email,
-            "first_name": list[0],
-            "last_name": list[1],
-            "language_id": 1,
-            "currency_id": 1,
-            "date_of_birth": "2022-02-07T04:21:33.362Z",
-            "gender": "male",
-            "admin_comment": list[2],
-            "is_tax_exempt": false,
-            "has_shopping_cart_items": false,
-            "active": true,
-            "deleted": false,
-            "is_system_account": false,
-            "system_name": list[3],
-            "last_ip_address": pass,
-            "created_on_utc": "2022-02-07T04:21:33.362Z",
-            "last_login_date_utc": "2022-02-07T04:21:33.362Z",
-            "last_activity_date_utc": "2022-02-07T04:21:33.362Z",
-            "registered_in_store_id": 1,
-            "subscribed_to_newsletter": true,
-            "role_ids": [3],
-            "id": ids
-          }
+            "state_province_enabled": false,
+            "state_province_required": false,
+            "state_province_id": 0,
+            "available_states": [],
+            "phone_enabled": false,
+            "phone_required": false,
+            "phone": "string",
+            "fax_enabled": false,
+            "fax_required": false,
+            "fax": null,
+            "newsletter_enabled": true,
+            "newsletter": true,
+            "signature_enabled": false,
+            "signature": "string",
+            "time_zone_id": null,
+            "allow_customers_to_set_time_zone": false,
+            "available_time_zones": [
+              {
+                "disabled": true,
+                "group": {"disabled": true, "name": "string"},
+                "selected": true,
+                "text": "string",
+                "value": "string"
+              }
+            ],
+            "vat_number": null,
+            "vat_number_status_note": "Unknown",
+            "display_vat_number": false,
+            "associated_external_auth_records": [],
+            "number_of_external_authentication_providers": 0,
+            "allow_customers_to_remove_associations": true,
+            "customer_attributes": [
+              {
+                "name": "bio",
+                "is_required": false,
+                "default_value": list['bio'],
+                "attribute_control_type": "TextBox",
+                "values": [
+                  {
+                    "name": "string",
+                    "is_pre_selected": true,
+                    "id": 0,
+                    "custom_properties": {
+                      "additionalProp1": "string",
+                      "additionalProp2": "string",
+                      "additionalProp3": "string"
+                    }
+                  }
+                ],
+                "id": userBio['id'],
+                "custom_properties": {}
+              }
+            ],
+            "gdpr_consents": [],
+            "custom_properties": {}
+          },
+          "form": {'customer_attribute_1': list['bio']},
         }),
       );
       print(response.body);
       if (response.statusCode == 200) {
-        await prefs.setString('first_name', list[0]);
-        await prefs.setString('last_name', list[1]);
-        await prefs.setString('bio', list[2]);
-        await prefs.setString('path', list[3]);
+        await _prefs.setString('path', list['avatar']);
+        await _prefs.setString('userEmail', list['userEmail'] ?? email);
         return 'success';
       } else {
         return 'failed';

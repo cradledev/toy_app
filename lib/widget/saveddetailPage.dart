@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
-import 'package:toy_app/model/product_model.dart';
+import 'package:toy_app/model/product.model.dart';
 import 'package:toy_app/service/product_repo.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -24,9 +24,9 @@ class _DetailPage extends State<DetailPage> {
     // Future<String> response = _productService.setFavourite(id);
   }
 
-  void submitCartItem(String productId) async {
+  void submitCartItem(int productId) async {
     String response =
-        await _productService.addCartItem(productId, _quantity, 0, "");
+        await _productService.addCartItem(productId, _quantity, 0, 0);
     if (response == 'success') {
       showDialog(
           context: context,
@@ -67,9 +67,9 @@ class _DetailPage extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
-    final args = ModalRoute.of(context).settings.arguments as Product;
-    String url = args.images[0].src;
-    if (args.images.length > 1) url = args.images[1].src;
+    final args = ModalRoute.of(context).settings.arguments as ProductM;
+    String url = args.images[0];
+    if (args.images.length > 1) url = args.images[1];
     final avatarContent = Stack(
       children: <Widget>[
         SizedBox(
@@ -226,7 +226,7 @@ class _DetailPage extends State<DetailPage> {
                         child: ElevatedButton(
                           onPressed: () {
                             // Navigator.pushNamed(context, '/home');
-                            submitCartItem(args.id.toString());
+                            submitCartItem(args.id);
                           },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(

@@ -72,7 +72,7 @@ class _Categories extends State<Categories> {
         );
       },
       pageFuture: (pageIndex) {
-        return ProductService.getAllCategories(pageIndex + 1, PAGE_SIZE);
+        return ProductService.getAllCategories(pageIndex, PAGE_SIZE);
       },
     );
   }
@@ -84,7 +84,7 @@ class _Categories extends State<Categories> {
         Navigator.pushNamed(
           context,
           "/categoryItem",
-          arguments: entry.slug,
+          arguments: {'id': entry?.id, 'name': entry?.name},
         );
       },
       child: Container(
@@ -93,13 +93,13 @@ class _Categories extends State<Categories> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(32),
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              offset: const Offset(0, 1),
-              blurRadius: 5,
-              color: Colors.black.withOpacity(0.1),
-            ),
-          ],
+          // boxShadow: [
+          //   BoxShadow(
+          //     offset: const Offset(0, 1),
+          //     blurRadius: 5,
+          //     color: Colors.black.withOpacity(0.1),
+          //   ),
+          // ],
         ),
         child: Stack(
           fit: StackFit.expand,
@@ -114,12 +114,15 @@ class _Categories extends State<Categories> {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(32),
                         topRight: Radius.circular(32)),
-                    child: Image.network(
-                      "${_appState.endpoint}/categories/image/${entry.image}",
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      width: MediaQuery.of(context).size.width * 0.45,
-                      fit: BoxFit.cover,
-                    ),
+                    child: entry?.image?.isEmpty ?? true
+                        ? const Text("")
+                        : Image.network(
+                            entry?.image,
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            fit: BoxFit.fill,
+                            scale: 1.0,
+                          ),
                   ),
                 )
               ],
@@ -143,7 +146,7 @@ class _Categories extends State<Categories> {
                         padding: EdgeInsets.zero,
                         child: Center(
                           child: Text(
-                            entry.name,
+                            entry?.name.toString(),
                             style: const TextStyle(
                               fontFamily: 'Avenir Next',
                               fontSize: 12,

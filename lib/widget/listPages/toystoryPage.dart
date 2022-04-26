@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
-import 'package:toy_app/model/product.dart';
+import 'package:toy_app/model/product.model.dart';
 import 'package:toy_app/service/product_repo.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -24,7 +24,7 @@ class _Toystory extends State<Toystory> {
   // provider setting
   AppState _appState;
   Widget _build() {
-    return PagewiseGridView<ProductModel>.count(
+    return PagewiseGridView<ProductM>.count(
       pageSize: PAGE_SIZE,
       crossAxisCount: 2,
       mainAxisSpacing: 20.0,
@@ -70,13 +70,13 @@ class _Toystory extends State<Toystory> {
         );
       },
       pageFuture: (pageIndex) {
-        return ProductService.getProductsByCategorySlug(
-            pageIndex + 1, PAGE_SIZE, "story");
+        return ProductService.getProductsByCategoryId(
+            pageIndex, PAGE_SIZE, "story");
       },
     );
   }
 
-  Widget _itemBuilder(context, ProductModel entry, _) {
+  Widget _itemBuilder(context, ProductM entry, _) {
     return InkWell(
       // hoverColor: Colors.pink,
       onTap: () {
@@ -108,12 +108,14 @@ class _Toystory extends State<Toystory> {
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
-                      child: Image.network(
-                        "${_appState.endpoint}/products/image/${entry.image}",
-                        height: MediaQuery.of(context).size.height * 0.23,
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        fit: BoxFit.cover,
-                      ),
+                      child: entry?.images?.isEmpty ?? true
+                          ? const Text("")
+                          : Image.network(
+                              entry?.images[0],
+                              height: MediaQuery.of(context).size.height * 0.23,
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   )
                 ],
@@ -145,7 +147,9 @@ class _Toystory extends State<Toystory> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 5),
                                     child: Text(
-                                      entry.name,
+                                      entry?.name?.isEmpty ?? true
+                                          ? ""
+                                          : entry?.name,
                                       style: const TextStyle(
                                         fontFamily: 'Avenir Next',
                                         fontSize: 14,
@@ -157,7 +161,9 @@ class _Toystory extends State<Toystory> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 5),
                                     child: Text(
-                                      '\$' + entry.price.toString(),
+                                      entry?.price?.isNaN ?? true
+                                          ? ""
+                                          : '\$' + entry?.price.toString(),
                                       style: const TextStyle(
                                         fontFamily: 'Avenir Next',
                                         fontSize: 16,

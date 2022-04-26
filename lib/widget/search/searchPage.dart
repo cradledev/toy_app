@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:toy_app/widget/search/searchlistPage.dart';
 
 class Search extends StatefulWidget {
   const Search({Key key}) : super(key: key);
@@ -22,7 +23,17 @@ class _Search extends State<Search> {
     void searchSubmit() async {
       final bool isValid = _formKey.currentState?.validate();
       if (isValid == true) {
-        Navigator.pushNamed(context, '/searchlist', arguments: _searchText);
+        // Navigator.pushNamed(context, '/searchlist', arguments: _searchText);
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 800),
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return FadeTransition(
+                    opacity: animation,
+                    child: Searchlist(searchText: _searchText));
+              }),
+        );
       }
     }
 

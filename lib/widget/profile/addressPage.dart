@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toy_app/components/components.dart';
@@ -11,24 +14,32 @@ import 'package:provider/provider.dart';
 import 'package:toy_app/helper/constant.dart';
 import 'package:toy_app/provider/index.dart';
 
-class Edit extends StatefulWidget {
-  const Edit({Key key}) : super(key: key);
+class AddressPage extends StatefulWidget {
+  const AddressPage({Key key}) : super(key: key);
 
   @override
-  State<Edit> createState() => _Edit();
+  State<AddressPage> createState() => _AddressPage();
 }
 
-class _Edit extends State<Edit> {
+class _AddressPage extends State<AddressPage> {
   // app state
   AppState _appState;
   final _formKey = GlobalKey<FormState>();
   var savedFirstName = TextEditingController();
   var savedLastName = TextEditingController();
   var savedBio = TextEditingController();
+  TextEditingController userEmailController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController address1Controller = TextEditingController();
+  // TextEditingController address2Controller = TextEditingController();
+  // TextEditingController zipcodeController = TextEditingController();
+  // TextEditingController phoneNumber = TextEditingController();
   final picker = ImagePicker();
   final userService = UserService();
+  List<dynamic> country_items = [];
   File _image;
   String imagePath = '';
+  int selectedCounty = 234;
   bool isProcessing = false;
   @override
   void initState() {
@@ -41,10 +52,27 @@ class _Edit extends State<Edit> {
     SharedPreferences savedPref = await SharedPreferences.getInstance();
     savedFirstName.text = _appState.firstName;
     savedLastName.text = _appState.lastName;
+    userEmailController.text = savedPref.getString('userEmail') ?? "";
+    cityController.text = _appState.profileCity;
+    address1Controller.text = _appState.profileAddress1;
+
     savedBio.text = _appState.bio == null ? "" : _appState.bio['default_value'];
-    setState(() {
-      imagePath = (savedPref.getString('path') ?? "");
-    });
+    if (mounted) {
+      var _country_items_res = await http.get(
+        Uri.parse(
+            "$backendEndpoint/Country/GetAllCountries?languageId=0&showHidden=false"),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Access-Control-Allow-Origin': '*',
+        },
+      );
+      // print(_country_items_res.body);
+      setState(() {
+        country_items = jsonDecode(_country_items_res.body);
+        imagePath = (savedPref.getString('path') ?? "");
+        selectedCounty = _appState.countryId == 0 ? 234 : _appState.countryId;
+      });
+    }
   }
 
   void submitInfo() async {
@@ -54,9 +82,11 @@ class _Edit extends State<Edit> {
         'firstname': savedFirstName.text,
         'lastname': savedLastName.text,
         'bio': savedBio.text,
-        'country_id': _appState.countryId,
-        'city': _appState.profileCity,
-        'address1': _appState.profileAddress1
+        'userEmail': userEmailController.text,
+        'country_id': selectedCounty,
+        'city': cityController.text,
+        'address1': address1Controller.text,
+        'bio': _appState.bio['default_value']
       };
       if (_image != null) {
         list['avatar'] = _image.path;
@@ -80,18 +110,6 @@ class _Edit extends State<Edit> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-
-    Future getImage() async {
-      var pickedFile = await picker.getImage(source: ImageSource.gallery);
-      setState(() {
-        if (pickedFile = null) {
-          _image = File(pickedFile.path);
-          // print('hahaha');
-        } else {
-          print('No image selected.');
-        }
-      });
-    }
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -118,13 +136,12 @@ class _Edit extends State<Edit> {
           child: Column(
             children: [
               Row(
-                children: [
+                children: const [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Text(
-                      AppLocalizations.of(context).editpage_text1,
-                      style: const TextStyle(
+                      "Address",
+                      style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
@@ -136,10 +153,10 @@ class _Edit extends State<Edit> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                 child: Row(
-                  children: [
+                  children: const [
                     Text(
-                      AppLocalizations.of(context).editpage_text2,
-                      style: const TextStyle(
+                      "You can edit your address details and save it here.",
+                      style: TextStyle(
                         fontSize: 14,
                         color: Color(0xff999999),
                       ),
@@ -149,39 +166,6 @@ class _Edit extends State<Edit> {
               ),
               SizedBox(
                 height: height * 0.01,
-              ),
-              Container(
-                width: width * 0.3,
-                height: height * 0.2,
-                margin:
-                    EdgeInsets.only(left: width * 0.05, right: width * 0.02),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32),
-                  color: Colors.white,
-                ),
-                child: InkWell(
-                  onTap: getImage,
-                  child: CircleAvatar(
-                    radius: 38.0,
-                    child: ClipOval(
-                      child: _image == null
-                          ? (imagePath == ''
-                              ? Image.asset(
-                                  "assets/img/home/avatar.jpg",
-                                  fit: BoxFit.fill,
-                                )
-                              : Image.file(
-                                  File(imagePath),
-                                  fit: BoxFit.fill,
-                                ))
-                          : Image.file(
-                              _image,
-                              fit: BoxFit.fill,
-                            ),
-                    ),
-                    backgroundColor: Colors.white,
-                  ),
-                ),
               ),
               Expanded(
                 child: Container(
@@ -301,10 +285,9 @@ class _Edit extends State<Edit> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          AppLocalizations.of(context)
-                                              .editpage_bio,
-                                          style: const TextStyle(
+                                        const Text(
+                                          "Email",
+                                          style: TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black87),
@@ -312,13 +295,112 @@ class _Edit extends State<Edit> {
                                         const SizedBox(
                                           height: 5,
                                         ),
-                                        TextField(
-                                          controller: savedBio,
-                                          maxLines: 5,
+                                        TextFormField(
+                                          controller: userEmailController,
                                           decoration: InputDecoration(
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
-                                                    vertical: 5,
+                                                    vertical: 0,
+                                                    horizontal: 10),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                color: Colors.grey,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(32),
+                                            ),
+                                            border: const OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey)),
+                                          ),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.trim().isEmpty) {
+                                              return AppLocalizations.of(
+                                                      context)
+                                                  .login_pmail;
+                                            }
+                                            // Check if the entered email has the right format
+                                            if (!RegExp(r'\S+@\S+\.\S+')
+                                                .hasMatch(value)) {
+                                              return AppLocalizations.of(
+                                                      context)
+                                                  .login_pvmail;
+                                            }
+                                            // Return null if the entered email is valid
+                                            return null;
+                                          },
+                                          onChanged: (value) {},
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        )
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Country",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black87),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        DropdownButton(
+                                          value: selectedCounty,
+                                          items: country_items?.map((item) {
+                                            return DropdownMenuItem<int>(
+                                              child: Text('${item["name"]}'),
+                                              value: item['id'],
+                                            );
+                                          })?.toList(),
+                                          onChanged: (value) {
+                                            print(value);
+                                            setState(() {
+                                              selectedCounty = value;
+                                            });
+                                          },
+                                          hint: const Text("Select Country"),
+                                          disabledHint: const Text("Disabled"),
+                                          elevation: 8,
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16),
+                                          icon: const Icon(
+                                              Icons.arrow_drop_down_circle),
+                                          iconDisabledColor: Colors.red,
+                                          // iconEnabledColor: Colors.green,
+                                          isExpanded: true,
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "City",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black87),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        TextFormField(
+                                          controller: cityController,
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 0,
                                                     horizontal: 10),
                                             enabledBorder: OutlineInputBorder(
                                               borderSide: const BorderSide(
@@ -332,6 +414,47 @@ class _Edit extends State<Edit> {
                                                     color: Colors.grey)),
                                           ),
                                         ),
+                                        const SizedBox(
+                                          height: 10,
+                                        )
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Street Address1",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black87),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        TextFormField(
+                                          controller: address1Controller,
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 0,
+                                                    horizontal: 10),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                color: Colors.grey,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(32),
+                                            ),
+                                            border: const OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey)),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        )
                                       ],
                                     ),
                                   ],

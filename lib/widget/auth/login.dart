@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -32,9 +33,15 @@ class _LoginScreenPage extends State<LoginScreen> {
     _init();
   }
 
-  void _init() {
+  void _init() async {
     _loadingStatus = false;
     _appState = Provider.of<AppState>(context, listen: false);
+  }
+
+  void _setTokenToLocalStorage(_token) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    await _prefs.setString('token', _token);
+    await _prefs.setString('userEmail', _userEmail);
   }
 
   // final TextEditingController _passwordController = TextEditingController();
@@ -45,19 +52,18 @@ class _LoginScreenPage extends State<LoginScreen> {
         _loadingStatus = true;
       });
       userInfo = {'email': _userEmail, 'password': _userPwd};
-      print(userInfo);
       _appState
-          .post(Uri.parse("${_appState.endpoint}/auth/login"),
+          .post(Uri.parse("${_appState.endpoint}/Authenticate/GetToken"),
               jsonEncode(userInfo))
           .then((res) {
         var body = jsonDecode(res.body);
-        print(body);
-        if (body['ok']) {
+        if (res.statusCode == 200) {
           setState(() {
             _loadingStatus = false;
           });
-          _appState.user = body['user'];
+          _appState.user = body;
           _appState.token = body['token'];
+          _setTokenToLocalStorage(body['token']);
           Navigator.pushReplacementNamed(context, '/home');
         } else {
           setState(() {
