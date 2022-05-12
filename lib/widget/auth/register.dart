@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:toy_app/service/mailchimp_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -65,6 +66,12 @@ class _Register extends State<Register> {
     }
 
     return list;
+  }
+
+  void _setTokenToLocalStorage(_token) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    await _prefs.setString('token', _token);
+    await _prefs.setString('userEmail', _email);
   }
 
   void _onNextPage() {
@@ -299,6 +306,7 @@ class _Register extends State<Register> {
           });
           _appState.user = body;
           _appState.token = body['token'];
+          _setTokenToLocalStorage(body['token']);
           Navigator.pushReplacementNamed(context, '/home');
         } else {
           setState(() {

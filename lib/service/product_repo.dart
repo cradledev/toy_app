@@ -412,6 +412,7 @@ class ProductService {
           "Authorization": "Bearer $_token"
         });
     var _body = jsonDecode(response.body);
+    print(_body);
     List<ProductM> categoryProductList = [];
     for (var item in _body) {
       var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
