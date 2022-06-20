@@ -36,8 +36,9 @@ class _Profile extends State<Profile> {
   }
 
   void onLogout() async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    String _token = _prefs.getString("token") ?? '';
+    // SharedPreferences _prefs = await SharedPreferences.getInstance();
+    // String _token = _prefs.getString("token") ?? '';
+    _appState.resetState();
     await http.get(
       Uri.parse("$apiEndPoint/Customer/Logout"),
       headers: {
@@ -88,7 +89,7 @@ class _Profile extends State<Profile> {
           .where((e) => e['name'] == "bio")
           .toList();
       print(_bioAttr);
-      _appState.bio = _bioAttr[0];
+      _appState.bio = _bioAttr.isEmpty ? null : _bioAttr[0];
     }
   }
 

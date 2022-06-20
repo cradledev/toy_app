@@ -556,9 +556,9 @@ class _Cart extends State<Cart> {
                   padding:
                       EdgeInsets.fromLTRB(width * 0.05, 8, width * 0.05, 0),
                   child: Text(
-                    orderTotalModel?.isEmpty ?? true
+                    orderTotalModel == null
                         ? ""
-                        : orderTotalModel['sub_total'],
+                        : orderTotalModel['sub_total'] ?? "",
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 24,
@@ -588,9 +588,9 @@ class _Cart extends State<Cart> {
                   padding:
                       EdgeInsets.fromLTRB(width * 0.05, 8, width * 0.05, 0),
                   child: Text(
-                    orderTotalModel?.isEmpty ?? true
+                    orderTotalModel == null
                         ? ""
-                        : orderTotalModel['order_total_discount'],
+                        : orderTotalModel['order_total_discount'] ?? "",
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 24,
@@ -620,9 +620,9 @@ class _Cart extends State<Cart> {
                   padding:
                       EdgeInsets.fromLTRB(width * 0.05, 8, width * 0.05, 0),
                   child: Text(
-                    orderTotalModel?.isEmpty ?? true
+                    orderTotalModel == null
                         ? ""
-                        : orderTotalModel['order_total'],
+                        : orderTotalModel['order_total'] ?? "",
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 24,
@@ -643,8 +643,18 @@ class _Cart extends State<Cart> {
                 width: width * 0.9,
                 child: ElevatedButton(
                   onPressed: () {
-                    _appState.cartTotalPrice = total_price;
-                    Navigator.pushNamed(context, '/delivery');
+                    int _tmpCartCount = int.parse(cart_count.toString());
+                    if (_tmpCartCount > 0) {
+                      _appState.cartTotalPrice = total_price;
+                      Navigator.pushNamed(context, '/delivery');
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("No Cart items."),
+                        backgroundColor: Colors.orange,
+                      ));
+                    }
+                    // _appState.cartTotalPrice = total_price;
+                    //   Navigator.pushNamed(context, '/delivery');
                   },
                   style: ButtonStyle(
                     backgroundColor:

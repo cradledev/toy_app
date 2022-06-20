@@ -197,19 +197,218 @@ class _DetailPageTest extends State<DetailPageTest> {
     getCartByProductId(_appState.user['customer_id'], args?.id);
     final avatarContent = Stack(
       children: <Widget>[
-        SizedBox(
-          height: mq.height,
-        ),
-        Container(
-          width: mq.width,
-          padding: EdgeInsets.zero,
-          color: const Color.fromARGB(255, 233, 232, 232),
-          child: productImageUrl?.isEmpty ?? true
-              ? const Text("")
-              : Image.network(
-                  productImageUrl,
-                  fit: BoxFit.fitWidth,
-                ),
+        Column(
+          children: [
+            Container(
+              width: mq.width,
+              height: MediaQuery.of(context).size.height * 0.45,
+              padding: EdgeInsets.zero,
+              color: const Color.fromARGB(255, 233, 232, 232),
+              child: productImageUrl?.isEmpty ?? true
+                  ? const Text("")
+                  : Image.network(
+                      productImageUrl,
+                      fit: BoxFit.fitWidth,
+                    ),
+            ),
+            Container(
+              width: mq.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Colors.white,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Text(
+                                args?.name?.isEmpty ?? true ? "" : args?.name,
+                                style: const TextStyle(
+                                  fontFamily: 'Avenir Next',
+                                  fontSize: 32,
+                                  color: Color(0xff1d1d1d),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            // args.approvedratingsum.toString(),
+                            "Stock " + args.stock.toString(),
+                            style: const TextStyle(
+                              fontFamily: 'Avenir Next',
+                              fontSize: 16,
+                              color: Color(0xff1d1d1d),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(mq.width * 0.085, 8, 0, 10),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        categoryName ?? "",
+                        style: const TextStyle(
+                          fontFamily: 'Avenir Next',
+                          fontSize: 14,
+                          color: Color(0xff999999),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        mq.width * 0.085, 16, 0, mq.height * 0.02),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        AppLocalizations.of(context).detailpage_quantity,
+                        style: const TextStyle(
+                          fontFamily: "Avenir Next",
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff1d1d1d),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        mq.width * 0.085, 0, 0, mq.height * 0.02),
+                    child: SizedBox(
+                      width: mq.width * 0.3,
+                      child: NumberInputPrefabbed.roundedButtons(
+                        controller: quantity,
+                        incDecBgColor:
+                            const Color.fromARGB(255, 223, 240, 253),
+                        buttonArrangement: ButtonArrangement.incRightDecLeft,
+                        incIcon: Icons.add,
+                        decIcon: Icons.remove,
+                        incIconColor: const Color(0xff283488),
+                        decIconColor: const Color(0xff283488),
+                        incIconSize: 35,
+                        decIconSize: 35,
+                        onChanged: (value) {
+                          print(value);
+                          if (!value.isNaN) {
+                            quantity.text = value.toString();
+                            _quantity = value;
+                          }
+                        },
+                        min: 1,
+                        max: args.stock,
+                        initialValue: _quantity,
+                        numberFieldDecoration: const InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        mq.width * 0.085, 16, 0, mq.height * 0.02),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        AppLocalizations.of(context).detailpage_description,
+                        style: const TextStyle(
+                          fontFamily: "Avenir Next",
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff1d1d1d),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(mq.width * 0.085, 0,
+                        mq.width * 0.085, mq.height * 0.02),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        args.shortdescription ?? "",
+                        style: const TextStyle(
+                          fontFamily: "Avenir Next",
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                          color: Color(0xff1d1d1d),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: mq.width * 0.6,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                              mq.width * 0.085, 16, 16, mq.height * 0.02),
+                          child: ElevatedButton(
+                            onPressed: processing
+                                ? null
+                                : () {
+                                    // Navigator.pushNamed(context, '/home');
+                                    submitCartItem(args?.id, args?.price);
+                                  },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color(0xff283488)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(32.0),
+                                  side: const BorderSide(
+                                      color: Color(0xff283488)),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              processing
+                                  ? "...processing"
+                                  : AppLocalizations.of(context)
+                                      .detailpage_acart,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                            16, 16, mq.width * 0.0853, mq.height * 0.02),
+                        child: Text(
+                          '\$' + args.price.toString(),
+                          style: const TextStyle(
+                            fontFamily: "Avenir Next",
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff1d1d1d),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         Positioned(
           left: 12.0,
@@ -245,217 +444,6 @@ class _DetailPageTest extends State<DetailPageTest> {
                   ),
           ),
         ),
-        Positioned(
-          top: mq.height * 0.45,
-          child: Container(
-            width: mq.width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: mq.width * 0.085,
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(mq.width * 0.085, 0, 0, 10),
-                  child: Text(
-                    args?.name?.isEmpty ?? true ? "" : args?.name,
-                    style: const TextStyle(
-                      fontFamily: 'Avenir Next',
-                      fontSize: 32,
-                      color: Color(0xff1d1d1d),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(mq.width * 0.085, 8, 0, 10),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      categoryName ?? "",
-                      style: const TextStyle(
-                        fontFamily: 'Avenir Next',
-                        fontSize: 14,
-                        color: Color(0xff999999),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      mq.width * 0.085, 16, 0, mq.height * 0.02),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      AppLocalizations.of(context).detailpage_quantity,
-                      style: const TextStyle(
-                        fontFamily: "Avenir Next",
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff1d1d1d),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      mq.width * 0.085, 0, 0, mq.height * 0.02),
-                  child: SizedBox(
-                    width: mq.width * 0.3,
-                    child: NumberInputPrefabbed.roundedButtons(
-                      controller: quantity,
-                      incDecBgColor: const Color.fromARGB(255, 223, 240, 253),
-                      buttonArrangement: ButtonArrangement.incRightDecLeft,
-                      incIcon: Icons.add,
-                      decIcon: Icons.remove,
-                      incIconColor: const Color(0xff283488),
-                      decIconColor: const Color(0xff283488),
-                      incIconSize: 35,
-                      decIconSize: 35,
-                      onChanged: (value) {
-                        print(value);
-                        if (!value.isNaN) {
-                          quantity.text = value.toString();
-                          _quantity = value;
-                        }
-                      },
-                      min: 1,
-                      max: args.stock,
-                      initialValue: _quantity,
-                      numberFieldDecoration: const InputDecoration(
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      mq.width * 0.085, 16, 0, mq.height * 0.02),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      AppLocalizations.of(context).detailpage_description,
-                      style: const TextStyle(
-                        fontFamily: "Avenir Next",
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff1d1d1d),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      mq.width * 0.085, 0, mq.width * 0.0853, mq.height * 0.02),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      args.shortdescription ?? "",
-                      style: const TextStyle(
-                        fontFamily: "Avenir Next",
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: Color(0xff1d1d1d),
-                      ),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: mq.width * 0.6,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(
-                            mq.width * 0.085, 16, 16, mq.height * 0.02),
-                        child: ElevatedButton(
-                          onPressed: processing
-                              ? null
-                              : () {
-                                  // Navigator.pushNamed(context, '/home');
-                                  submitCartItem(args?.id, args?.price);
-                                },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color(0xff283488)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(32.0),
-                                side:
-                                    const BorderSide(color: Color(0xff283488)),
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            processing
-                                ? "...processing"
-                                : AppLocalizations.of(context).detailpage_acart,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(
-                          16, 16, mq.width * 0.0853, mq.height * 0.02),
-                      child: Text(
-                        '\$' + args.price.toString(),
-                        style: const TextStyle(
-                          fontFamily: "Avenir Next",
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff1d1d1d),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-          top: mq.height * 0.5,
-          right: mq.width * 0.08,
-          child: Row(
-            children: [
-              const Text(
-                // args.approvedratingsum.toString(),
-                "stock",
-                style: TextStyle(
-                  fontFamily: 'Avenir Next',
-                  fontSize: 16,
-                  color: Color(0xff1d1d1d),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              // Icon(
-              //   Icons.star,
-              //   size: 30,
-              //   color: Color(0xffF8C327),
-              // ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
-                child: Text(
-                  // args.approvedratingsum.toString(),
-                  args.stock.toString(),
-                  style: const TextStyle(
-                    fontFamily: 'Avenir Next',
-                    fontSize: 16,
-                    color: Color(0xff1d1d1d),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
       ],
     );
 
@@ -464,7 +452,10 @@ class _DetailPageTest extends State<DetailPageTest> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(child: avatarContent),
+            Container(
+                // height: MediaQuery.of(context).size.height,
+                padding: EdgeInsets.zero,
+                child: avatarContent),
           ],
         ),
       ),

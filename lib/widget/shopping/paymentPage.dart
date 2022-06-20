@@ -56,16 +56,17 @@ class _PaymentState extends State<Payment> {
   }
 
   void initiateSession() {
-    MFSDK.initiateSession((MFResult<MFInitiateSessionResponse> result) => {
-          if (result.isSuccess())
-            {mfPaymentCardView.load(result.response)}
+    MFSDK.initiateSession((MFResult<MFInitiateSessionResponse> result) {
+          if (result.isSuccess()) {
+            mfPaymentCardView.load(result.response);
+          }
           else
             {
               setState(() {
                 print(
                     "Response: " + result.error.toJson().toString().toString());
                 _response = result.error.message;
-              })
+              });
             }
         });
   }
@@ -188,7 +189,9 @@ class _PaymentState extends State<Payment> {
                             ),
                           ),
                           Text(
-                            "\$" + _appState.cartTotalPrice ?? "0",
+                          _appState.cartTotalPrice == null
+                                ? "0"
+                                : _appState.cartTotalPrice.toString(),
                             style: const TextStyle(
                               fontFamily: 'Avenir Next',
                               fontSize: 24,

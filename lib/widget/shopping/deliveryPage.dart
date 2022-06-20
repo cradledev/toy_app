@@ -35,9 +35,6 @@ class _DeliveryPage extends State<Delivery> {
     void submitDelivery() async {
       final bool isValid = _formKey.currentState?.validate();
       if (isValid == true) {
-        print(_address);
-        print(_city);
-        print(_index);
         _appState.address = _address;
         _appState.city = _city;
         _appState.index = _index;
@@ -46,7 +43,6 @@ class _DeliveryPage extends State<Delivery> {
     }
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       floatingActionButton: const LanguageTransitionWidget(),
       appBar: CustomAppBar(
@@ -56,11 +52,9 @@ class _DeliveryPage extends State<Delivery> {
         },
       ),
       body: SingleChildScrollView(
-        reverse: true,
         child: Container(
-          height: MediaQuery.of(context).size.height - 150,
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.only(bottom: 25),
+          padding: EdgeInsets.zero,
+          height: MediaQuery.of(context).size.height * 0.85,
           child: Column(
             children: [
               Expanded(
@@ -240,8 +234,9 @@ class _DeliveryPage extends State<Delivery> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: height * 0.07,
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                height: 50,
                 width: width * 0.9,
                 child: ElevatedButton(
                   onPressed: () {

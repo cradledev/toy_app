@@ -10,6 +10,25 @@ class Auth extends StatefulWidget {
 
 class _Auth extends State<Auth> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void onVisitAsGuest() async {
+    // try {} catch (e) {
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //     content: Text("Error is occured in network status."),
+    //     backgroundColor: Colors.red,
+    //   ));
+    // }
+  }
+
+  @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
@@ -118,6 +137,29 @@ class _Auth extends State<Auth> {
               child: Text(
                 AppLocalizations.of(context).auth_signup,
                 style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: height * 0.03,
+          ),
+          SizedBox(
+            height: height * 0.07,
+            width: width * 0.9,
+            child: ElevatedButton(
+              onPressed: onVisitAsGuest,
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.deepPurple),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(83.0),
+                    side: const BorderSide(color: Colors.deepPurple),
+                  ),
+                ),
+              ),
+              child: const Text(
+                "Visit As a Guest",
+                style: TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
           ),

@@ -107,11 +107,16 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set cartTotalPrice(value) {
+  set cartTotalPrice(String value) {
     _cartTotalPrice = value;
     notifyListeners();
   }
 
+  void resetState() {
+    user = null;
+    token = "";
+    notifyListeners();
+  }
   void notifyToast({context, message}) {
     Toast.show(message, context,
         duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);

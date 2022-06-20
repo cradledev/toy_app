@@ -190,6 +190,7 @@ class _Home extends State<Home> {
                         padding: EdgeInsets.zero,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Expanded(
                               child: Column(
@@ -318,38 +319,41 @@ class _Home extends State<Home> {
                           padding: EdgeInsets.zero,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      entry?.name?.isEmpty ?? true
-                                          ? ""
-                                          : entry?.name,
-                                      style: const TextStyle(
-                                        fontFamily: 'Avenir Next',
-                                        fontSize: 14,
-                                        color: Colors.black,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.symmetric(vertical: 5),
+                                      child: Text(
+                                        entry?.name?.isEmpty ?? true
+                                            ? ""
+                                            : entry?.name,
+                                        style: const TextStyle(
+                                          fontFamily: 'Avenir Next',
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      '\$' + entry?.price.toString(),
-                                      style: const TextStyle(
-                                        fontFamily: 'Avenir Next',
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.symmetric(vertical: 5),
+                                      child: Text(
+                                        '\$' + entry?.price.toString(),
+                                        style: const TextStyle(
+                                          fontFamily: 'Avenir Next',
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                               SizedBox(
                                 height: 30,
