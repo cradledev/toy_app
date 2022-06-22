@@ -6,9 +6,11 @@ class UserModel {
   final String lastName;
   final String bio;
   final String path;
-  final String customerId;
+  final int customerId;
   final bool active;
   final String pass;
+  final bool isGuest;
+  final String token;
   UserModel({
     this.id,
     this.userName,
@@ -20,6 +22,8 @@ class UserModel {
     this.customerId,
     this.active,
     this.pass,
+    this.isGuest,
+    this.token
   });
   factory UserModel.fromJson(Map<String, dynamic> json) {
     String _username = json['username'] ?? "";
@@ -28,7 +32,6 @@ class UserModel {
     String _lastname = json['last_name'] ?? "";
     String _bio = json['admin_comment'] ?? "";
     String _path = json['system_name'] ?? "";
-    String _customerId = json['customer_guid'] ?? "";
     String _pass = json['last_ip_address'] ?? "";
     return UserModel(
       id: json['id'],
@@ -38,9 +41,28 @@ class UserModel {
       lastName: _lastname,
       bio: _bio,
       path: _path,
-      customerId: _customerId,
+      customerId: json['customer_id'],
       active: json['active'],
       pass: _pass,
+      isGuest: json['is_guest'] ?? false,
+      token: json['token']
     );
+  }
+
+   Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "userName": userName,
+      "userEmail": userEmail,
+      "firstName": firstName,
+      "lastName": lastName,
+      "bio": bio,
+      "path": path,
+      "customerId" : customerId,
+      "active" : active,
+      "pass" : pass,
+      "isGuest" : isGuest,
+      "token" : token
+    };
   }
 }

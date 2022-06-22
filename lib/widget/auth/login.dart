@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:toy_app/model/user_model.dart';
 
 import 'package:toy_app/provider/index.dart';
 import 'package:provider/provider.dart';
+import 'package:toy_app/service/user_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -25,6 +27,9 @@ class _LoginScreenPage extends State<LoginScreen> {
   String _userPwd = '';
 
   Map userInfo;
+
+  // userservice setting
+  UserService userService;
   // indicator status
   bool _loadingStatus = false;
   @override
@@ -36,12 +41,7 @@ class _LoginScreenPage extends State<LoginScreen> {
   void _init() async {
     _loadingStatus = false;
     _appState = Provider.of<AppState>(context, listen: false);
-  }
-
-  void _setTokenToLocalStorage(_token) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    await _prefs.setString('token', _token);
-    await _prefs.setString('userEmail', _userEmail);
+    userService = UserService();
   }
 
   // final TextEditingController _passwordController = TextEditingController();
@@ -52,45 +52,15 @@ class _LoginScreenPage extends State<LoginScreen> {
         _loadingStatus = true;
       });
       userInfo = {'email': _userEmail, 'password': _userPwd};
-      print(userInfo);
-      _appState
-          .post(Uri.parse("${_appState.endpoint}/Authenticate/GetToken"),
-              jsonEncode(userInfo))
-          .then((res) {
-        var body = jsonDecode(res.body);
-        print(res.body);
-        if (res.statusCode == 200) {
-          setState(() {
-            _loadingStatus = false;
-          });
-          _appState.user = body;
-          _appState.token = body['token'];
-          _setTokenToLocalStorage(body['token']);
-          Navigator.pushReplacementNamed(context, '/home');
-        } else {
-          setState(() {
-            _loadingStatus = false;
-          });
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(AppLocalizations.of(context).login_text1),
-                content: Text(AppLocalizations.of(context).login_text2),
-                actions: [
-                  ElevatedButton(
-                    child: Text(AppLocalizations.of(context).login_ok),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-              );
-            },
-          );
-        }
+      userService.onLogin(userInfo).then((value) {
+        setState(() {
+          _loadingStatus = false;
+        });
+        _appState.user = UserModel.fromJson(value);
+        _appState.setLocalStorage(key: 'user', value: jsonEncode(value));
+        _appState.setLocalStorage(key: 'token', value: value['token']);
+        Navigator.pushReplacementNamed(context, '/home');
       }).catchError((error) {
-        print(error);
         setState(() {
           _loadingStatus = false;
         });

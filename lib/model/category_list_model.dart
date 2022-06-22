@@ -11,4 +11,11 @@ class CategoryList {
       image: _pImgUrl ?? "",
     );
   }
+  Map<String, dynamic> toMap() {
+    return {
+      "id" : id,
+      "name" : name,
+      "image" : image
+    };
+  }
 }

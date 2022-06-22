@@ -85,7 +85,6 @@ class _Searchlist extends State<Searchlist> {
           Navigator.pop(context);
         },
       ),
-      floatingActionButton: const LanguageTransitionWidget(),
       body: SingleChildScrollView(
         child: Container(
           color: const Color(0xffffffff),
@@ -97,7 +96,7 @@ class _Searchlist extends State<Searchlist> {
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(
-                        vertical: height * 0.02, horizontal: width * 0.05),
+                        vertical: 8, horizontal: width * 0.05),
                     child: Text(
                       widget.searchText,
                       style: const TextStyle(
@@ -116,7 +115,7 @@ class _Searchlist extends State<Searchlist> {
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(
-                        vertical: 0, horizontal: width * 0.05),
+                        vertical: 8, horizontal: width * 0.05),
                     child: Text(
                       AppLocalizations.of(context).searchlistpage_result,
                       style: const TextStyle(

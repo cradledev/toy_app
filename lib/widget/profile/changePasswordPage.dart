@@ -92,7 +92,6 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
           Navigator.pop(context);
         },
       ),
-      floatingActionButton: const LanguageTransitionWidget(),
       body: SingleChildScrollView(
         reverse: true,
         child: Container(

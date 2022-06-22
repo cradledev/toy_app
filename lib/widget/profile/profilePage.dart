@@ -11,6 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:toy_app/helper/constant.dart';
 import 'package:toy_app/provider/index.dart';
+import 'package:toy_app/service/user_auth.dart';
 import 'package:toy_app/widget/profile/addressPage.dart';
 import 'package:toy_app/widget/profile/changePasswordPage.dart';
 
@@ -23,6 +24,7 @@ class Profile extends StatefulWidget {
 
 class _Profile extends State<Profile> {
   AppState _appState;
+  UserService userService;
   String savedFirstName = '';
   String savedLastName = '';
   String imagePath = '';
@@ -31,27 +33,21 @@ class _Profile extends State<Profile> {
   void initState() {
     super.initState();
     _appState = Provider.of<AppState>(context, listen: false);
+    userService = UserService();
     getUserInfo();
-    print(_appState.user['token']);
   }
 
   void onLogout() async {
-    // SharedPreferences _prefs = await SharedPreferences.getInstance();
-    // String _token = _prefs.getString("token") ?? '';
-    _appState.resetState();
-    await http.get(
-      Uri.parse("$apiEndPoint/Customer/Logout"),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Access-Control-Allow-Origin': '*'
-      },
-    );
-    Navigator.pushNamed(context, '/');
+    userService.onLogout(_appState.user.token).then((value) {
+      _appState.resetState();
+      _appState.setLocalStorage(key: 'user', value: '');
+      _appState.setLocalStorage(key: 'token', value: '');
+      Navigator.pushNamed(context, '/');
+    }).catchError((error) {});
   }
 
   void getUserInfo() async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    String _token = _prefs.getString("token") ?? '';
+    String _token = _appState.user.token;
     var _profileInfoRes = await http.get(
       Uri.parse("$apiEndPoint/Customer/info"),
       headers: {
@@ -75,7 +71,7 @@ class _Profile extends State<Profile> {
       setState(() {
         savedFirstName = _body['first_name'];
         savedLastName = _body['last_name'];
-        imagePath = (_prefs.getString('path') ?? "");
+        imagePath = _appState.user.path;
         purchageAmount = (_orderBody['orders'] as List).isEmpty ?? true
             ? 0
             : (_orderBody['orders'] as List).length;
@@ -110,7 +106,6 @@ class _Profile extends State<Profile> {
           Navigator.pop(context);
         },
       ),
-      floatingActionButton: const LanguageTransitionWidget(),
       bottomNavigationBar:
           CustomBottomNavbar(context: context, selectedIndex: 4),
       body: Column(
@@ -154,7 +149,7 @@ class _Profile extends State<Profile> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 10),
                                     child: Text(
-                                      savedFirstName + " " + savedLastName,
+                                      "$savedFirstName $savedLastName",
                                       style: const TextStyle(
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold,

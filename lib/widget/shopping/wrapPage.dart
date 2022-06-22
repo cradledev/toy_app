@@ -125,7 +125,7 @@ class _WrapPage extends State<WrapPage> {
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
                       child: entry?.images?.isEmpty ?? true
-                          ? const Text("")
+                          ? Image.asset('assets/img/no_image.png', fit: BoxFit.fill,)
                           : Image.network(
                               entry?.images[0],
                               height: MediaQuery.of(context).size.height * 0.23,

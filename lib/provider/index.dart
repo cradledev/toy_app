@@ -3,16 +3,15 @@ import 'package:toast/toast.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toy_app/model/user_model.dart';
 
 class AppState extends ChangeNotifier {
   final String _endpoint = "http://147.182.244.82:80/api-frontend";
   final String _backendEndpint = "http://147.182.244.82:80/api-backend";
 
   final String selectedLang = "selectedLang";
-  bool _flag = false;
-  Map _user;
-  String _token = '';
-  SharedPreferences _sp;
+  UserModel _user;
+  
   String _city = "";
   String _address = "";
   String _index = "";
@@ -24,12 +23,9 @@ class AppState extends ChangeNotifier {
   String _profileCity = "";
   String _profileAddress1 = "";
   //get
-  get flag => _flag;
   get endpoint => _endpoint;
   get backendEndpoint => _backendEndpint;
   get user => _user;
-  get sp => _sp;
-  get token => _token;
   get cartTotalPrice => _cartTotalPrice;
   get countryId => _countyId;
   get city => _city;
@@ -72,23 +68,8 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set flag(value) {
-    _flag = value;
-    notifyListeners();
-  }
-
-  set user(value) {
+  set user(UserModel value) {
     _user = value;
-    notifyListeners();
-  }
-
-  set sp(value) {
-    _sp = value;
-    notifyListeners();
-  }
-
-  set token(value) {
-    _token = value;
     notifyListeners();
   }
 
@@ -114,7 +95,6 @@ class AppState extends ChangeNotifier {
 
   void resetState() {
     user = null;
-    token = "";
     notifyListeners();
   }
   void notifyToast({context, message}) {
@@ -151,14 +131,6 @@ class AppState extends ChangeNotifier {
     return response;
   }
 
-  Future<http.Response> postAuth(url, payload) async {
-    var response = await http.post(url, body: payload, headers: {
-      "accept": "*/*",
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': "Bearer $token"
-    });
-    return response;
-  }
 
   Future<http.Response> get(url, {context}) async {
     var response = await http.get(url, headers: {"accept": "application/json"});
@@ -166,11 +138,12 @@ class AppState extends ChangeNotifier {
   }
 
   Future<http.Response> getAuth(url) async {
-    var response = await http.get(url, headers: {
-      "accept": "*/*",
-      'Content-Type': 'application/json; charset=UTF-8',
-      "Authorization": "Bearer $token"
-    });
+    // var response = await http.get(url, headers: {
+    //   "accept": "*/*",
+    //   'Content-Type': 'application/json; charset=UTF-8',
+    //   "Authorization": "Bearer $token"
+    // });
+    var response;
     return response;
   }
 
@@ -192,5 +165,23 @@ class AppState extends ChangeNotifier {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String languageCode = _prefs.getString(selectedLang) ?? 'en';
     return Locale(languageCode);
+  }
+
+  Future setLocalStorage({key, value, type = "string"}) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    if (type == "string") {
+      await _prefs.setString(key, value);
+    }
+    if (type == "int") {
+      await _prefs.setInt(key, value);
+    }
+    
+    notifyListeners();
+  }
+
+  Future<String> getLocalStorage(key) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    String _temp = _prefs.getString(key) ?? "";
+    return _temp;
   }
 }

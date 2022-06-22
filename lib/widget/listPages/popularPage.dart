@@ -29,7 +29,7 @@ class _Popular extends State<Popular> {
       crossAxisCount: 2,
       mainAxisSpacing: 20.0,
       crossAxisSpacing: 6.0,
-      childAspectRatio: 0.75,
+      childAspectRatio: 0.8,
       padding: const EdgeInsets.all(15.0),
       itemBuilder: _itemBuilder,
       loadingBuilder: (context) {
@@ -70,8 +70,10 @@ class _Popular extends State<Popular> {
         );
       },
       pageFuture: (pageIndex) {
-        return ProductService.getProductsByCategoryId(
-            pageIndex, PAGE_SIZE, "story");
+        return ProductService.onGetPopularProducts(
+            pageIndex: pageIndex,
+            pageSize: PAGE_SIZE,
+            token: _appState.user.token);
       },
     );
   }
@@ -89,7 +91,7 @@ class _Popular extends State<Popular> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Container(
-          height: MediaQuery.of(context).size.height * 0.3,
+          height: MediaQuery.of(context).size.height * 0.4,
           width: MediaQuery.of(context).size.width * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32),
@@ -109,19 +111,18 @@ class _Popular extends State<Popular> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Padding(
+                  Container(
                     padding: const EdgeInsets.only(top: 0),
+                    height: MediaQuery.of(context).size.height * 0.23,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
                       child: entry?.images?.isEmpty ?? true
-                          ? const Text("")
+                          ? Image.asset('assets/img/no_image.png', fit: BoxFit.fill,)
                           : Image.network(
                               entry?.images[0],
-                              height: MediaQuery.of(context).size.height * 0.23,
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fill,
                             ),
                     ),
                   )
@@ -133,7 +134,7 @@ class _Popular extends State<Popular> {
                 children: <Widget>[
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
+                        horizontal: 15, vertical: 8),
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(32),
@@ -142,44 +143,47 @@ class _Popular extends State<Popular> {
                     ),
                     child: Column(
                       children: [
-                        Padding(
+                        Container(
                           padding: EdgeInsets.zero,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      entry?.name?.isEmpty ?? true
-                                          ? ""
-                                          : entry?.name,
-                                      style: const TextStyle(
-                                        fontFamily: 'Avenir Next',
-                                        fontSize: 14,
-                                        color: Colors.black,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: Text(
+                                        entry?.name?.isEmpty ?? true
+                                            ? ""
+                                            : "${entry?.name?.substring(0, 15)}...",
+                                        style: const TextStyle(
+                                          fontFamily: 'Avenir Next',
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      entry?.price?.isNaN ?? true
-                                          ? ""
-                                          : '\$' + entry?.price.toString(),
-                                      style: const TextStyle(
-                                        fontFamily: 'Avenir Next',
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: Text(
+                                        entry?.price?.isNaN ?? true
+                                            ? ""
+                                            : 'ر.س ${entry?.price.toString()}',
+                                        style: const TextStyle(
+                                          fontFamily: 'Avenir Next',
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                               SizedBox(
                                 height: 30,
@@ -230,7 +234,6 @@ class _Popular extends State<Popular> {
         context: context,
         selectedIndex: 0,
       ),
-      floatingActionButton: const LanguageTransitionWidget(),
       appBar: CustomAppBar(
         title: const Text(""),
         leadingAction: () {

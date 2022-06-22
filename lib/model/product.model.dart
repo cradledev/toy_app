@@ -1,10 +1,3 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toy_app/helper/constant.dart';
-
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 class ProductM {
   int id;
   String name;
@@ -12,36 +5,56 @@ class ProductM {
   String fulldescription;
   double price;
   int stock;
-  int approvedratingsum;
-  List<String> images;
-  List<String> detailImages;
+  List images;
+  List detailImages;
   int categoryId;
   String categoryName;
+  int approvedratingsum;
 
-  ProductM(
+  ProductM({
     this.id,
     this.name,
     this.shortdescription,
     this.fulldescription,
     this.price,
     this.stock,
-    this.approvedratingsum,
     this.images,
+    this.approvedratingsum,
+    this.categoryId,
+    this.categoryName,
     this.detailImages,
-  );
+  });
 
-  ProductM.fromJson(
+  factory ProductM.fromJson(
       Map<String, dynamic> json, Map<String, dynamic> _tempValues) {
-    id = json['id'];
-    name = json['name'];
-    shortdescription = json['short_description'] ?? "";
-    fulldescription = json['full_description'] ?? "";
-    price = json['price'] ?? 0.0;
-    stock = json['stock_quantity'] ?? 0;
-    images = _tempValues['images'] ?? [];
-    detailImages = _tempValues['detailImages'] ?? [];
-    approvedratingsum = json['approved_rating_sum'] ?? 0;
-    categoryId = _tempValues['category']['id'];
-    categoryName = _tempValues['category']['name'];
+    return ProductM(
+      id: json['id'],
+      name: json['name'],
+      shortdescription: json['short_description'] ?? "",
+      fulldescription: json['full_description'] ?? "",
+      price: json['price'] ?? 0.0,
+      stock: json['stock_quantity'] ?? 0,
+      images: _tempValues['images'] ?? [],
+      detailImages: _tempValues['detailImages'] ?? [],
+      categoryId: _tempValues['category']['id'],
+      approvedratingsum: json['approved_rating_sum'] ?? 0,
+      categoryName: _tempValues['category']['name']
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "name": name,
+      "shortdescription": shortdescription,
+      "fulldescription": fulldescription,
+      "price": price,
+      "stock": stock,
+      "images": images,
+      "detailImages": detailImages,
+      "categoryId": categoryId,
+      "approvedratingsum": approvedratingsum,
+      "categoryName": categoryName,
+    };
   }
 }

@@ -107,7 +107,6 @@ class _Edit extends State<Edit> {
           Navigator.pop(context);
         },
       ),
-      floatingActionButton: const LanguageTransitionWidget(),
       body: SingleChildScrollView(
         reverse: true,
         child: Container(

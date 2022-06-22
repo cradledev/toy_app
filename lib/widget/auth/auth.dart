@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:toy_app/widget/auth/guest.dart';
 
 class Auth extends StatefulWidget {
   const Auth({Key key}) : super(key: key);
@@ -20,12 +21,8 @@ class _Auth extends State<Auth> {
   }
 
   void onVisitAsGuest() async {
-    // try {} catch (e) {
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //     content: Text("Error is occured in network status."),
-    //     backgroundColor: Colors.red,
-    //   ));
-    // }
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const Guest()));
   }
 
   @override

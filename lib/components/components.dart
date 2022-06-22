@@ -116,6 +116,7 @@ class CustomBottomNavbar extends StatelessWidget {
       : super(key: key);
 
   void onTabTapped(int index) {
+    final _isGuest = Provider.of<AppState>(context, listen: false).user.isGuest;
     if (index == 0) {
       Navigator.pushNamed(context, '/home');
     }
@@ -123,13 +124,37 @@ class CustomBottomNavbar extends StatelessWidget {
       Navigator.pushNamed(context, '/categories');
     }
     if (index == 2) {
-      Navigator.pushNamed(context, '/cart');
+      if (_isGuest) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context).login_plogin),
+          duration: const Duration(seconds: 1),
+          backgroundColor: Colors.orangeAccent,
+        ));
+      } else {
+        Navigator.pushNamed(context, '/cart');
+      }
     }
     if (index == 3) {
-      Navigator.pushNamed(context, '/saved');
+      if (_isGuest) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context).login_plogin),
+          duration: const Duration(seconds: 1),
+          backgroundColor: Colors.orangeAccent,
+        ));
+      } else {
+        Navigator.pushNamed(context, '/saved');
+      }
     }
     if (index == 4) {
-      Navigator.pushNamed(context, '/profile');
+      if (_isGuest) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context).login_plogin),
+          duration: const Duration(seconds: 1),
+          backgroundColor: Colors.orangeAccent,
+        ));
+      } else {
+        Navigator.pushNamed(context, '/profile');
+      }
     }
   }
 
@@ -522,25 +547,31 @@ class ProductSearchItemBuilder extends StatelessWidget {
               BoxShadow(
                 offset: const Offset(0, 1),
                 blurRadius: 5,
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.3),
               ),
             ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(32.0),
-                    bottomLeft: Radius.circular(32.0)),
-                child: entry?.images?.isEmpty ?? true
-                    ? const Text("")
-                    : Image.network(
-                        entry?.images[0],
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        fit: BoxFit.cover,
-                      ),
+              Container(
+                padding: EdgeInsets.zero,
+                height: MediaQuery.of(context).size.height * 0.2,
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(32.0),
+                      bottomLeft: Radius.circular(32.0)),
+                  child: entry?.images?.isEmpty ?? true
+                      ? Image.asset(
+                          'assets/img/no_image.png',
+                          fit: BoxFit.fill,
+                        )
+                      : Image.network(
+                          entry?.images[0],
+                          fit: BoxFit.fill,
+                        ),
+                ),
               ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.2,
@@ -598,7 +629,7 @@ class ProductSearchItemBuilder extends StatelessWidget {
                                 child: Text(
                                   entry?.price?.isNaN ?? true
                                       ? ""
-                                      : '\$' + entry?.price.toString(),
+                                      : 'ر.س ${entry?.price.toString()}',
                                   style: const TextStyle(
                                     fontFamily: 'Avenir Next',
                                     fontSize: 16,
@@ -610,8 +641,8 @@ class ProductSearchItemBuilder extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.zero,
                                 child: SizedBox(
-                                  height: 30,
-                                  width: 30,
+                                  height: 35,
+                                  width: 35,
                                   child: RawMaterialButton(
                                     onPressed: () {},
                                     elevation: 1.0,
@@ -624,7 +655,7 @@ class ProductSearchItemBuilder extends StatelessWidget {
                                     padding: const EdgeInsets.all(0),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
-                                            BorderRadius.circular(15)),
+                                            BorderRadius.circular(17.5)),
                                   ),
                                 ),
                               ),

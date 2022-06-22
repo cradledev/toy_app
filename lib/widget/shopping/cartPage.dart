@@ -202,7 +202,6 @@ class _Cart extends State<Cart> {
 
     return Scaffold(
       // backgroundColor: Color(0xff283488),
-      floatingActionButton: const LanguageTransitionWidget(),
       appBar: CustomAppBar(
         title: Image.asset(
           'assets/img/LoginRegistration/header.png',
@@ -416,14 +415,7 @@ class _Cart extends State<Cart> {
                                                               .discount ==
                                                           null
                                                       ? Text(
-                                                          '\$' +
-                                                              cartItems[index]
-                                                                  .price
-                                                                  .toString() +
-                                                              ' X ' +
-                                                              cartItems[index]
-                                                                  .quantity
-                                                                  .toString(),
+                                                          'ر.س ${cartItems[index].price.toString()}X${cartItems[index].quantity.toString()}',
                                                           style:
                                                               const TextStyle(
                                                             fontFamily:
@@ -435,16 +427,7 @@ class _Cart extends State<Cart> {
                                                       : Column(
                                                           children: [
                                                             Text(
-                                                              '\$' +
-                                                                  cartItems[
-                                                                          index]
-                                                                      .price
-                                                                      .toString() +
-                                                                  ' X ' +
-                                                                  cartItems[
-                                                                          index]
-                                                                      .quantity
-                                                                      .toString(),
+                                                              'ر.س ${cartItems[index].price.toString()}X${cartItems[index].quantity.toString()}',
                                                               style:
                                                                   const TextStyle(
                                                                 fontFamily:
@@ -458,14 +441,7 @@ class _Cart extends State<Cart> {
                                                               ),
                                                             ),
                                                             Text(
-                                                              cartItems[index]
-                                                                      .unitPrice
-                                                                      .toString() +
-                                                                  ' X ' +
-                                                                  cartItems[
-                                                                          index]
-                                                                      .quantity
-                                                                      .toString(),
+                                                              'ر.س ${cartItems[index].unitPrice.toString()}X${cartItems[index].quantity.toString()}',
                                                               style:
                                                                   const TextStyle(
                                                                 fontFamily:

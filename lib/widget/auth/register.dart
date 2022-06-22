@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toy_app/components/components.dart';
+import 'package:toy_app/model/user_model.dart';
 import 'package:toy_app/service/mailchimp_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -8,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:toy_app/provider/index.dart';
 
 import 'dart:convert';
+
+import 'package:toy_app/service/user_auth.dart';
 
 class Register extends StatefulWidget {
   const Register({Key key}) : super(key: key);
@@ -19,6 +22,8 @@ class _Register extends State<Register> {
   // app state
   AppState _appState;
   // user service
+  UserService userService;
+  // MailChimp service
   MailChimpService mailChimpService;
   // page slide setting
   final int _numPages = 2;
@@ -38,7 +43,6 @@ class _Register extends State<Register> {
   String _lastName = '';
   String _email = '';
   String _password = '';
-  String _confirmpassword = '';
   Map userInfo;
   // loading status
   bool _loadingStatus = false;
@@ -57,6 +61,7 @@ class _Register extends State<Register> {
     _loadingStatus = false;
     mailChimpService = MailChimpService();
     _appState = Provider.of<AppState>(context, listen: false);
+    userService = UserService();
   }
 
   List<Widget> _buildPageIndicator() {
@@ -141,11 +146,8 @@ class _Register extends State<Register> {
         'email': _userInfo['email'],
         'password': _userInfo['password']
       };
-      var tokenResponse = await _appState.post(
-          Uri.parse("${_appState.endpoint}/Authenticate/GetToken"),
-          jsonEncode(tokenPutData));
-      var body = jsonDecode(tokenResponse.body);
-      _appState.token = body['token'];
+      String _tokenResponse = await userService.getToken(tokenPutData);
+      print(_tokenResponse);
       var putData = {
         "model": {
           "email": _userInfo['email'],
@@ -288,57 +290,32 @@ class _Register extends State<Register> {
           "additionalProp3": "string"
         }
       };
-      var response = await _appState.postAuth(
-          Uri.parse("${_appState.endpoint}/Customer/Register?returnUrl=false"),
-          jsonEncode(putData));
-      if (response.statusCode == 302) {
+      // var response;
+      // // var response = await _appState.postAuth(
+      // //     Uri.parse("${_appState.endpoint}/Customer/Register?returnUrl=false"),
+      // //     jsonEncode(putData));
+      bool isSuccessSignup = await userService.onSignup(putData, _tokenResponse);
+      print(isSuccessSignup);
+      if (isSuccessSignup) {
         var putUserInfo = {
           'email': _userInfo['email'],
           'password': _userInfo['password']
         };
-        var fResult = await _appState.post(
-            Uri.parse("${_appState.endpoint}/Authenticate/GetToken"),
-            jsonEncode(putUserInfo));
-        var body = jsonDecode(fResult.body);
-        if (fResult.statusCode == 200) {
-          setState(() {
-            _loadingStatus = false;
-          });
-          _appState.user = body;
-          _appState.token = body['token'];
-          _setTokenToLocalStorage(body['token']);
-          Navigator.pushReplacementNamed(context, '/home');
-        } else {
-          setState(() {
-            _loadingStatus = false;
-          });
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(AppLocalizations.of(context).login_text1),
-                content: Text(AppLocalizations.of(context).login_text2),
-                actions: [
-                  ElevatedButton(
-                    child: Text(AppLocalizations.of(context).login_ok),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-              );
-            },
-          );
-        }
-      }
-      if (response.statusCode == 400) {
-        var temp = jsonDecode(response.body);
+        var fResult = await userService.onLogin(putUserInfo);
+        setState(() {
+          _loadingStatus = false;
+        });
+        _appState.user = UserModel.fromJson(fResult);
+        _appState.setLocalStorage(key: 'user', value: jsonEncode(fResult));
+        _appState.setLocalStorage(key: 'token', value: fResult['token']);
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text("Error!"),
-              content: Text(temp[0]),
+              content: Text(AppLocalizations.of(context).saveddetailpage_failed),
               actions: [
                 ElevatedButton(
                   child: Text(AppLocalizations.of(context).login_ok),
@@ -356,12 +333,13 @@ class _Register extends State<Register> {
         _loadingStatus = false;
       });
     } catch (err) {
+      print(err);
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text("Error!"),
-            content: const Text("Error is occured while registering."),
+            content: Text(err.toString()),
             actions: [
               ElevatedButton(
                 child: Text(AppLocalizations.of(context).login_ok),
@@ -834,11 +812,7 @@ class _Register extends State<Register> {
                                                   // Return null if the entered email is valid
                                                   return null;
                                                 },
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _confirmpassword = value;
-                                                  });
-                                                },
+                                                
                                               ),
                                               const SizedBox(
                                                 height: 30,

@@ -18,15 +18,18 @@ void main() {
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.dark,
   ));
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider.value(value: AppState()),
-    ChangeNotifierProvider(
-      create: (_) => AppLocale(),
-    ),
-    // ChangeNotifierProvider(
-    //     create: (_) => DataNotifier(),
-    //   ),
-  ], child: const MyApp()));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) async {
+    runApp(MultiProvider(providers: [
+      ChangeNotifierProvider.value(value: AppState()),
+      ChangeNotifierProvider(
+        create: (_) => AppLocale(),
+      ),
+      // ChangeNotifierProvider(
+      //     create: (_) => DataNotifier(),
+      //   ),
+    ], child: const MyApp()));
+  });
 }
 
 class MyApp extends StatelessWidget {

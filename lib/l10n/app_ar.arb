@@ -17,6 +17,12 @@
   "login_vpwd": "يجب أن يكون طول كلمة السرية 8 حروف على الأقل",
   "login_fpwd": "هل نسيت كلمة السر ؟",
   "login_tap": "الصنبور هنا",
+  "guest_title": "كضيف",
+  "guest_subtitle": "يرجى زيارة كضيف",
+  "guest_validationUsername": "الرجاء إدخال اسم المستخدم",
+	"guest_validationUserEmail": "برجاء ادخال عنوان البريد الالكتروني الخاص بك",
+	"guest_username": "اسم",
+	"guest_email": "البريد الإلكتروني",
   "register_create": "تكوين حساب",
   "register_description1": "برجاء مراجعة وتحرير اسمك اذا تطلب الأمر",
   "register_description2": "قبل الاستفادة من تالي",
@@ -328,5 +334,9 @@
   "saveddetailpage_description": "الوصف",
   "saveddetailpage_acart": "اضافة الى عربة",
   "boarding_explorer": "",
-  "hello": ""
+  "hello": "",
+  "bike_title" : "دراجات لجميع الأعمار",
+  "party_title" : "يجب أن يكون الحزب!",
+  "school_title" : "العودة إلى المدرسة!",
+	"cake_title" : "لدينا الآن كعكة!"
 }

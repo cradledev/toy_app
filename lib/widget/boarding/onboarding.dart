@@ -319,7 +319,6 @@ class _Onboarding extends State<Onboarding> {
             ),
           ),
         ),
-        floatingActionButton: const LanguageTransitionWidget(),
       ),
     );
   }

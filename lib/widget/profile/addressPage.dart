@@ -27,7 +27,6 @@ class _AddressPage extends State<AddressPage> {
   final _formKey = GlobalKey<FormState>();
   var savedFirstName = TextEditingController();
   var savedLastName = TextEditingController();
-  var savedBio = TextEditingController();
   TextEditingController userEmailController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController address1Controller = TextEditingController();
@@ -56,19 +55,20 @@ class _AddressPage extends State<AddressPage> {
     cityController.text = _appState.profileCity;
     address1Controller.text = _appState.profileAddress1;
 
-    savedBio.text = _appState.bio == null ? "" : _appState.bio['default_value'];
     if (mounted) {
-      var _country_items_res = await http.get(
+      var _countryItemsRes = await http.get(
         Uri.parse(
             "$backendEndpoint/Country/GetAllCountries?languageId=0&showHidden=false"),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Access-Control-Allow-Origin': '*',
+          "Authorization": "Bearer ${_appState.user.token}"
         },
       );
+      print(_countryItemsRes);
       // print(_country_items_res.body);
       setState(() {
-        country_items = jsonDecode(_country_items_res.body);
+        country_items = jsonDecode(_countryItemsRes.body);
         imagePath = (savedPref.getString('path') ?? "");
         selectedCounty = _appState.countryId == 0 ? 234 : _appState.countryId;
       });
@@ -81,7 +81,6 @@ class _AddressPage extends State<AddressPage> {
       var list = {
         'firstname': savedFirstName.text,
         'lastname': savedLastName.text,
-        'bio': savedBio.text,
         'userEmail': userEmailController.text,
         'country_id': selectedCounty,
         'city': cityController.text,
@@ -109,7 +108,6 @@ class _AddressPage extends State<AddressPage> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -125,376 +123,351 @@ class _AddressPage extends State<AddressPage> {
           Navigator.pop(context);
         },
       ),
-      floatingActionButton: const LanguageTransitionWidget(),
       body: SingleChildScrollView(
-        reverse: true,
         child: Container(
-          height: MediaQuery.of(context).size.height - 100,
+          height: MediaQuery.of(context).size.height * 0.9,
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.only(bottom: 25),
           color: const Color(0xffffffff),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: Text(
-                      "Address",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                child: Row(
-                  children: const [
-                    Text(
-                      "You can edit your address details and save it here.",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xff999999),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: height * 0.01,
-              ),
               Expanded(
-                child: Container(
-                  padding: EdgeInsets.zero,
-                  width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Form(
-                              key: _formKey,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 40),
-                                child: Column(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)
-                                              .editpage_firstname,
-                                          style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextFormField(
-                                          controller: savedFirstName,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 0,
-                                                    horizontal: 10),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(32),
-                                            ),
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey)),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.trim().isEmpty) {
-                                              return AppLocalizations.of(
-                                                      context)
-                                                  .editpage_pfirstname;
-                                            }
-                                            // Return null if the entered email is valid
-                                            return null;
-                                          },
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        )
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)
-                                              .editpage_lastname,
-                                          style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextFormField(
-                                          controller: savedLastName,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 0,
-                                                    horizontal: 10),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(32),
-                                            ),
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey)),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.trim().isEmpty) {
-                                              return AppLocalizations.of(
-                                                      context)
-                                                  .editpage_plastname;
-                                            }
-                                            // Return null if the entered email is valid
-                                            return null;
-                                          },
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        )
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "Email",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextFormField(
-                                          controller: userEmailController,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 0,
-                                                    horizontal: 10),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(32),
-                                            ),
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey)),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.trim().isEmpty) {
-                                              return AppLocalizations.of(
-                                                      context)
-                                                  .login_pmail;
-                                            }
-                                            // Check if the entered email has the right format
-                                            if (!RegExp(r'\S+@\S+\.\S+')
-                                                .hasMatch(value)) {
-                                              return AppLocalizations.of(
-                                                      context)
-                                                  .login_pvmail;
-                                            }
-                                            // Return null if the entered email is valid
-                                            return null;
-                                          },
-                                          onChanged: (value) {},
-                                          keyboardType:
-                                              TextInputType.emailAddress,
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        )
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "Country",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        DropdownButton(
-                                          value: selectedCounty,
-                                          items: country_items?.map((item) {
-                                            return DropdownMenuItem<int>(
-                                              child: Text('${item["name"]}'),
-                                              value: item['id'],
-                                            );
-                                          })?.toList(),
-                                          onChanged: (value) {
-                                            print(value);
-                                            setState(() {
-                                              selectedCounty = value;
-                                            });
-                                          },
-                                          hint: const Text("Select Country"),
-                                          disabledHint: const Text("Disabled"),
-                                          elevation: 8,
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16),
-                                          icon: const Icon(
-                                              Icons.arrow_drop_down_circle),
-                                          iconDisabledColor: Colors.red,
-                                          // iconEnabledColor: Colors.green,
-                                          isExpanded: true,
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "City",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextFormField(
-                                          controller: cityController,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 0,
-                                                    horizontal: 10),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(32),
-                                            ),
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey)),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        )
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "Street Address1",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextFormField(
-                                          controller: address1Controller,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 0,
-                                                    horizontal: 10),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(32),
-                                            ),
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey)),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                      Row(
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            child: Text(
+                              "Address",
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 0),
+                        child: Row(
+                          children: const [
+                            Text(
+                              "You can edit your address details and save it here.",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xff999999),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: height * 0.07,
-                        width: width * 0.9,
-                        child: ElevatedButton(
-                          onPressed: isProcessing
-                              ? null
-                              : () {
-                                  submitInfo();
-                                },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color(0xff283488)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(83.0),
-                                side:
-                                    const BorderSide(color: Color(0xff283488)),
-                              ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Form(
+                          key: _formKey,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Column(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)
+                                          .editpage_firstname,
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black87),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    TextFormField(
+                                      controller: savedFirstName,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 0, horizontal: 10),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.grey,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        border: const OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.grey)),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null ||
+                                            value.trim().isEmpty) {
+                                          return AppLocalizations.of(context)
+                                              .editpage_pfirstname;
+                                        }
+                                        // Return null if the entered email is valid
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)
+                                          .editpage_lastname,
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black87),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    TextFormField(
+                                      controller: savedLastName,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 0, horizontal: 10),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.grey,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        border: const OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.grey)),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null ||
+                                            value.trim().isEmpty) {
+                                          return AppLocalizations.of(context)
+                                              .editpage_plastname;
+                                        }
+                                        // Return null if the entered email is valid
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Email",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black87),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    TextFormField(
+                                      controller: userEmailController,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 0, horizontal: 10),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.grey,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        border: const OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.grey)),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null ||
+                                            value.trim().isEmpty) {
+                                          return AppLocalizations.of(context)
+                                              .login_pmail;
+                                        }
+                                        // Check if the entered email has the right format
+                                        if (!RegExp(r'\S+@\S+\.\S+')
+                                            .hasMatch(value)) {
+                                          return AppLocalizations.of(context)
+                                              .login_pvmail;
+                                        }
+                                        // Return null if the entered email is valid
+                                        return null;
+                                      },
+                                      onChanged: (value) {},
+                                      keyboardType: TextInputType.emailAddress,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Country",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black87),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    DropdownButton(
+                                      value: selectedCounty,
+                                      items: country_items?.map((item) {
+                                        return DropdownMenuItem<int>(
+                                          child: Text('${item["name"]}'),
+                                          value: item['id'],
+                                        );
+                                      })?.toList(),
+                                      onChanged: (value) {
+                                        print(value);
+                                        setState(() {
+                                          selectedCounty = value;
+                                        });
+                                      },
+                                      hint: const Text("Select Country"),
+                                      disabledHint: const Text("Disabled"),
+                                      elevation: 8,
+                                      style: const TextStyle(
+                                          color: Colors.black, fontSize: 16),
+                                      icon: const Icon(
+                                          Icons.arrow_drop_down_circle),
+                                      iconDisabledColor: Colors.red,
+                                      // iconEnabledColor: Colors.green,
+                                      isExpanded: true,
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "City",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black87),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    TextFormField(
+                                      controller: cityController,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 0, horizontal: 10),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.grey,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        border: const OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.grey)),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Street Address1",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black87),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    TextFormField(
+                                      controller: address1Controller,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 0, horizontal: 10),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Colors.grey,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        border: const OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.grey)),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          child: Text(
-                            isProcessing
-                                ? "...processing"
-                                : AppLocalizations.of(context).editpage_save,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                          ),
                         ),
-                      ),
+                      )
                     ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                width: width * 0.9,
+                child: ElevatedButton(
+                  onPressed: isProcessing
+                      ? null
+                      : () {
+                          submitInfo();
+                        },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(const Color(0xff283488)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(83.0),
+                        side: const BorderSide(color: Color(0xff283488)),
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    isProcessing
+                        ? "...processing"
+                        : AppLocalizations.of(context).editpage_save,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),
               ),

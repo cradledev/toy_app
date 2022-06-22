@@ -44,7 +44,6 @@ class _DeliveryPage extends State<Delivery> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      floatingActionButton: const LanguageTransitionWidget(),
       appBar: CustomAppBar(
         title: const Text(""),
         leadingAction: () {

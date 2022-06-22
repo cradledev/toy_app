@@ -35,9 +35,7 @@ class _Saved extends State<Saved> {
     setState(() {
       isProcessing = true;
     });
-    _productService
-        .getFavouriteItems(_appState.user['customer_id'])
-        .then((res) {
+    _productService.getFavouriteItems(_appState.user.customerId).then((res) {
       setState(() {
         isProcessing = false;
         favouriteItems = res;
@@ -62,7 +60,6 @@ class _Saved extends State<Saved> {
         context: context,
         selectedIndex: 3,
       ),
-      floatingActionButton: const LanguageTransitionWidget(),
       appBar: CustomAppBar(
         title: const Text(""),
         leadingAction: () {
@@ -81,8 +78,8 @@ class _Saved extends State<Saved> {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.only(
-                      top: 30, left: width * 0.05, right: width * 0.05),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: Text(
                     AppLocalizations.of(context).categoryitempage_saved,
                     style: const TextStyle(
@@ -101,7 +98,7 @@ class _Saved extends State<Saved> {
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: width * 0.05,
-                    vertical: 15,
+                    vertical: 8,
                   ),
                   child: Text(
                     AppLocalizations.of(context).savedpage_text,
@@ -121,12 +118,20 @@ class _Saved extends State<Saved> {
               color: const Color.fromARGB(255, 234, 233, 233),
               child: !isProcessing
                   ? favouriteItems?.isEmpty ?? true
-                      ? const Text("No Data")
+                      ? Center(
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text('No Items Found'),
+                                ],
+                              )),
+                        )
                       : GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: itemWidth / itemHeight),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: itemWidth / itemHeight),
                           itemCount: favouriteItems.length,
                           itemBuilder: (BuildContext context, index) => InkWell(
                             hoverColor: Colors.pink,

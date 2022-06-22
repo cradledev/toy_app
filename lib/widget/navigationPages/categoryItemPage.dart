@@ -101,7 +101,7 @@ class _CategoryItems extends State<CategoryItems> {
               BoxShadow(
                 offset: const Offset(0, 1),
                 blurRadius: 5,
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.3),
               ),
             ],
           ),
@@ -112,19 +112,18 @@ class _CategoryItems extends State<CategoryItems> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Padding(
+                  Container(
                     padding: const EdgeInsets.only(top: 0),
+                    height: MediaQuery.of(context).size.height * 0.23,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
                       child: entry?.images?.isEmpty ?? true
-                          ? const Text("")
+                          ? Image.asset('assets/img/no_image.png', fit: BoxFit.fill,)
                           : Image.network(
                               entry?.images[0],
-                              height: MediaQuery.of(context).size.height * 0.23,
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              fit: BoxFit.cover,
+                             fit: BoxFit.fill,
                             ),
                     ),
                   )
@@ -136,7 +135,7 @@ class _CategoryItems extends State<CategoryItems> {
                 children: <Widget>[
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
+                        horizontal: 15, vertical: 8),
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(32),
@@ -149,40 +148,43 @@ class _CategoryItems extends State<CategoryItems> {
                           padding: EdgeInsets.zero,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      entry?.name.toString(),
-                                      style: const TextStyle(
-                                        fontFamily: 'Avenir Next',
-                                        fontSize: 14,
-                                        color: Colors.black,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.symmetric(vertical: 5),
+                                      child: Text(
+                                        "${entry?.name?.substring(0,15)}...",
+                                        style: const TextStyle(
+                                          fontFamily: 'Avenir Next',
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      '\$' + entry.price.toString(),
-                                      style: const TextStyle(
-                                        fontFamily: 'Avenir Next',
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.symmetric(vertical: 5),
+                                      child: Text(
+                                        'ر.س ${entry?.price.toString()}',
+                                        style: const TextStyle(
+                                          fontFamily: 'Avenir Next',
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                               SizedBox(
-                                height: 30,
-                                width: 30,
+                                height: 35,
+                                width: 35,
                                 child: RawMaterialButton(
                                   onPressed: () {},
                                   elevation: 1.0,
@@ -194,7 +196,7 @@ class _CategoryItems extends State<CategoryItems> {
                                   ),
                                   padding: const EdgeInsets.all(0),
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15)),
+                                      borderRadius: BorderRadius.circular(17.5)),
                                 ),
                               ),
                             ],
@@ -229,8 +231,7 @@ class _CategoryItems extends State<CategoryItems> {
     return Scaffold(
       // backgroundColor: Color(0xff283488),
       bottomNavigationBar:
-          CustomBottomNavbar(context: context, selectedIndex: 0),
-      floatingActionButton: const LanguageTransitionWidget(),
+          CustomBottomNavbar(context: context, selectedIndex: 1),
       appBar: CustomAppBar(
         title: const Text(""),
         leadingAction: () {
@@ -252,7 +253,7 @@ class _CategoryItems extends State<CategoryItems> {
                 children: [
                   Container(
                     padding: EdgeInsets.only(
-                        top: 30, left: width * 0.05, right: width * 0.05),
+                        top: 16, left: width * 0.05, right: width * 0.05),
                     child: Text(
                       cateName.isEmpty ?? true ? "" : cateName,
                       style: const TextStyle(
@@ -266,25 +267,25 @@ class _CategoryItems extends State<CategoryItems> {
                   )
                 ],
               ),
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: width * 0.05,
-                      vertical: 15,
-                    ),
-                    child: const Text(
-                      "",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 14,
-                        fontFamily: "Avenir Next",
-                      ),
-                    ),
-                  )
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Container(
+              //       padding: EdgeInsets.symmetric(
+              //         horizontal: width * 0.05,
+              //         vertical: 15,
+              //       ),
+              //       child: const Text(
+              //         "",
+              //         style: TextStyle(
+              //           color: Colors.black,
+              //           fontWeight: FontWeight.normal,
+              //           fontSize: 14,
+              //           fontFamily: "Avenir Next",
+              //         ),
+              //       ),
+              //     )
+              //   ],
+              // ),
               SizedBox(
                 height: height * 0.65,
                 child: _build(title),

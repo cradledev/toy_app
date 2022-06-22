@@ -9,8 +9,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:toy_app/provider/index.dart';
 
-import 'package:flutter_pagewise/flutter_pagewise.dart';
-
 class Categories extends StatefulWidget {
   const Categories({Key key}) : super(key: key);
 
@@ -20,64 +18,30 @@ class Categories extends StatefulWidget {
 
 class _Categories extends State<Categories> {
   // future setting
-  static const int PAGE_SIZE = 4;
+  static const int PAGE_SIZE = 100;
   // provider setting
   AppState _appState;
+  List<CategoryList> categoryList = [];
+  bool isPageLoading = false;
   Widget _build() {
-    double _width = MediaQuery.of(context).size.width * 0.45;
-    double _height = MediaQuery.of(context).size.height * 0.3;
-    return PagewiseGridView<CategoryList>.count(
-      pageSize: PAGE_SIZE,
-      crossAxisCount: 2,
-      mainAxisSpacing: 20.0,
-      crossAxisSpacing: 10.0,
-      childAspectRatio: _width / _height,
-      padding: const EdgeInsets.all(15.0),
-      itemBuilder: _itemBuilder,
-      loadingBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircularProgressIndicator(),
-                ],
-              )),
-        );
-      },
-      retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
-        );
-      },
-      noItemsFoundBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text('No Items Found'),
-                ],
-              )),
-        );
-      },
-      pageFuture: (pageIndex) {
-        return ProductService.getAllCategories(pageIndex, PAGE_SIZE);
-      },
+    return FutureBuilder(
+      future: ProductService.getAllCategories(),
+      builder: (BuildContext ctx, AsyncSnapshot<List> snapshot) =>
+          snapshot.hasData
+              ? GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, childAspectRatio: 0.8),
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext context, index) {
+                    return _itemBuilder(context, snapshot.data[index]);
+                  })
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ),
     );
   }
 
-  Widget _itemBuilder(context, CategoryList entry, _) {
+  Widget _itemBuilder(context, CategoryList entry) {
     return InkWell(
       // hoverColor: Colors.pink,
       onTap: () {
@@ -90,16 +54,17 @@ class _Categories extends State<Categories> {
       child: Container(
         width: MediaQuery.of(context).size.width * 0.45,
         height: MediaQuery.of(context).size.height * 0.3,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(32),
           color: Colors.white,
-          // boxShadow: [
-          //   BoxShadow(
-          //     offset: const Offset(0, 1),
-          //     blurRadius: 5,
-          //     color: Colors.black.withOpacity(0.1),
-          //   ),
-          // ],
+          boxShadow: [
+            BoxShadow(
+              offset: const Offset(0, 1),
+              blurRadius: 5,
+              color: Colors.black.withOpacity(0.3),
+            ),
+          ],
         ),
         child: Stack(
           fit: StackFit.expand,
@@ -110,18 +75,20 @@ class _Categories extends State<Categories> {
               children: <Widget>[
                 Container(
                   padding: const EdgeInsets.only(top: 0),
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  width: MediaQuery.of(context).size.width * 0.45,
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(32),
                         topRight: Radius.circular(32)),
                     child: entry?.image?.isEmpty ?? true
-                        ? const Text("")
+                        ? Image.asset(
+                            'assets/img/no_image.png',
+                            fit: BoxFit.fill,
+                          )
                         : Image.network(
                             entry?.image,
-                            height: MediaQuery.of(context).size.height * 0.3,
-                            width: MediaQuery.of(context).size.width * 0.45,
                             fit: BoxFit.fill,
-                            scale: 1.0,
                           ),
                   ),
                 )
@@ -170,7 +137,25 @@ class _Categories extends State<Categories> {
   @override
   void initState() {
     super.initState();
+
+    onInit();
+  }
+
+  void onInit() {
     _appState = Provider.of<AppState>(context, listen: false);
+    // setState(() {
+    //   isPageLoading = true;
+    // });
+    // ProductService.getAllCategories().then((value) {
+    //   setState(() {
+    //     isPageLoading = false;
+    //   });
+    //   categoryList = value;
+    // }).catchError((error) {
+    //   setState(() {
+    //     isPageLoading = false;
+    //   });
+    // });
   }
 
   @override
@@ -178,17 +163,10 @@ class _Categories extends State<Categories> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
 
-    // void categoryListShow(String item) async {
-    //   products = _productService.getCategory(item);
-    //   Navigator.pushNamed(context, '/categoryItem',
-    //       arguments: SearchData(item, products));
-    // }
-
     return Scaffold(
       // backgroundColor: Color(0xff283488),
       bottomNavigationBar:
           CustomBottomNavbar(context: context, selectedIndex: 1),
-      floatingActionButton: const LanguageTransitionWidget(),
       appBar: CustomAppBar(
         title: const Text(""),
         leadingAction: () {
@@ -241,71 +219,7 @@ class _Categories extends State<Categories> {
                 )
               ],
             ),
-            SizedBox(height: height * 0.65, child: _build()
-                // child: FutureBuilder(
-                //   future: categories,
-                //   builder: (BuildContext ctx, AsyncSnapshot<List> snapshot) =>
-                //       snapshot.hasData
-                //           ? GridView.builder(
-                //               gridDelegate:
-                //                   SliverGridDelegateWithFixedCrossAxisCount(
-                //                       crossAxisCount: 2,
-                //                       childAspectRatio: itemWidth / itemHeight),
-                //               itemCount: snapshot.data.length,
-                //               itemBuilder: (BuildContext context, index) =>
-                //                   InkWell(
-                //                 onTap: () {
-                //                   categoryListShow(snapshot.data[index].name);
-                //                 },
-                //                 child: Stack(
-                //                   children: [
-                //                     Container(
-                //                       width: width * 0.46,
-                //                       height: height * 0.32,
-                //                       margin: EdgeInsets.only(
-                //                           left: width * 0.02,
-                //                           right: width * 0.02),
-                //                       decoration: BoxDecoration(
-                //                         borderRadius: BorderRadius.circular(32),
-                //                         color: Colors.white,
-                //                       ),
-                //                       child: Image.network(
-                //                         snapshot.data[index].image.src,
-                //                         fit: BoxFit.fill,
-                //                       ),
-                //                     ),
-                //                     Positioned(
-                //                       top: height * 0.25,
-                //                       left: width * 0.05,
-                //                       child: Container(
-                //                         width: width * 0.4,
-                //                         height: height * 0.05,
-                //                         decoration: BoxDecoration(
-                //                           borderRadius: BorderRadius.circular(24),
-                //                           color: Colors.white,
-                //                         ),
-                //                         child: Center(
-                //                           child: Text(
-                //                             snapshot.data[index].name,
-                //                             style: const TextStyle(
-                //                               fontFamily: 'Avenir Next',
-                //                               fontSize: 12,
-                //                               fontWeight: FontWeight.bold,
-                //                               color: Color(0xff283488),
-                //                             ),
-                //                           ),
-                //                         ),
-                //                       ),
-                //                     ),
-                //                   ],
-                //                 ),
-                //               ),
-                //             )
-                //           : const Center(
-                //               child: CircularProgressIndicator(),
-                //             ),
-                // ),
-                ),
+            SizedBox(height: height * 0.65, child: _build()),
           ],
         ),
       ),

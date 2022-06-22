@@ -48,7 +48,6 @@ class _Search extends State<Search> {
           Navigator.pop(context);
         },
       ),
-      floatingActionButton: const LanguageTransitionWidget(),
       body: Column(
         children: [
           Form(

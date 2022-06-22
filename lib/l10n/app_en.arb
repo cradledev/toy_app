@@ -17,6 +17,12 @@
 	"login_vpwd": "Password must be at least 8 characters in length",
 	"login_fpwd": "Forget your password?",
 	"login_tap": "Tap here",
+	"guest_title": "As Guest",
+	"guest_subtitle": "Please visit as a guest",
+	"guest_validationUsername": "Please enter your username",
+	"guest_validationUserEmail": "Please enter your email address",
+	"guest_username": "Name",
+	"guest_email": "Email",
 	"register_create": "Create account",
 	"register_description1": "Please review and edit your name if necessary",
 	"register_description2": "before tapping next",
@@ -328,5 +334,9 @@
 	"saveddetailpage_description": "Description",
 	"saveddetailpage_acart": "Add to Cart",
 	"boarding_explorer": "",
-	"hello": ""
+	"hello": "",
+	"bike_title" : "Bikes for all ages",
+	"party_title" : "Party must haves!",
+	"school_title" : "Back To School!",
+	"cake_title" : "We now have cake!"
 }

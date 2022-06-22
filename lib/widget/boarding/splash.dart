@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:toy_app/model/user_model.dart';
+import 'package:toy_app/provider/index.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key key}) : super(key: key);
@@ -10,6 +14,8 @@ class Splash extends StatefulWidget {
 }
 
 class _Splash extends State<Splash> with SingleTickerProviderStateMixin {
+  // Appstate setting
+  AppState appState;
   AnimationController animationController;
   Animation<double> animation;
   startTime() async {
@@ -18,12 +24,25 @@ class _Splash extends State<Splash> with SingleTickerProviderStateMixin {
   }
 
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed('/onboarding');
+    appState.getLocalStorage('user').then((value) {
+      Map _user = value.isNotEmpty ? jsonDecode(value) : null;
+      if (_user == null) {
+        Navigator.of(context).pushReplacementNamed('/onboarding');
+      } else {
+        appState.user = UserModel.fromJson(_user);
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+    }).catchError((error) {
+      print(error);
+    });
+    
   }
 
   @override
   void initState() {
     super.initState();
+    appState = Provider.of<AppState>(context, listen: false);
+
     animationController =
         AnimationController(vsync: this, duration: const Duration(seconds: 4));
     animation =

@@ -46,7 +46,7 @@ class _DetailPageTest extends State<DetailPageTest> {
       isProcessingFavour = true;
     });
     _productService
-        .setFavouriteItem(_appState.user['customer_id'], id, _quantity)
+        .setFavouriteItem(_appState.user.customer_id, id, _quantity)
         .then((response) {
       if (response == 'success') {
         setState(() {
@@ -106,7 +106,7 @@ class _DetailPageTest extends State<DetailPageTest> {
 
       _productService
           .addCartItem(productId, _quantity, shoppingCartItemId,
-              _appState.user['customer_id'])
+              _appState.user.customer_id)
           .then((response) {
         if (response == 'success') {
           setState(() {
@@ -194,35 +194,81 @@ class _DetailPageTest extends State<DetailPageTest> {
     categoryId = args?.categoryId?.isNaN ?? true ? 0 : args?.categoryId;
     categoryName =
         args?.categoryName?.isEmpty ?? true ? "" : args?.categoryName;
-    getCartByProductId(_appState.user['customer_id'], args?.id);
-    final avatarContent = Stack(
-      children: <Widget>[
-        Column(
-          children: [
-            Container(
-              width: mq.width,
-              height: MediaQuery.of(context).size.height * 0.45,
-              padding: EdgeInsets.zero,
-              color: const Color.fromARGB(255, 233, 232, 232),
-              child: productImageUrl?.isEmpty ?? true
-                  ? const Text("")
-                  : Image.network(
-                      productImageUrl,
-                      fit: BoxFit.fitWidth,
+    getCartByProductId(_appState.user.customerId, args?.id);
+
+    Widget topContent = Stack(
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.height * 0.4,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            image: DecorationImage(
+                image: productImageUrl?.isEmpty ?? true
+                    ? const AssetImage('assets/img/no_image.png')
+                    : NetworkImage(
+                        productImageUrl,
+                      ),
+                fit: BoxFit.fill,
+                opacity: 0.7),
+          ),
+        ),
+        Positioned(
+          left: 12.0,
+          top: 60.0,
+          child: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.arrow_back, color: Colors.black),
+          ),
+        ),
+        Positioned(
+          right: 12.0,
+          top: 60.0,
+          child: InkWell(
+            onTap: isProcessingFavour
+                ? null
+                : () {
+                    // Navigator.pushNamed(context, '/home');
+                    if (!_appState.user.isGuest) {
+                      submitFavourite(args?.id);
+                    }
+                  },
+            child: isProcessingFavour
+                ? const Center(
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(),
                     ),
-            ),
-            Container(
-              width: mq.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-              ),
+                  )
+                : const Icon(
+                    Icons.favorite_border,
+                    color: Colors.black,
+                  ),
+          ),
+        ),
+      ],
+    );
+    Widget bottomContent = Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.6,
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          color: const Color.fromRGBO(58, 66, 86, .9).withOpacity(0.1)),
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 0),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -289,14 +335,12 @@ class _DetailPageTest extends State<DetailPageTest> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        mq.width * 0.085, 0, 0, mq.height * 0.02),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: SizedBox(
                       width: mq.width * 0.3,
                       child: NumberInputPrefabbed.roundedButtons(
                         controller: quantity,
-                        incDecBgColor:
-                            const Color.fromARGB(255, 223, 240, 253),
+                        incDecBgColor: const Color.fromARGB(255, 223, 240, 253),
                         buttonArrangement: ButtonArrangement.incRightDecLeft,
                         incIcon: Icons.add,
                         decIcon: Icons.remove,
@@ -352,49 +396,67 @@ class _DetailPageTest extends State<DetailPageTest> {
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: mq.width * 0.6,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(
-                              mq.width * 0.085, 16, 16, mq.height * 0.02),
-                          child: ElevatedButton(
-                            onPressed: processing
-                                ? null
-                                : () {
-                                    // Navigator.pushNamed(context, '/home');
-                                    submitCartItem(args?.id, args?.price);
-                                  },
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color(0xff283488)),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(32.0),
-                                  side: const BorderSide(
-                                      color: Color(0xff283488)),
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              processing
-                                  ? "...processing"
-                                  : AppLocalizations.of(context)
-                                      .detailpage_acart,
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                            ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 80,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: mq.width * 0.5,
+                  height: 80,
+                  padding: EdgeInsets.zero,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        mq.width * 0.085, 16, 16, mq.height * 0.02),
+                    child: ElevatedButton(
+                      onPressed: processing
+                          ? null
+                          : () {
+                              if (!_appState.user.isGuest) {
+                                submitCartItem(args?.id, args?.price);
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content:
+                                      Text("You must login, not as a Guest."),
+                                  backgroundColor: Colors.orange,
+                                ));
+                              }
+                              // Navigator.pushNamed(context, '/home');
+                            },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(const Color(0xff283488)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(32.0),
+                            side: const BorderSide(color: Color(0xff283488)),
                           ),
                         ),
                       ),
+                      child: Text(
+                        processing
+                            ? "...processing"
+                            : AppLocalizations.of(context).detailpage_acart,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
                       Padding(
                         padding: EdgeInsets.fromLTRB(
                             16, 16, mq.width * 0.0853, mq.height * 0.02),
                         child: Text(
-                          '\$' + args.price.toString(),
+                          'ر.س ${args.price.toString()}',
                           style: const TextStyle(
                             fontFamily: "Avenir Next",
                             fontSize: 24,
@@ -405,59 +467,17 @@ class _DetailPageTest extends State<DetailPageTest> {
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-        Positioned(
-          left: 12.0,
-          top: 80.0,
-          child: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(Icons.arrow_back, color: Colors.black),
           ),
-        ),
-        Positioned(
-          right: 12.0,
-          top: 80.0,
-          child: InkWell(
-            onTap: isProcessingFavour
-                ? null
-                : () {
-                    // Navigator.pushNamed(context, '/home');
-                    submitFavourite(args?.id);
-                  },
-            child: isProcessingFavour
-                ? const Center(
-                    child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : const Icon(
-                    Icons.favorite_border,
-                    color: Colors.black,
-                  ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
-
     return Scaffold(
-      // appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-                // height: MediaQuery.of(context).size.height,
-                padding: EdgeInsets.zero,
-                child: avatarContent),
-          ],
-        ),
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [topContent, bottomContent],
       ),
     );
   }

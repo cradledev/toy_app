@@ -71,7 +71,7 @@ class _Hotwheels extends State<Hotwheels> {
       },
       pageFuture: (pageIndex) {
         return ProductService.getProductsByCategoryId(
-            pageIndex, PAGE_SIZE, "hotwheel");
+            pageIndex, PAGE_SIZE, "عجلة الساخنة");
       },
     );
   }
@@ -102,19 +102,18 @@ class _Hotwheels extends State<Hotwheels> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Padding(
+                  Container(
                     padding: const EdgeInsets.only(top: 0),
+                    height: MediaQuery.of(context).size.height * 0.23,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
                       child: entry?.images?.isEmpty ?? true
-                          ? const Text("")
+                          ? Image.asset('assets/img/no_image.png', fit: BoxFit.fill,)
                           : Image.network(
                               entry?.images[0],
-                              height: MediaQuery.of(context).size.height * 0.23,
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fill,
                             ),
                     ),
                   )
@@ -126,7 +125,7 @@ class _Hotwheels extends State<Hotwheels> {
                 children: <Widget>[
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
+                        horizontal: 15, vertical: 8),
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(32),
@@ -139,40 +138,43 @@ class _Hotwheels extends State<Hotwheels> {
                           padding: EdgeInsets.zero,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      entry?.name?.isEmpty ?? true
-                                          ? ""
-                                          : entry?.name,
-                                      style: const TextStyle(
-                                        fontFamily: 'Avenir Next',
-                                        fontSize: 14,
-                                        color: Colors.black,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.symmetric(vertical: 5),
+                                      child: Text(
+                                        entry?.name?.isEmpty ?? true
+                                            ? ""
+                                            : "${entry?.name?.substring(0,15)}...",
+                                        style: const TextStyle(
+                                          fontFamily: 'Avenir Next',
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      entry?.price?.isNaN ?? true
-                                          ? ""
-                                          : '\$' + entry?.price.toString(),
-                                      style: const TextStyle(
-                                        fontFamily: 'Avenir Next',
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.symmetric(vertical: 5),
+                                      child: Text(
+                                        entry?.price?.isNaN ?? true
+                                            ? ""
+                                            : 'ر.س ${entry?.price.toString()}',
+                                        style: const TextStyle(
+                                          fontFamily: 'Avenir Next',
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                               SizedBox(
                                 height: 30,
@@ -219,7 +221,6 @@ class _Hotwheels extends State<Hotwheels> {
 
     return Scaffold(
       backgroundColor: const Color(0xff017bbd),
-      floatingActionButton: const LanguageTransitionWidget(),
       appBar: CustomAppBar(
         leadingAction: () {
           Navigator.pop(context);
@@ -263,9 +264,10 @@ class _Hotwheels extends State<Hotwheels> {
                 children: [
                   Container(
                     padding: EdgeInsets.only(
-                      top: 15,
+                      top: 8,
                       left: width * 0.05,
                       right: width * 0.05,
+                      bottom: 8
                     ),
                     child: Text(
                       AppLocalizations.of(context).hotwheels_collection,
