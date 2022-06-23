@@ -338,5 +338,10 @@
 	"bike_title" : "Bikes for all ages",
 	"party_title" : "Party must haves!",
 	"school_title" : "Back To School!",
-	"cake_title" : "We now have cake!"
+	"cake_title" : "We now have cake!",
+	"street_address" : "Street Address",
+	"phone_numebr" : "Phone Number",
+	"language" : "Language",
+	"changepassword_title" : "Change Password",
+	"stock" : "Stock"
 }

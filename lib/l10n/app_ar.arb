@@ -338,5 +338,10 @@
   "bike_title" : "دراجات لجميع الأعمار",
   "party_title" : "يجب أن يكون الحزب!",
   "school_title" : "العودة إلى المدرسة!",
-	"cake_title" : "لدينا الآن كعكة!"
+	"cake_title" : "لدينا الآن كعكة!",
+  "street_address" : "عنوان الشارع",
+  "phone_numebr" : "رقم الهاتف",
+  "language" : "لغة",
+  "changepassword_title" : "غير كلمة السر",
+  "stock" : "مخزون"
 }

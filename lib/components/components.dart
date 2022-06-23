@@ -678,3 +678,172 @@ class ProductSearchItemBuilder extends StatelessWidget {
         ),
       );
 }
+
+class CustomDialogBox extends StatefulWidget {
+  final String title, descriptions, text;
+  final Image img;
+
+  const CustomDialogBox({Key key, this.title, this.descriptions, this.text, this.img}) : super(key: key);
+
+  @override
+  _CustomDialogBoxState createState() => _CustomDialogBoxState();
+}
+
+class _CustomDialogBoxState extends State<CustomDialogBox> {
+  // provider setting
+  AppState _appState;
+  AppLocale _appLocale;
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  void _init() {
+    _appState = Provider.of<AppState>(context, listen: false);
+    _appLocale = Provider.of<AppLocale>(context, listen: false);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _appState.getLocale().then((locale) {
+      _appLocale.changeLocale(Locale(locale.languageCode));
+    });
+  }
+
+  void _handleRadioValueChange(String value) {
+    Navigator.of(context).pop();
+    _appState.setLocale(value);
+    _appLocale.changeLocale(Locale(value));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AppLocale>(
+      builder: (BuildContext context, AppLocale value, Widget child) {
+        return Dialog(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                InkWell(
+                  onTap: () {
+                    _handleRadioValueChange("en");
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Row(
+                      children: <Widget>[
+                        Radio(
+                          onChanged: (value) {
+                            _handleRadioValueChange(value);
+                          },
+                          groupValue: value.locale.toString(),
+                          value: "en",
+                          activeColor: Colors.blue,
+                        ),
+                        const Text("English",
+                            style:TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
+                        
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    _handleRadioValueChange("ar");
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Row(
+                      children: <Widget>[
+                        Radio(
+                          onChanged: (value) {
+                            _handleRadioValueChange(value);
+                          },
+                          groupValue: value.locale.toString(),
+                          activeColor: Colors.blue,
+                          value: "ar",
+                        ),
+                        const Text("Arabic",
+                            style:TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
+                        
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Dialog(
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(5),
+  //     ),
+  //     elevation: 0,
+  //     backgroundColor: Colors.transparent,
+  //     child: contentBox(context),
+  //   );
+  // }
+  // contentBox(context){
+  //   return Stack(
+  //     children: <Widget>[
+  //       Container(
+  //         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+  //         margin: const EdgeInsets.only(top: 5),
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.rectangle,
+  //           color: Colors.white,
+  //           borderRadius: BorderRadius.circular(5),
+  //           boxShadow: const [
+  //             BoxShadow(color: Colors.black,offset: Offset(0,10),
+  //             blurRadius: 10
+  //             ),
+  //           ]
+  //         ),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: <Widget>[
+
+  //             // Text(widget.title,style: const TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
+  //             // const SizedBox(height: 15,),
+  //             // Text(widget.descriptions,style: const TextStyle(fontSize: 14),textAlign: TextAlign.center,),
+  //             // const SizedBox(height: 22,),
+  //             // Align(
+  //             //   alignment: Alignment.bottomRight,
+  //             //   child: FlatButton(
+  //             //       onPressed: (){
+  //             //         Navigator.of(context).pop();
+  //             //       },
+  //             //       child: Text(widget.text,style: const TextStyle(fontSize: 18),)),
+  //             // ),
+  //           ],
+  //         ),
+  //       ),
+  //       // Positioned(
+  //       //   left: Constants.padding,
+  //       //     right: Constants.padding,
+  //       //     child: CircleAvatar(
+  //       //       backgroundColor: Colors.transparent,
+  //       //       radius: Constants.avatarRadius,
+  //       //       child: ClipRRect(
+  //       //         borderRadius: BorderRadius.all(Radius.circular(Constants.avatarRadius)),
+  //       //           child: Image.asset("assets/model.jpeg")
+  //       //       ),
+  //       //     ),
+  //       // ),
+  //     ],
+  //   );
+  // }
+}

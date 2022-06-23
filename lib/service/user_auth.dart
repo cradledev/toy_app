@@ -40,7 +40,7 @@ class UserService {
     try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       String token = _prefs.getString("token") ?? '';
-      String email = _prefs.getString('userEmail') ?? '';
+      String email = list['email'];
       final response = await http.post(
         Uri.parse("$apiEndPoint/Customer/Info"),
         headers: {
@@ -60,10 +60,10 @@ class UserService {
             "gender": null,
             "first_name_enabled": true,
             "first_name": list['firstname'],
-            "first_name_required": true,
+            "first_name_required": false,
             "last_name_enabled": true,
             "last_name": list['lastname'],
-            "last_name_required": true,
+            "last_name_required": false,
             "date_of_birth_enabled": false,
             "date_of_birth_day": 0,
             "date_of_birth_month": 0,
@@ -103,9 +103,9 @@ class UserService {
             "state_province_required": false,
             "state_province_id": 0,
             "available_states": [],
-            "phone_enabled": false,
+            "phone_enabled": true,
             "phone_required": false,
-            "phone": "string",
+            "phone": list['phone'],
             "fax_enabled": false,
             "fax_required": false,
             "fax": null,
@@ -135,7 +135,7 @@ class UserService {
                 "name": "bio",
                 "is_required": false,
                 "default_value": list['bio'],
-                "attribute_control_type": "TextBox",
+                "attribute_control_type": "Textbox",
                 "values": [
                   {
                     "name": "string",
@@ -148,7 +148,7 @@ class UserService {
                     }
                   }
                 ],
-                "id": userBio['id'],
+                "id": userBio == null ? 0 :  userBio['id'],
                 "custom_properties": {}
               }
             ],
@@ -158,10 +158,8 @@ class UserService {
           "form": {'customer_attribute_1': list['bio']},
         }),
       );
-      print(response.body);
       if (response.statusCode == 200) {
         await _prefs.setString('path', list['avatar']);
-        await _prefs.setString('userEmail', list['userEmail'] ?? email);
         return 'success';
       } else {
         return 'failed';

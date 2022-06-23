@@ -54,7 +54,9 @@ class _Edit extends State<Edit> {
         'firstname': savedFirstName.text,
         'lastname': savedLastName.text,
         'bio': savedBio.text,
+        'email' : _appState.user.userEmail,
         'country_id': _appState.countryId,
+        'phone' : _appState.phoneNumber,
         'city': _appState.profileCity,
         'address1': _appState.profileAddress1
       };
@@ -63,35 +65,42 @@ class _Edit extends State<Edit> {
       } else {
         list['avatar'] = imagePath;
       }
+      print(list);
       setState(() {
         isProcessing = true;
       });
-      String response = await userService.userinfoChange(list, _appState.bio);
-      setState(() {
-        isProcessing = false;
-      });
-      if (response == 'success') {
-        Navigator.pushNamed(context, '/profile');
+      try {
+        String response = await userService.userinfoChange(list, _appState.bio);
+        setState(() {
+          isProcessing = false;
+        });
+        if (response == 'success') {
+          Navigator.pushNamed(context, '/profile');
+        }
+      } catch (e) {
+        setState(() {
+          isProcessing = false;
+        });
       }
     }
+  }
+
+  Future getImage() async {
+    var pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile = null) {
+        _image = File(pickedFile.path);
+        // print('hahaha');
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-
-    Future getImage() async {
-      var pickedFile = await picker.getImage(source: ImageSource.gallery);
-      setState(() {
-        if (pickedFile = null) {
-          _image = File(pickedFile.path);
-          // print('hahaha');
-        } else {
-          print('No image selected.');
-        }
-      });
-    }
 
     return Scaffold(
       resizeToAvoidBottomInset: true,

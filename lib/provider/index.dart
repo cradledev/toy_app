@@ -22,6 +22,7 @@ class AppState extends ChangeNotifier {
   int _countyId = 234;
   String _profileCity = "";
   String _profileAddress1 = "";
+  String _phoneNumber;
   //get
   get endpoint => _endpoint;
   get backendEndpoint => _backendEndpint;
@@ -37,6 +38,7 @@ class AppState extends ChangeNotifier {
   get firstName => _firstName;
   get lastName => _lastName;
   get bio => _bio;
+  get phoneNumber => _phoneNumber;
   // set
   set countryId(value) {
     _countyId = value;
@@ -88,6 +90,10 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set phoneNumber(value) {
+    _phoneNumber = value;
+    notifyListeners();
+  }
   set cartTotalPrice(String value) {
     _cartTotalPrice = value;
     notifyListeners();

@@ -2,16 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toy_app/components/components.dart';
+import 'package:toy_app/helper/theme_helper.dart';
 import 'package:toy_app/service/user_auth.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:provider/provider.dart';
-import 'package:toy_app/helper/constant.dart';
 import 'package:toy_app/provider/index.dart';
 
 class AddressPage extends StatefulWidget {
@@ -27,16 +26,15 @@ class _AddressPage extends State<AddressPage> {
   final _formKey = GlobalKey<FormState>();
   var savedFirstName = TextEditingController();
   var savedLastName = TextEditingController();
-  TextEditingController userEmailController = TextEditingController();
+  // TextEditingController userEmailController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController address1Controller = TextEditingController();
   // TextEditingController address2Controller = TextEditingController();
   // TextEditingController zipcodeController = TextEditingController();
-  // TextEditingController phoneNumber = TextEditingController();
+  TextEditingController phoneNumber = TextEditingController();
   final picker = ImagePicker();
   final userService = UserService();
-  List<dynamic> country_items = [];
-  File _image;
+  // List<dynamic> country_items = [];
   String imagePath = '';
   int selectedCounty = 234;
   bool isProcessing = false;
@@ -51,28 +49,30 @@ class _AddressPage extends State<AddressPage> {
     SharedPreferences savedPref = await SharedPreferences.getInstance();
     savedFirstName.text = _appState.firstName;
     savedLastName.text = _appState.lastName;
-    userEmailController.text = savedPref.getString('userEmail') ?? "";
+    // userEmailController.text = _appState.user.userEmail;
     cityController.text = _appState.profileCity;
     address1Controller.text = _appState.profileAddress1;
-
-    if (mounted) {
-      var _countryItemsRes = await http.get(
-        Uri.parse(
-            "$backendEndpoint/Country/GetAllCountries?languageId=0&showHidden=false"),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Access-Control-Allow-Origin': '*',
-          "Authorization": "Bearer ${_appState.user.token}"
-        },
-      );
-      print(_countryItemsRes);
-      // print(_country_items_res.body);
-      setState(() {
-        country_items = jsonDecode(_countryItemsRes.body);
-        imagePath = (savedPref.getString('path') ?? "");
-        selectedCounty = _appState.countryId == 0 ? 234 : _appState.countryId;
-      });
-    }
+    phoneNumber.text = _appState.phoneNumber ?? "";
+    imagePath = (savedPref.getString('path') ?? "");
+    setState(() {});
+    // if (mounted) {
+    //   var _countryItemsRes = await http.get(
+    //     Uri.parse(
+    //         "$backendEndpoint/Country/GetAllCountries?languageId=0&showHidden=false"),
+    //     headers: {
+    //       'Content-Type': 'application/json; charset=UTF-8',
+    //       'Access-Control-Allow-Origin': '*',
+    //       "Authorization": "Bearer ${_appState.user.token}"
+    //     },
+    //   );
+    //   print(_countryItemsRes);
+    //   // print(_country_items_res.body);
+    //   setState(() {
+    //     country_items = jsonDecode(_countryItemsRes.body);
+    //     imagePath = (savedPref.getString('path') ?? "");
+    //     selectedCounty = _appState.countryId == 0 ? 234 : _appState.countryId;
+    //   });
+    // }
   }
 
   void submitInfo() async {
@@ -81,26 +81,30 @@ class _AddressPage extends State<AddressPage> {
       var list = {
         'firstname': savedFirstName.text,
         'lastname': savedLastName.text,
-        'userEmail': userEmailController.text,
+        'userEmail': _appState.user.userEmail,
         'country_id': selectedCounty,
         'city': cityController.text,
         'address1': address1Controller.text,
-        'bio': _appState.bio['default_value']
+        'phone': phoneNumber.text,
+        'bio': _appState.bio == null ? "" : _appState.bio['default_value']
       };
-      if (_image != null) {
-        list['avatar'] = _image.path;
-      } else {
-        list['avatar'] = imagePath;
-      }
+      list['avatar'] = imagePath;
+      print(list);
       setState(() {
         isProcessing = true;
       });
-      String response = await userService.userinfoChange(list, _appState.bio);
-      setState(() {
-        isProcessing = false;
-      });
-      if (response == 'success') {
-        Navigator.pushNamed(context, '/profile');
+      try {
+        String response = await userService.userinfoChange(list, _appState.bio);
+        setState(() {
+          isProcessing = false;
+        });
+        if (response == 'success') {
+          Navigator.pushNamed(context, '/profile');
+        }
+      } catch (e) {
+        setState(() {
+          isProcessing = false;
+        });
       }
     }
   }
@@ -181,34 +185,13 @@ class _AddressPage extends State<AddressPage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      AppLocalizations.of(context)
-                                          .editpage_firstname,
-                                      style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black87),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
                                     TextFormField(
                                       controller: savedFirstName,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 0, horizontal: 10),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.grey,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                        ),
-                                        border: const OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey)),
-                                      ),
+                                      decoration: ThemeHelper()
+                                          .textInputDecoration(
+                                              lableText:
+                                                  AppLocalizations.of(context)
+                                                      .editpage_firstname),
                                       validator: (value) {
                                         if (value == null ||
                                             value.trim().isEmpty) {
@@ -220,41 +203,20 @@ class _AddressPage extends State<AddressPage> {
                                       },
                                     ),
                                     const SizedBox(
-                                      height: 10,
+                                      height: 30,
                                     )
                                   ],
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      AppLocalizations.of(context)
-                                          .editpage_lastname,
-                                      style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black87),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
                                     TextFormField(
                                       controller: savedLastName,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 0, horizontal: 10),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.grey,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                        ),
-                                        border: const OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey)),
-                                      ),
+                                      decoration: ThemeHelper()
+                                          .textInputDecoration(
+                                              lableText:
+                                                  AppLocalizations.of(context)
+                                                      .editpage_lastname),
                                       validator: (value) {
                                         if (value == null ||
                                             value.trim().isEmpty) {
@@ -266,172 +228,129 @@ class _AddressPage extends State<AddressPage> {
                                       },
                                     ),
                                     const SizedBox(
-                                      height: 10,
+                                      height: 30,
                                     )
                                   ],
                                 ),
+                                // Column(
+                                //   crossAxisAlignment: CrossAxisAlignment.start,
+                                //   children: [
+                                //     TextFormField(
+                                //       controller: userEmailController,
+                                //       decoration: ThemeHelper()
+                                //           .textInputDecoration(
+                                //               lableText:
+                                //                   AppLocalizations.of(context)
+                                //                       .login_email),
+                                //       validator: (value) {
+                                //         if (value == null ||
+                                //             value.trim().isEmpty) {
+                                //           return AppLocalizations.of(context)
+                                //               .login_pmail;
+                                //         }
+                                //         // Check if the entered email has the right format
+                                //         if (!RegExp(r'\S+@\S+\.\S+')
+                                //             .hasMatch(value)) {
+                                //           return AppLocalizations.of(context)
+                                //               .login_pvmail;
+                                //         }
+                                //         // Return null if the entered email is valid
+                                //         return null;
+                                //       },
+                                //       onChanged: (value) {},
+                                //       keyboardType: TextInputType.emailAddress,
+                                //     ),
+                                //     const SizedBox(
+                                //       height: 30,
+                                //     )
+                                //   ],
+                                // ),
+                                // Column(
+                                //   crossAxisAlignment: CrossAxisAlignment.start,
+                                //   children: [
+                                //     const Text(
+                                //       "Country",
+                                //       style: TextStyle(
+                                //           fontSize: 15,
+                                //           fontWeight: FontWeight.w400,
+                                //           color: Colors.black87),
+                                //     ),
+                                //     const SizedBox(
+                                //       height: 5,
+                                //     ),
+                                //     DropdownButton(
+                                //       value: selectedCounty,
+                                //       items: country_items?.map((item) {
+                                //         return DropdownMenuItem<int>(
+                                //           child: Text('${item["name"]}'),
+                                //           value: item['id'],
+                                //         );
+                                //       })?.toList(),
+                                //       onChanged: (value) {
+                                //         print(value);
+                                //         setState(() {
+                                //           selectedCounty = value;
+                                //         });
+                                //       },
+                                //       hint: const Text("Select Country"),
+                                //       disabledHint: const Text("Disabled"),
+                                //       elevation: 8,
+                                //       style: const TextStyle(
+                                //           color: Colors.black, fontSize: 16),
+                                //       icon: const Icon(
+                                //           Icons.arrow_drop_down_circle),
+                                //       iconDisabledColor: Colors.red,
+                                //       // iconEnabledColor: Colors.green,
+                                //       isExpanded: true,
+                                //     ),
+                                //   ],
+                                // ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      "Email",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black87),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    TextFormField(
-                                      controller: userEmailController,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 0, horizontal: 10),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.grey,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                        ),
-                                        border: const OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey)),
-                                      ),
-                                      validator: (value) {
-                                        if (value == null ||
-                                            value.trim().isEmpty) {
-                                          return AppLocalizations.of(context)
-                                              .login_pmail;
-                                        }
-                                        // Check if the entered email has the right format
-                                        if (!RegExp(r'\S+@\S+\.\S+')
-                                            .hasMatch(value)) {
-                                          return AppLocalizations.of(context)
-                                              .login_pvmail;
-                                        }
-                                        // Return null if the entered email is valid
-                                        return null;
-                                      },
-                                      onChanged: (value) {},
-                                      keyboardType: TextInputType.emailAddress,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    )
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Country",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black87),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    DropdownButton(
-                                      value: selectedCounty,
-                                      items: country_items?.map((item) {
-                                        return DropdownMenuItem<int>(
-                                          child: Text('${item["name"]}'),
-                                          value: item['id'],
-                                        );
-                                      })?.toList(),
-                                      onChanged: (value) {
-                                        print(value);
-                                        setState(() {
-                                          selectedCounty = value;
-                                        });
-                                      },
-                                      hint: const Text("Select Country"),
-                                      disabledHint: const Text("Disabled"),
-                                      elevation: 8,
-                                      style: const TextStyle(
-                                          color: Colors.black, fontSize: 16),
-                                      icon: const Icon(
-                                          Icons.arrow_drop_down_circle),
-                                      iconDisabledColor: Colors.red,
-                                      // iconEnabledColor: Colors.green,
-                                      isExpanded: true,
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "City",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black87),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
                                     TextFormField(
                                       controller: cityController,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 0, horizontal: 10),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.grey,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                        ),
-                                        border: const OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey)),
-                                      ),
+                                      decoration: ThemeHelper()
+                                          .textInputDecoration(
+                                              lableText:
+                                                  AppLocalizations.of(context)
+                                                      .register_city),
                                     ),
                                     const SizedBox(
-                                      height: 10,
+                                      height: 30,
                                     )
                                   ],
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      "Street Address1",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black87),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
                                     TextFormField(
                                       controller: address1Controller,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 0, horizontal: 10),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.grey,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                        ),
-                                        border: const OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey)),
-                                      ),
+                                      decoration: ThemeHelper()
+                                          .textInputDecoration(
+                                              lableText:
+                                                  AppLocalizations.of(context)
+                                                      .street_address),
                                     ),
                                     const SizedBox(
-                                      height: 10,
+                                      height: 30,
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextFormField(
+                                      controller: phoneNumber,
+                                      decoration: ThemeHelper()
+                                          .textInputDecoration(
+                                              lableText:
+                                                  AppLocalizations.of(context)
+                                                      .phone_numebr),
+                                      keyboardType: TextInputType.phone,
+                                    ),
+                                    const SizedBox(
+                                      height: 30,
                                     )
                                   ],
                                 ),

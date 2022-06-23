@@ -264,7 +264,7 @@ class _WrapPage extends State<WrapPage> {
             if (value == "success") {
               _productService
                   .addCartItem(activeWrapId, _quantity, activeWrapCartId,
-                      _appState.user['customer_id'])
+                      _appState.user.customerId)
                   .then((response) {
                 if (response == 'success') {
                   setState(() {
@@ -355,7 +355,7 @@ class _WrapPage extends State<WrapPage> {
         } else {
           _productService
               .addCartItem(activeWrapId, _quantity, activeWrapCartId,
-                  _appState.user['customer_id'])
+                  _appState.user.customerId)
               .then((response) {
             if (response == 'success') {
               setState(() {
@@ -417,7 +417,7 @@ class _WrapPage extends State<WrapPage> {
         print(2);
         _productService
             .addCartItem(activeWrapId, _quantity, activeWrapCartId,
-                _appState.user['customer_id'])
+                _appState.user.customerId)
             .then((response) {
           if (response == 'success') {
             setState(() {

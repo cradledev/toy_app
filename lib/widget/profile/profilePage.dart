@@ -29,12 +29,18 @@ class _Profile extends State<Profile> {
   String savedLastName = '';
   String imagePath = '';
   int purchageAmount = 0;
+  bool isPageLoading = false;
   @override
   void initState() {
     super.initState();
     _appState = Provider.of<AppState>(context, listen: false);
     userService = UserService();
-    getUserInfo();
+    if (mounted) {
+      setState(() {
+        isPageLoading = true;
+      });
+      getUserInfo();
+    }
   }
 
   void onLogout() async {
@@ -47,6 +53,7 @@ class _Profile extends State<Profile> {
   }
 
   void getUserInfo() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
     String _token = _appState.user.token;
     var _profileInfoRes = await http.get(
       Uri.parse("$apiEndPoint/Customer/info"),
@@ -57,7 +64,6 @@ class _Profile extends State<Profile> {
       },
     );
     var _body = jsonDecode(_profileInfoRes.body);
-    print(_body);
     var _orderInfoRes = await http.get(
       Uri.parse("$apiEndPoint/Order/CustomerOrders"),
       headers: {
@@ -69,23 +75,26 @@ class _Profile extends State<Profile> {
     var _orderBody = jsonDecode(_orderInfoRes.body);
     if (mounted) {
       setState(() {
-        savedFirstName = _body['first_name'];
-        savedLastName = _body['last_name'];
-        imagePath = _appState.user.path;
+        savedFirstName = _body['first_name'] ?? "";
+        savedLastName = _body['last_name'] ?? "";
+        imagePath = (_prefs.getString('path') ?? "");
         purchageAmount = (_orderBody['orders'] as List).isEmpty ?? true
             ? 0
             : (_orderBody['orders'] as List).length;
       });
       _appState.profileAddress1 = _body['street_address'];
       _appState.profileCity = _body['city'];
-      _appState.countryId = _body['country_id'];
+      _appState.countryId = _body['country_id'] ?? 234;
       _appState.firstName = _body['first_name'];
       _appState.lastName = _body['last_name'];
+      _appState.phoneNumber = _body['phone'];
       var _bioAttr = (_body['customer_attributes'] as List)
           .where((e) => e['name'] == "bio")
           .toList();
-      print(_bioAttr);
       _appState.bio = _bioAttr.isEmpty ? null : _bioAttr[0];
+      setState(() {
+        isPageLoading = false;
+      });
     }
   }
 
@@ -108,279 +117,300 @@ class _Profile extends State<Profile> {
       ),
       bottomNavigationBar:
           CustomBottomNavbar(context: context, selectedIndex: 4),
-      body: Column(
-        children: [
-          Column(
-            children: [
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: width * 0.2,
-                        margin: EdgeInsets.only(
-                            left: width * 0.05, right: width * 0.05),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(32),
-                          color: Colors.white,
-                        ),
-                        child: CircleAvatar(
-                          radius: 38.0,
-                          child: imagePath == ''
-                              ? Image.asset(
-                                  "assets/img/home/avatar.jpg",
-                                  fit: BoxFit.fill,
-                                )
-                              : Image.file(
-                                  File(imagePath),
-                                  fit: BoxFit.fill,
-                                ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+      body: isPageLoading
+          ? Center(
+              child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      CircularProgressIndicator(),
+                    ],
+                  )),
+            )
+          : Column(
+              children: [
+                Column(
+                  children: [
+                    Column(
+                      children: [
+                        Row(
                           children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 10),
-                                    child: Text(
-                                      "$savedFirstName $savedLastName",
-                                      style: const TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 5),
-                              child: Text(
-                                purchageAmount.toString() + " purchase",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
+                            Container(
+                              width: 100,
+                              margin: EdgeInsets.only(
+                                  left: width * 0.05, right: width * 0.05),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Colors.transparent,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: CircleAvatar(
+                                  radius: 50.0,
+                                  child: imagePath == ''
+                                      ? Image.asset(
+                                          "assets/img/home/avatar.jpg",
+                                          fit: BoxFit.fill,
+                                        )
+                                      : Image.file(
+                                          File(imagePath),
+                                          fit: BoxFit.fill,
+                                        ),
                                 ),
                               ),
                             ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 10),
+                                          child: Text(
+                                            "$savedFirstName $savedLastName",
+                                            style: const TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 5),
+                                    child: Text(
+                                      purchageAmount.toString() + " purchase",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
+                        ),
+                        SizedBox(
+                          height: height * 0.1,
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                InkWell(
+                  onTap: () => {
+                    Navigator.pushNamed(context, '/edit'),
+                  },
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.account_circle_outlined,
+                          size: 25,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          AppLocalizations.of(context).profilepage_info,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
                         ),
                       )
                     ],
                   ),
-                  SizedBox(
-                    height: height * 0.1,
-                  )
-                ],
-              ),
-            ],
-          ),
-          InkWell(
-            onTap: () => {
-              Navigator.pushNamed(context, '/edit'),
-            },
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 20,
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.account_circle_outlined,
-                    size: 25,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    AppLocalizations.of(context).profilepage_info,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: height * 0.02,
-          ),
-          // InkWell(
-          //   onTap: () => {},
-          //   child: Row(
-          //     children: [
-          //       const SizedBox(
-          //         width: 20,
-          //       ),
-          //       const Padding(
-          //         padding: EdgeInsets.all(8.0),
-          //         child: Icon(
-          //           Icons.badge_outlined,
-          //           size: 25,
-          //         ),
-          //       ),
-          //       Padding(
-          //         padding: const EdgeInsets.all(8.0),
-          //         child: Text(
-          //           AppLocalizations.of(context).profilepage_bank,
-          //           style: const TextStyle(
-          //             fontSize: 18,
-          //           ),
-          //         ),
-          //       )
-          //     ],
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: height * 0.02,
-          // ),
-          InkWell(
-            onTap: () => {
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  transitionDuration: const Duration(milliseconds: 800),
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return FadeTransition(
-                        opacity: animation, child: const AddressPage());
-                  },
-                ),
-              )
-            },
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 20,
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.pin_drop_outlined,
-                    size: 25,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    AppLocalizations.of(context).profilepage_address,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: height * 0.02,
-          ),
-          InkWell(
-            onTap: () => {},
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 20,
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.shopping_bag_outlined,
-                    size: 25,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    AppLocalizations.of(context).profilepage_history,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: height * 0.02,
-          ),
-          InkWell(
-            onTap: () => {
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  transitionDuration: const Duration(milliseconds: 800),
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return FadeTransition(
-                        opacity: animation, child: const ChangePasswordPage());
-                  },
-                ),
-              )
-            },
-            child: Row(
-              children: const [
                 SizedBox(
-                  width: 20,
+                  height: height * 0.02,
                 ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.settings_outlined,
-                    size: 25,
+                // InkWell(
+                //   onTap: () => {},
+                //   child: Row(
+                //     children: [
+                //       const SizedBox(
+                //         width: 20,
+                //       ),
+                //       const Padding(
+                //         padding: EdgeInsets.all(8.0),
+                //         child: Icon(
+                //           Icons.badge_outlined,
+                //           size: 25,
+                //         ),
+                //       ),
+                //       Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: Text(
+                //           AppLocalizations.of(context).profilepage_bank,
+                //           style: const TextStyle(
+                //             fontSize: 18,
+                //           ),
+                //         ),
+                //       )
+                //     ],
+                //   ),
+                // ),
+                // SizedBox(
+                //   height: height * 0.02,
+                // ),
+                InkWell(
+                  onTap: () => {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 800),
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          return FadeTransition(
+                              opacity: animation, child: const AddressPage());
+                        },
+                      ),
+                    )
+                  },
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.pin_drop_outlined,
+                          size: 25,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          AppLocalizations.of(context).profilepage_address,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    "Change Password",
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
+                SizedBox(
+                  height: height * 0.02,
+                ),
+                InkWell(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const CustomDialogBox();
+                        });
+                  },
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.language_outlined,
+                          size: 25,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          AppLocalizations.of(context).language,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
+                ),
+                SizedBox(
+                  height: height * 0.02,
+                ),
+                InkWell(
+                  onTap: () => {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 800),
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          return FadeTransition(
+                              opacity: animation,
+                              child: const ChangePasswordPage());
+                        },
+                      ),
+                    )
+                  },
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.settings_outlined,
+                          size: 25,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                         AppLocalizations.of(context).changepassword_title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: height * 0.02,
+                ),
+                InkWell(
+                  onTap: () {
+                    onLogout();
+                  },
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.logout_outlined,
+                          size: 25,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          AppLocalizations.of(context).profilepage_logout,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-          SizedBox(
-            height: height * 0.02,
-          ),
-          InkWell(
-            onTap: () {
-              onLogout();
-            },
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 20,
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.logout_outlined,
-                    size: 25,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    AppLocalizations.of(context).profilepage_logout,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

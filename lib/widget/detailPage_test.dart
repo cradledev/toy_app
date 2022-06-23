@@ -46,7 +46,7 @@ class _DetailPageTest extends State<DetailPageTest> {
       isProcessingFavour = true;
     });
     _productService
-        .setFavouriteItem(_appState.user.customer_id, id, _quantity)
+        .setFavouriteItem(_appState.user.customerId, id, _quantity)
         .then((response) {
       if (response == 'success') {
         setState(() {
@@ -106,7 +106,7 @@ class _DetailPageTest extends State<DetailPageTest> {
 
       _productService
           .addCartItem(productId, _quantity, shoppingCartItemId,
-              _appState.user.customer_id)
+              _appState.user.customerId)
           .then((response) {
         if (response == 'success') {
           setState(() {
