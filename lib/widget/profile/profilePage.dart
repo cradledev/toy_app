@@ -50,7 +50,7 @@ class _Profile extends State<Profile> {
       _appState.resetState();
       _appState.setLocalStorage(key: 'user', value: '');
       _appState.setLocalStorage(key: 'token', value: '');
-      Navigator.pushNamed(context, '/');
+      Navigator.pushNamed(context, '/home');
     }).catchError((error) {});
   }
 

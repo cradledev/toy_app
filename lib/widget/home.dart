@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:toy_app/components/custom_drawer_widget.dart';
 import 'package:toy_app/model/product.model.dart';
+import 'package:toy_app/model/user_model.dart';
+import 'package:toy_app/service/user_auth.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
 import 'package:toy_app/service/product_repo.dart';
 
@@ -23,7 +27,7 @@ class Home extends StatefulWidget {
 
 class _Home extends State<Home> {
   // future setting
-  static const int PAGE_SIZE = 10;
+  static const int PAGE_SIZE = 4;
   // slider setting
   List<Map<String, dynamic>> imgList = <Map<String, dynamic>>[];
   List<int> bannerProductIds = [];
@@ -35,10 +39,11 @@ class _Home extends State<Home> {
 
   // product service
   ProductService productService;
+  UserService userService;
 
   Widget _buildNewArrival() {
     return PagewiseListView<ProductM>(
-      pageSize: 100,
+      pageSize: 50,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(15.0),
       itemBuilder: _itemBuilder,
@@ -80,7 +85,7 @@ class _Home extends State<Home> {
         );
       },
       pageFuture: (pageIndex) {
-        return ProductService.getNewArrival(pageIndex, 100);
+        return ProductService.getNewArrival(pageIndex, 50);
       },
     );
   }
@@ -139,7 +144,7 @@ class _Home extends State<Home> {
 
   Widget _buildRecommend() {
     return PagewiseListView<ProductM>(
-      pageSize: 100,
+      pageSize: 50,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(15.0),
       itemBuilder: _recommendItemBuilder,
@@ -181,7 +186,7 @@ class _Home extends State<Home> {
         );
       },
       pageFuture: (pageIndex) {
-        return ProductService.getRecommendProduct(pageIndex, 100);
+        return ProductService.getRecommendProduct(pageIndex, 50);
       },
     );
   }
@@ -602,23 +607,100 @@ class _Home extends State<Home> {
     _init();
   }
 
-  void _init() {
-    setState(() {
-      isPageLoading = true;
-    });
+  Future<void> onGetUser() async {
     _appState = Provider.of<AppState>(context, listen: false);
-    print(_appState.user.toMap());
     productService = ProductService();
-    productService.onGetNewProducts(_appState.user.token).then((value) {
-      imgList = value;
+    userService = UserService();
+    String _userObjectString = await _appState.getLocalStorage('user');
+    Map _user =
+        _userObjectString.isNotEmpty ? jsonDecode(_userObjectString) : null;
+    if (_user == null) {
+      await _onAsGuest();
+    } else {
+      _appState.user = UserModel.fromJson(_user);
+    }
+  }
+
+  Future<void> _onAsGuest() async {
+    try {
+      Map _payloads = {
+        "is_guest": true,
+        "username": "Guest",
+        "email": "guest@gmail.com",
+        "password": "guest",
+      };
+      _appState.user = await userService.onVisitAsGuest(_payloads);
+      _appState.setLocalStorage(key: 'token', value: _appState.user.token);
+    } catch (e) {
+      print(e);
       setState(() {
         isPageLoading = false;
       });
-    }).catchError((error) {
+    }
+  }
+
+  // initializing the shopping cart and wishlist according user's status
+  Future<void> onInitShoppingCartAndFavorite() async {
+    try {
+      if (_appState.user.isGuest != true) {
+        String _guestWishlist =
+            await _appState.getLocalStorage('guestWishlist');
+        String _guestShoppingCart =
+            await _appState.getLocalStorage('guestShoppingCart');
+        if (_guestWishlist.isNotEmpty) {
+          List _guestWishlistObject = jsonDecode(_guestWishlist) as List;
+          for (var wishItem in _guestWishlistObject) {
+            await productService.setFavouriteItem(_appState.user.customerId,
+                wishItem['productId'], wishItem['quantity']);
+          }
+        }
+        if (_guestShoppingCart.isNotEmpty) {
+          List _guestShoppingCartObject =
+              jsonDecode(_guestShoppingCart) as List;
+          for (var shoppingItem in _guestShoppingCartObject) {
+            var response = await productService
+                .getShoppingMiniCart(shoppingItem['productId']);
+            int shoppingCartItemId = response['shoppingCartItemId'];
+            int _tmpQuantity = shoppingItem['quantity'];
+            if (response['quantity'] > 0) {
+              _tmpQuantity = _tmpQuantity + response['quantity'];
+            }
+            await productService.addCartItem(shoppingItem['productId'],
+                _tmpQuantity, shoppingCartItemId, _appState.user.customerId);
+          }
+        }
+        _appState.setLocalStorage(key: 'guestWishlist', value: "");
+        _appState.setLocalStorage(key: 'guestShoppingCart', value: "");
+      }
+    } catch (e) {
+      print(e);
       setState(() {
         isPageLoading = false;
       });
-    });
+    }
+  }
+
+  void _init() async {
+    if (mounted) {
+      setState(() {
+        isPageLoading = true;
+      });
+      // get init user in the first after connecting app
+      await onGetUser();
+      // initializing shopping and wishlist
+      await onInitShoppingCartAndFavorite();
+      // get new products 
+      productService.onGetNewProducts(_appState.user.token).then((value) {
+        imgList = value;
+        setState(() {
+          isPageLoading = false;
+        });
+      }).catchError((error) {
+        setState(() {
+          isPageLoading = false;
+        });
+      });
+    }
   }
 
   @override
@@ -638,14 +720,19 @@ class _Home extends State<Home> {
         backgroundColor: const Color.fromARGB(255, 237, 236, 236),
         bottomNavigationBar:
             CustomBottomNavbar(context: context, selectedIndex: 0),
-        appBar: const CustomAppBar(
-          title: Text(""),
-          leadingIcon: Icon(
-                CupertinoIcons.line_horizontal_3,
-                size: 30,
-                color: Colors.white,
-              ),
-          backgroundColor: Color(0xff283488),
+        appBar: CustomAppBar(
+          title: Image.asset(
+          'assets/img/LoginRegistration/header.png',
+          // height: height * 0.1,
+          width: width * 0.5,
+          fit: BoxFit.cover,
+        ),
+          leadingIcon: const Icon(
+            CupertinoIcons.line_horizontal_3,
+            size: 30,
+            color: Colors.white,
+          ),
+          backgroundColor: const Color(0xff283488),
         ),
         drawer: const CustomDrawerWidget(),
         body: isPageLoading
@@ -667,22 +754,22 @@ class _Home extends State<Home> {
                       color: const Color(0xff283488),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Container(
-                                  padding: const EdgeInsets.only(top: 8),
-                                  child: Image.asset(
-                                    "assets/img/home/header.png",
-                                    scale: 1.6,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   mainAxisSize: MainAxisSize.max,
+                          //   children: [
+                          //     Align(
+                          //       alignment: Alignment.bottomCenter,
+                          //       child: Container(
+                          //         padding: const EdgeInsets.only(top: 8),
+                          //         child: Image.asset(
+                          //           "assets/img/home/header.png",
+                          //           scale: 1.6,
+                          //         ),
+                          //       ),
+                          //     )
+                          //   ],
+                          // ),
                           InkWell(
                             onTap: () {
                               Navigator.pushNamed(context, '/search');
@@ -694,7 +781,7 @@ class _Home extends State<Home> {
                                 Align(
                                   alignment: Alignment.bottomCenter,
                                   child: Container(
-                                    padding: const EdgeInsets.only(top: 30),
+                                    padding: const EdgeInsets.only(top: 8),
                                     child: const Image(
                                       image: AssetImage(
                                         'assets/img/home/1-3.png',

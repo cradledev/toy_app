@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:toy_app/widget/auth/guest.dart';
+// import 'package:toy_app/widget/auth/guest.dart';
 
 class Auth extends StatefulWidget {
   const Auth({Key key}) : super(key: key);
@@ -20,10 +20,10 @@ class _Auth extends State<Auth> {
     super.dispose();
   }
 
-  void onVisitAsGuest() async {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const Guest()));
-  }
+  // void onVisitAsGuest() async {
+  //   Navigator.push(
+  //       context, MaterialPageRoute(builder: (context) => const Guest()));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -137,29 +137,29 @@ class _Auth extends State<Auth> {
               ),
             ),
           ),
-          SizedBox(
-            height: height * 0.03,
-          ),
-          SizedBox(
-            height: height * 0.07,
-            width: width * 0.9,
-            child: ElevatedButton(
-              onPressed: onVisitAsGuest,
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.deepPurple),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(83.0),
-                    side: const BorderSide(color: Colors.deepPurple),
-                  ),
-                ),
-              ),
-              child: Text(
-                AppLocalizations.of(context).guest_subtitle,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
-          ),
+          // SizedBox(
+          //   height: height * 0.03,
+          // ),
+          // SizedBox(
+          //   height: height * 0.07,
+          //   width: width * 0.9,
+          //   child: ElevatedButton(
+          //     onPressed: onVisitAsGuest,
+          //     style: ButtonStyle(
+          //       backgroundColor: MaterialStateProperty.all(Colors.deepPurple),
+          //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          //         RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(83.0),
+          //           side: const BorderSide(color: Colors.deepPurple),
+          //         ),
+          //       ),
+          //     ),
+          //     child: Text(
+          //       AppLocalizations.of(context).guest_title,
+          //       style: const TextStyle(color: Colors.white, fontSize: 14),
+          //     ),
+          //   ),
+          // ),
           const SizedBox(
             height: 30,
           )

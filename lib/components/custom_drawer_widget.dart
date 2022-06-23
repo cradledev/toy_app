@@ -181,7 +181,7 @@ class CustomDrawerWidget extends StatelessWidget {
         appState.setLocalStorage(key: "key", value: "");
         appState.setLocalStorage(key: "token", value: "");
         appState.resetState();
-        Navigator.pushNamedAndRemoveUntil(context, '/auth', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         break;
       case NavigationItem.login:
         Navigator.pushNamed(context, '/auth');

@@ -73,13 +73,13 @@ class ProductService {
     }
   }
 
-  Future<String> setshippingdress(String _fname, String _lname, String _mail, String _address, String _city, String _postcode) async {
-      try {
+  Future<String> setshippingdress(String _fname, String _lname, String _mail,
+      String _address, String _city, String _postcode) async {
+    try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       String _token = _prefs.getString("token") ?? '';
       var res = await http.post(
-        Uri.parse(
-            "$apiEndPoint/Checkout/NewBillingAddress"),
+        Uri.parse("$apiEndPoint/Checkout/NewBillingAddress"),
         body: jsonEncode({
           "model": {
             "existing_addresses": [
@@ -120,10 +120,7 @@ class ProductService {
                 "available_countries": [
                   {
                     "disabled": true,
-                    "group": {
-                      "disabled": true,
-                      "name": "string"
-                    },
+                    "group": {"disabled": true, "name": "string"},
                     "selected": true,
                     "text": "string",
                     "value": "string"
@@ -132,10 +129,7 @@ class ProductService {
                 "available_states": [
                   {
                     "disabled": true,
-                    "group": {
-                      "disabled": true,
-                      "name": "string"
-                    },
+                    "group": {"disabled": true, "name": "string"},
                     "selected": true,
                     "text": "string",
                     "value": "string"
@@ -214,10 +208,7 @@ class ProductService {
                 "available_countries": [
                   {
                     "disabled": true,
-                    "group": {
-                      "disabled": true,
-                      "name": "string"
-                    },
+                    "group": {"disabled": true, "name": "string"},
                     "selected": true,
                     "text": "string",
                     "value": "string"
@@ -226,10 +217,7 @@ class ProductService {
                 "available_states": [
                   {
                     "disabled": true,
-                    "group": {
-                      "disabled": true,
-                      "name": "string"
-                    },
+                    "group": {"disabled": true, "name": "string"},
                     "selected": true,
                     "text": "string",
                     "value": "string"
@@ -307,10 +295,7 @@ class ProductService {
               "available_countries": [
                 {
                   "disabled": true,
-                  "group": {
-                    "disabled": true,
-                    "name": "string"
-                  },
+                  "group": {"disabled": true, "name": "string"},
                   "selected": true,
                   "text": "string",
                   "value": "string"
@@ -319,10 +304,7 @@ class ProductService {
               "available_states": [
                 {
                   "disabled": true,
-                  "group": {
-                    "disabled": true,
-                    "name": "string"
-                  },
+                  "group": {"disabled": true, "name": "string"},
                   "selected": true,
                   "text": "string",
                   "value": "string"
@@ -401,32 +383,32 @@ class ProductService {
         Uri.parse(
             "$apiEndPoint/Checkout/SelectPaymentMethod?paymentMethod=$paymethond"),
         body: jsonEncode({
-  "payment_methods": [
-    {
-      "payment_method_system_name": paymethond,
-      "name": "string",
-      "description": "string",
-      "fee": "string",
-      "selected": true,
-      "logo_url": "string",
-      "custom_properties": {
-        "additionalProp1": "string",
-        "additionalProp2": "string",
-        "additionalProp3": "string"
-      }
-    }
-  ],
-  "display_reward_points": true,
-  "reward_points_balance": 0,
-  "reward_points_amount": "string",
-  "reward_points_enough_to_pay_for_order": true,
-  "use_reward_points": true,
-  "custom_properties": {
-    "additionalProp1": "string",
-    "additionalProp2": "string",
-    "additionalProp3": "string"
-  }
-}),
+          "payment_methods": [
+            {
+              "payment_method_system_name": paymethond,
+              "name": "string",
+              "description": "string",
+              "fee": "string",
+              "selected": true,
+              "logo_url": "string",
+              "custom_properties": {
+                "additionalProp1": "string",
+                "additionalProp2": "string",
+                "additionalProp3": "string"
+              }
+            }
+          ],
+          "display_reward_points": true,
+          "reward_points_balance": 0,
+          "reward_points_amount": "string",
+          "reward_points_enough_to_pay_for_order": true,
+          "use_reward_points": true,
+          "custom_properties": {
+            "additionalProp1": "string",
+            "additionalProp2": "string",
+            "additionalProp3": "string"
+          }
+        }),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Access-Control-Allow-Origin': '*',
@@ -449,8 +431,7 @@ class ProductService {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       String _token = _prefs.getString("token") ?? '';
       var res = await http.get(
-        Uri.parse(
-            "$apiEndPoint/Checkout/ConfirmOrder"),
+        Uri.parse("$apiEndPoint/Checkout/ConfirmOrder"),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Access-Control-Allow-Origin': '*',
@@ -459,7 +440,6 @@ class ProductService {
       );
 
       if (res.statusCode == 200) {
-        
         return 'success';
       } else {
         return 'failed';
@@ -818,7 +798,7 @@ class ProductService {
     customHeaders["Authorization"] = "Bearer $_token";
     var response = await http.get(
         Uri.parse("$backendEndpoint/Product/GetAllProductsDisplayedOnHomepage"),
-        headers:customHeaders);
+        headers: customHeaders);
     var _body = jsonDecode(response.body);
     List<ProductM> categoryProductList = [];
     for (var item in _body) {
@@ -929,6 +909,39 @@ class ProductService {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       String _token = _prefs.getString("token") ?? '';
       customHeaders['Authorization'] = "Bearer $_token";
+      // var _productDetails = await http.get(
+      //     Uri.parse(
+      //         "$apiEndPoint/Product/GetProductDetails/$id?updateCartItemId=0"),
+      //     headers: customHeaders);
+      // var _detailBody = jsonDecode(_productDetails.body);
+      // List<String> imgList = [];
+      // List<String> detailImagList = [];
+      // if (featured) {
+      //   for (var item in _detailBody['product_details_model']
+      //       ['picture_models']) {
+      //     imgList.add(item['image_url']);
+      //   }
+      // } else {
+      //   for (var item in _detailBody['product_details_model']
+      //       ['picture_models']) {
+      //     imgList.add(item['thumb_image_url']);
+      //   }
+      // }
+      // for (var item in _detailBody['product_details_model']['picture_models']) {
+      //   detailImagList.add(item['image_url']);
+      // }
+
+      // var _productCategory = {
+      //   'id': _detailBody['product_details_model']['breadcrumb']
+      //       ['category_breadcrumb'][0]['id'],
+      //   'name': _detailBody['product_details_model']['breadcrumb']
+      //       ['category_breadcrumb'][0]['name']
+      // };
+      // return {
+      //   'images': imgList,
+      //   'detailImages': detailImagList,
+      //   'category': _productCategory
+      // };
       var _productCategoryRes = await http.get(
           Uri.parse(
               "$backendEndpoint/ProductCategory/GetProductCategoriesByProductId/$id?showHidden=false"),

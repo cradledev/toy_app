@@ -172,12 +172,15 @@ class UserService {
   // visit as a guest
   Future<UserModel> onVisitAsGuest(Map _payloads) async {
     try {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      String token = _prefs.getString("token") ?? '';
       var response = await http.post(Uri.parse("$apiEndPoint/Authenticate/GetToken"), body: jsonEncode(_payloads), headers: customHeaders);
       if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
         body['is_guest'] = true;
         body['username'] = _payloads['username'];
         body['email'] = _payloads['email'];
+        _prefs.setString('user', jsonEncode(body));
         UserModel _guest = UserModel.fromJson(body);
         return _guest;
       } else {

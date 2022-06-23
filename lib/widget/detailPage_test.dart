@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 import 'package:toy_app/model/product.model.dart';
@@ -52,6 +54,9 @@ class _DetailPageTest extends State<DetailPageTest> {
         setState(() {
           isProcessingFavour = false;
         });
+        if (_appState.user.isGuest) {
+          _addProductToWishlistAsGuest(id, _quantity);
+        }
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -92,18 +97,70 @@ class _DetailPageTest extends State<DetailPageTest> {
         isProcessingFavour = false;
       });
     });
-
-    // Future<String> response = _productService.setFavourite(id);
   }
 
-  void submitCartItem(productId, price) {
+  void _addProductToWishlistAsGuest(productId, quantity) async {
+    List _guestWishlist = [];
+    String _tmp = await _appState.getLocalStorage('guestWishlist');
+    if (_tmp.isEmpty) {
+      _guestWishlist.add({'productId': productId, 'quantity': quantity});
+    } else {
+      _guestWishlist = jsonDecode(_tmp);
+      var existingItem = _guestWishlist.firstWhere(
+          (element) => element['productId'] == productId,
+          orElse: () => null);
+      if (existingItem == null) {
+        _guestWishlist.add({'productId': productId, 'quantity': quantity});
+      } else {
+        _guestWishlist[_guestWishlist
+            .indexWhere((element) => element['productId'] == productId)] = {
+          'productId': productId,
+          'quantity': quantity
+        };
+      }
+    }
+    _appState.setLocalStorage(
+        key: 'guestWishlist', value: jsonEncode(_guestWishlist));
+  }
+
+  void _addProductToShoppingCartAsGuest(productId, price, quantity) async {
+    List _guestShoppingCart = [];
+    String _tmp = await _appState.getLocalStorage('guestShoppingCart');
+    if (_tmp.isEmpty) {
+      _guestShoppingCart
+          .add({'productId': productId, 'price': price, 'quantity': quantity});
+    } else {
+      _guestShoppingCart = jsonDecode(_tmp);
+      var existingItem = _guestShoppingCart.firstWhere(
+          (element) => element['productId'] == productId,
+          orElse: () => null);
+      if (existingItem == null) {
+        _guestShoppingCart.add(
+            {'productId': productId, 'price': price, 'quantity': quantity});
+      } else {
+        _guestShoppingCart[_guestShoppingCart
+            .indexWhere((element) => element['productId'] == productId)] = {
+          'productId': productId,
+          'price': price,
+          'quantity': quantity
+        };
+      }
+    }
+    _appState.setLocalStorage(
+        key: 'guestShoppingCart', value: jsonEncode(_guestShoppingCart));
+  }
+
+  void submitCartItem(productId, price) async {
     _quantity = int.parse(quantity.text);
     // print(_appState.user['_id']);
+
     if (_quantity != 0) {
       setState(() {
         processing = true;
       });
-
+      if (_appState.user.isGuest) {
+        _addProductToShoppingCartAsGuest(productId, price, _quantity);
+      }
       _productService
           .addCartItem(productId, _quantity, shoppingCartItemId,
               _appState.user.customerId)
@@ -112,7 +169,9 @@ class _DetailPageTest extends State<DetailPageTest> {
           setState(() {
             processing = false;
           });
-
+          if (_appState.user.isGuest) {
+            _addProductToShoppingCartAsGuest(productId, price, _quantity);
+          }
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -293,7 +352,8 @@ class _DetailPageTest extends State<DetailPageTest> {
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Text(
                             // args.approvedratingsum.toString(),
-                            AppLocalizations.of(context).stock + args.stock.toString(),
+                            AppLocalizations.of(context).stock +
+                                args.stock.toString(),
                             style: const TextStyle(
                               fontFamily: 'Avenir Next',
                               fontSize: 16,
@@ -478,8 +538,10 @@ class _DetailPageTest extends State<DetailPageTest> {
     );
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: [topContent, bottomContent],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [topContent, bottomContent],
+        ),
       ),
     );
   }

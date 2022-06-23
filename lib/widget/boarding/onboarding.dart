@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:toy_app/provider/app_locale.dart';
-import 'package:toy_app/provider/index.dart';
-import 'package:provider/provider.dart';
+// import 'package:toy_app/provider/app_locale.dart';
+// import 'package:toy_app/provider/index.dart';
+// import 'package:provider/provider.dart';
 
 // import 'package:toy_app/model/app_language.dart';
 
@@ -25,7 +25,7 @@ class _Onboarding extends State<Onboarding> {
   int _currentPage = 0;
 
   // provider setting
-  AppState _appState;
+  // AppState _appState;
   // AppLocale _appLocale;
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _Onboarding extends State<Onboarding> {
   }
 
   void _init() {
-    _appState = Provider.of<AppState>(context, listen: false);
+    // _appState = Provider.of<AppState>(context, listen: false);
     // _appLocale = Provider.of<AppLocale>(context, listen: false);
   }
 
@@ -89,11 +89,12 @@ class _Onboarding extends State<Onboarding> {
         curve: Curves.ease,
       );
     } else {
-      if (_appState.user == null) {
-        Navigator.pushNamed(context, '/auth');
-      } else {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
+      // if (_appState.user == null) {
+      //   Navigator.pushNamed(context, '/auth');
+      // } else {
+      //   Navigator.pushReplacementNamed(context, '/home');
+      // }
+      Navigator.pushReplacementNamed(context, '/home');
     }
   }
 

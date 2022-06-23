@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
+// import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toy_app/model/user_model.dart';
+// import 'package:toy_app/model/user_model.dart';
 import 'package:toy_app/provider/index.dart';
 
 class Splash extends StatefulWidget {
@@ -24,17 +24,18 @@ class _Splash extends State<Splash> with SingleTickerProviderStateMixin {
   }
 
   void navigationPage() {
-    appState.getLocalStorage('user').then((value) {
-      Map _user = value.isNotEmpty ? jsonDecode(value) : null;
-      if (_user == null) {
-        Navigator.of(context).pushReplacementNamed('/onboarding');
-      } else {
-        appState.user = UserModel.fromJson(_user);
-        Navigator.of(context).pushReplacementNamed('/home');
-      }
-    }).catchError((error) {
-      print(error);
-    });
+    // appState.getLocalStorage('user').then((value) {
+    //   Map _user = value.isNotEmpty ? jsonDecode(value) : null;
+    //   if (_user == null) {
+    //     Navigator.of(context).pushReplacementNamed('/onboarding');
+    //   } else {
+    //     appState.user = UserModel.fromJson(_user);
+    //     Navigator.of(context).pushReplacementNamed('/home');
+    //   }
+    // }).catchError((error) {
+    //   print(error);
+    // });
+    Navigator.of(context).pushReplacementNamed('/onboarding');
     
   }
 

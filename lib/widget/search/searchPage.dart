@@ -43,7 +43,12 @@ class _Search extends State<Search> {
         selectedIndex: 0,
       ),
       appBar: CustomAppBar(
-        title: const Text(""),
+        title: Image.asset(
+          'assets/img/LoginRegistration/header.png',
+          // height: height * 0.1,
+          width: width * 0.5,
+          fit: BoxFit.fill,
+        ),
         leadingAction: () {
           Navigator.pop(context);
         },
