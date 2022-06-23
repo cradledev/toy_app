@@ -348,5 +348,7 @@
   "old_password" : "كلمة المرور القديمة",
 	"new_password" : "كلمة السر الجديدة",
 	"confirm_password" : "تأكيد كلمة المرور",
-  "warp_modal_description" : "يرجى تحديد حزمة التفاف."
+  "warp_modal_description" : "يرجى تحديد حزمة التفاف.",
+  "discount_title" : "تخفيض",
+	"total_title" : "المجموع"
 }

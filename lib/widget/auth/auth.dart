@@ -154,9 +154,9 @@ class _Auth extends State<Auth> {
                   ),
                 ),
               ),
-              child: const Text(
-                "Visit As a Guest",
-                style: TextStyle(color: Colors.white, fontSize: 14),
+              child: Text(
+                AppLocalizations.of(context).guest_subtitle,
+                style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
           ),

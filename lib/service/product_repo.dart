@@ -663,7 +663,7 @@ class ProductService {
           "itemquantity$catItemId": quantity,
           "updatecart": true,
           "removefromcart": false,
-          "CountryId": 0,
+          "CountryId": 234,
           "StateProvinceId": 0,
           "ZipPostalCode": "",
           "checkout_attribute_1": 1,

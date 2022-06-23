@@ -142,26 +142,28 @@ class CustomBottomNavbar extends StatelessWidget {
       Navigator.pushNamed(context, '/categories');
     }
     if (index == 2) {
-      if (_isGuest) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context).login_plogin),
-          duration: const Duration(seconds: 1),
-          backgroundColor: Colors.orangeAccent,
-        ));
-      } else {
-        Navigator.pushNamed(context, '/cart');
-      }
+      // if (_isGuest) {
+      //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //     content: Text(AppLocalizations.of(context).login_plogin),
+      //     duration: const Duration(seconds: 1),
+      //     backgroundColor: Colors.orangeAccent,
+      //   ));
+      // } else {
+      //   Navigator.pushNamed(context, '/cart');
+      // }
+      Navigator.pushNamed(context, '/cart');
     }
     if (index == 3) {
-      if (_isGuest) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context).login_plogin),
-          duration: const Duration(seconds: 1),
-          backgroundColor: Colors.orangeAccent,
-        ));
-      } else {
-        Navigator.pushNamed(context, '/saved');
-      }
+      // if (_isGuest) {
+      //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //     content: Text(AppLocalizations.of(context).login_plogin),
+      //     duration: const Duration(seconds: 1),
+      //     backgroundColor: Colors.orangeAccent,
+      //   ));
+      // } else {
+      //   Navigator.pushNamed(context, '/saved');
+      // }
+      Navigator.pushNamed(context, '/saved');
     }
     if (index == 4) {
       if (_isGuest) {

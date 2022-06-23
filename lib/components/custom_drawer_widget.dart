@@ -184,7 +184,7 @@ class CustomDrawerWidget extends StatelessWidget {
         Navigator.pushNamedAndRemoveUntil(context, '/auth', (route) => false);
         break;
       case NavigationItem.login:
-        Navigator.pushNamed(context, '/login');
+        Navigator.pushNamed(context, '/auth');
         break;
       case NavigationItem.home:
         Navigator.pushNamed(context, '/home');

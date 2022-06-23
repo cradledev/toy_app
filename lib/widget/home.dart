@@ -607,6 +607,7 @@ class _Home extends State<Home> {
       isPageLoading = true;
     });
     _appState = Provider.of<AppState>(context, listen: false);
+    print(_appState.user.toMap());
     productService = ProductService();
     productService.onGetNewProducts(_appState.user.token).then((value) {
       imgList = value;

@@ -348,5 +348,7 @@
 	"old_password" : "Old Password",
 	"new_password" : "New Password",
 	"confirm_password" : "Confirm Password",
-	"warp_modal_description" : "Please Select the Wrap Package."
+	"warp_modal_description" : "Please Select the Wrap Package.",
+	"discount_title" : "Discount",
+	"total_title" : "Total"
 }

@@ -285,7 +285,8 @@ class _Cart extends State<Cart> {
                               },
                               child: Container(
                                 padding: EdgeInsets.zero,
-                                margin: const EdgeInsets.only(bottom: 20, top: 20),
+                                margin:
+                                    const EdgeInsets.only(bottom: 20, top: 20),
                                 height:
                                     MediaQuery.of(context).size.height * 0.2,
                                 width: width * 0.9,
@@ -368,12 +369,16 @@ class _Cart extends State<Cart> {
                                                                 true
                                                             ? ""
                                                             : cartItems[index]
-                                                                .product
-                                                                .name.toString().length > 15 ? "${cartItems[index]
-                                                                ?.product
-                                                                ?.name?.substring(0, 15)}..." : cartItems[index]
-                                                                ?.product
-                                                                ?.name,
+                                                                        .product
+                                                                        .name
+                                                                        .toString()
+                                                                        .length >
+                                                                    15
+                                                                ? "${cartItems[index]?.product?.name?.substring(0, 15)}..."
+                                                                : cartItems[
+                                                                        index]
+                                                                    ?.product
+                                                                    ?.name,
                                                         style: const TextStyle(
                                                           fontFamily:
                                                               'Avenir Next',
@@ -550,7 +555,9 @@ class _Cart extends State<Cart> {
                   child: Text(
                     orderTotalModel == null
                         ? ""
-                        : orderTotalModel['sub_total'] == null ? "" : "ر.س ${orderTotalModel['sub_total']?.toString()?.substring(1)}",
+                        : orderTotalModel['sub_total'] == null
+                            ? ""
+                            : "ر.س ${orderTotalModel['sub_total']?.toString()?.substring(1)}",
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 24,
@@ -567,9 +574,9 @@ class _Cart extends State<Cart> {
                 Padding(
                   padding:
                       EdgeInsets.fromLTRB(width * 0.05, 8, width * 0.05, 0),
-                  child: const Text(
-                    "Discount",
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context).discount_title,
+                    style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 14,
                       color: Color(0xff999999),
@@ -582,7 +589,9 @@ class _Cart extends State<Cart> {
                   child: Text(
                     orderTotalModel == null
                         ? ""
-                        : orderTotalModel['order_total_discount'] == null ? "" : "ر.س ${orderTotalModel['order_total_discount']?.toString()?.substring(1)}",
+                        : orderTotalModel['order_total_discount'] == null
+                            ? ""
+                            : "ر.س ${orderTotalModel['order_total_discount']?.toString()?.substring(1)}",
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 24,
@@ -599,9 +608,9 @@ class _Cart extends State<Cart> {
                 Padding(
                   padding:
                       EdgeInsets.fromLTRB(width * 0.05, 8, width * 0.05, 0),
-                  child: const Text(
-                    "Total",
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context).total_title,
+                    style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 14,
                       color: Color(0xff999999),
@@ -614,7 +623,9 @@ class _Cart extends State<Cart> {
                   child: Text(
                     orderTotalModel == null
                         ? ""
-                        : orderTotalModel['order_total'] == null ? "" : "ر.س ${orderTotalModel['order_total']?.toString()?.substring(1)}",
+                        : orderTotalModel['order_total'] == null
+                            ? ""
+                            : "ر.س ${orderTotalModel['order_total']?.toString()?.substring(1)}",
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 24,
@@ -635,16 +646,26 @@ class _Cart extends State<Cart> {
                 width: width * 0.9,
                 child: ElevatedButton(
                   onPressed: () {
-                    int _tmpCartCount = int.parse(cart_count.toString());
-                    if (_tmpCartCount > 0) {
-                      _appState.cartTotalPrice = total_price;
-                      Navigator.pushNamed(context, '/delivery');
+                    if (_appState.user.isGuest != true) {
+                      int _tmpCartCount = int.parse(cart_count.toString());
+                      if (_tmpCartCount > 0) {
+                        _appState.cartTotalPrice = total_price;
+                        Navigator.pushNamed(context, '/delivery');
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text("No Cart items."),
+                          backgroundColor: Colors.orange,
+                        ));
+                      }
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("No Cart items."),
-                        backgroundColor: Colors.orange,
-                      ));
+                      ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(
+                          content: Text(AppLocalizations.of(context).login_plogin),
+                          backgroundColor: Colors.orange,
+                        ));
                     }
+
                     // _appState.cartTotalPrice = total_price;
                     //   Navigator.pushNamed(context, '/delivery');
                   },

@@ -566,7 +566,7 @@ class _Register extends State<Register> {
                     child: Column(
                         children: [
                           Container(
-                            height: MediaQuery.of(context).size.height - 100,
+                            height: MediaQuery.of(context).size.height * 0.9,
                             padding: const EdgeInsets.only(
                               left: 20,
                               right: 20,

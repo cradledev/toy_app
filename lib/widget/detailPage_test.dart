@@ -230,9 +230,10 @@ class _DetailPageTest extends State<DetailPageTest> {
                 ? null
                 : () {
                     // Navigator.pushNamed(context, '/home');
-                    if (!_appState.user.isGuest) {
-                      submitFavourite(args?.id);
-                    }
+                    // if (!_appState.user.isGuest) {
+                    //   submitFavourite(args?.id);
+                    // }
+                    submitFavourite(args?.id);
                   },
             child: isProcessingFavour
                 ? const Center(
@@ -292,7 +293,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Text(
                             // args.approvedratingsum.toString(),
-                            "Stock " + args.stock.toString(),
+                            AppLocalizations.of(context).stock + args.stock.toString(),
                             style: const TextStyle(
                               fontFamily: 'Avenir Next',
                               fontSize: 16,
@@ -416,16 +417,17 @@ class _DetailPageTest extends State<DetailPageTest> {
                       onPressed: processing
                           ? null
                           : () {
-                              if (!_appState.user.isGuest) {
-                                submitCartItem(args?.id, args?.price);
-                              } else {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content:
-                                      Text("You must login, not as a Guest."),
-                                  backgroundColor: Colors.orange,
-                                ));
-                              }
+                              // if (!_appState.user.isGuest) {
+                              //   submitCartItem(args?.id, args?.price);
+                              // } else {
+                              //   ScaffoldMessenger.of(context)
+                              //       .showSnackBar(const SnackBar(
+                              //     content:
+                              //         Text("You must login, not as a Guest."),
+                              //     backgroundColor: Colors.orange,
+                              //   ));
+                              // }
+                              submitCartItem(args?.id, args?.price);
                               // Navigator.pushNamed(context, '/home');
                             },
                       style: ButtonStyle(
