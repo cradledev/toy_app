@@ -26,7 +26,7 @@ class _Onboarding extends State<Onboarding> {
 
   // provider setting
   AppState _appState;
-  AppLocale _appLocale;
+  // AppLocale _appLocale;
   @override
   void initState() {
     super.initState();
@@ -38,16 +38,16 @@ class _Onboarding extends State<Onboarding> {
 
   void _init() {
     _appState = Provider.of<AppState>(context, listen: false);
-    _appLocale = Provider.of<AppLocale>(context, listen: false);
+    // _appLocale = Provider.of<AppLocale>(context, listen: false);
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _appState.getLocale().then((locale) {
-      _appLocale.changeLocale(Locale(locale.languageCode));
-    });
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   _appState.getLocale().then((locale) {
+  //     _appLocale.changeLocale(Locale(locale.languageCode));
+  //   });
+  // }
 
   List<Widget> _buildPageIndicator() {
     List<Widget> list = [];

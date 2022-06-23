@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toy_app/model/navigation_item.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:toy_app/provider/index.dart';
 import 'package:toy_app/provider/navigation_provider.dart';
 
@@ -47,7 +49,7 @@ class CustomDrawerWidget extends StatelessWidget {
                       children: [
                         buildMenuItem(context,
                             item: NavigationItem.home,
-                            text: 'Home',
+                            text: AppLocalizations.of(context).babytoyspage_home,
                             icon: Icons.home)
                       ],
                     ),
@@ -60,7 +62,7 @@ class CustomDrawerWidget extends StatelessWidget {
                         appState?.user?.isGuest == false
                             ? buildMenuItem(context,
                                 item: NavigationItem.setting,
-                                text: 'Setting',
+                                text: AppLocalizations.of(context).profilepage_setting,
                                 icon: Icons.settings)
                             : const SizedBox(
                                 height: 0,
@@ -80,11 +82,11 @@ class CustomDrawerWidget extends StatelessWidget {
                         appState?.user?.isGuest == true
                             ? buildMenuItem(context,
                                 item: NavigationItem.login,
-                                text: 'Log In',
+                                text: AppLocalizations.of(context).login_login,
                                 icon: Icons.login_outlined)
                             : buildMenuItem(context,
                                 item: NavigationItem.logout,
-                                text: 'Log out',
+                                text: AppLocalizations.of(context).profilepage_logout,
                                 icon: Icons.logout_outlined),
                       ],
                     ),

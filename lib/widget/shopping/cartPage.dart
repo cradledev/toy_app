@@ -61,7 +61,7 @@ class _Cart extends State<Cart> {
           orderTotalModel = value['orderTotalModel'];
           for (var item in cartItems) {
             // _total_price += item.price * item.quantity;
-            if (item.product.categoryName.toLowerCase().contains("wrap")) {
+            if (item.product.categoryName.toLowerCase().contains("التفاف")) {
               isIncludingWrapPackage = true;
               wrapPackageProductId = item.product.id;
               wrapPackageCartItemId = item.id;
@@ -285,7 +285,7 @@ class _Cart extends State<Cart> {
                               },
                               child: Container(
                                 padding: EdgeInsets.zero,
-                                margin: const EdgeInsets.only(bottom: 20),
+                                margin: const EdgeInsets.only(bottom: 20, top: 20),
                                 height:
                                     MediaQuery.of(context).size.height * 0.2,
                                 width: width * 0.9,
@@ -367,9 +367,13 @@ class _Cart extends State<Cart> {
                                                                     ?.isEmpty ??
                                                                 true
                                                             ? ""
-                                                            : "${cartItems[index]
+                                                            : cartItems[index]
+                                                                .product
+                                                                .name.toString().length > 15 ? "${cartItems[index]
                                                                 ?.product
-                                                                ?.name?.substring(0, 15)}...",
+                                                                ?.name?.substring(0, 15)}..." : cartItems[index]
+                                                                ?.product
+                                                                ?.name,
                                                         style: const TextStyle(
                                                           fontFamily:
                                                               'Avenir Next',

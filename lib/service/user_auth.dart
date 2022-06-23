@@ -226,6 +226,7 @@ class UserService {
     try {
       customHeaders['Authorization'] = "Bearer $_token";
       var response = await http.post(Uri.parse("$apiEndPoint/Customer/Register?returnUrl=false"), body: jsonEncode(_payloads), headers: customHeaders);
+      print(response);
       if (response.statusCode == 302) {
         return true;
       } else {

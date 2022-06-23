@@ -295,7 +295,7 @@
 	"wraporderpage_subtotal": "Subtotal",
 	"wraporderpage_checkout": "Checkout",
 	"wrappage_options": "Wrap options",
-	"wrappage_design": "Choose packeging design",
+	"wrappage_design": "Choose packaging design",
 	"wrappage_next": "Next",
 	"detailpage_success": "Success",
 	"detailpage_text1": "This product is added in favourite list!",
@@ -343,5 +343,10 @@
 	"phone_numebr" : "Phone Number",
 	"language" : "Language",
 	"changepassword_title" : "Change Password",
-	"stock" : "Stock"
+	"stock" : "Stock",
+	"change_password_subTitle" : "You can change your passsword and sae it here",
+	"old_password" : "Old Password",
+	"new_password" : "New Password",
+	"confirm_password" : "Confirm Password",
+	"warp_modal_description" : "Please Select the Wrap Package."
 }

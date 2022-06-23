@@ -116,271 +116,260 @@ class _Edit extends State<Edit> {
         },
       ),
       body: SingleChildScrollView(
-        reverse: true,
         child: Container(
-          height: MediaQuery.of(context).size.height - 100,
+          height: MediaQuery.of(context).size.height * 0.9,
           width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.only(bottom: 25),
+          padding: const EdgeInsets.only(bottom: 10),
           color: const Color(0xffffffff),
           child: Column(
             children: [
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: Text(
-                      AppLocalizations.of(context).editpage_text1,
-                      style: const TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                child: Row(
+              Expanded(
+                child: Column(
                   children: [
-                    Text(
-                      AppLocalizations.of(context).editpage_text2,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xff999999),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 5),
+                          child: Text(
+                            AppLocalizations.of(context).editpage_text1,
+                            style: const TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 5),
+                      child: Row(
+                        children: [
+                          Text(
+                            AppLocalizations.of(context).editpage_text2,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Color(0xff999999),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Form(
+                            key: _formKey,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 40),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: width * 0.3,
+                                    height: height * 0.2,
+                                    margin: EdgeInsets.only(
+                                        left: width * 0.05,
+                                        right: width * 0.02),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(32),
+                                      color: Colors.white,
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        // getImage
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 38.0,
+                                        child: ClipOval(
+                                          child: _image == null
+                                              ? (imagePath == ''
+                                                  ? Image.asset(
+                                                      "assets/img/home/avatar.jpg",
+                                                      fit: BoxFit.fill,
+                                                    )
+                                                  : Image.file(
+                                                      File(imagePath),
+                                                      fit: BoxFit.fill,
+                                                    ))
+                                              : Image.file(
+                                                  _image,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                        ),
+                                        backgroundColor: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)
+                                            .editpage_firstname,
+                                        style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black87),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      TextFormField(
+                                        controller: savedFirstName,
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 0, horizontal: 10),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(32),
+                                          ),
+                                          border: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null ||
+                                              value.trim().isEmpty) {
+                                            return AppLocalizations.of(context)
+                                                .editpage_pfirstname;
+                                          }
+                                          // Return null if the entered email is valid
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      )
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)
+                                            .editpage_lastname,
+                                        style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black87),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      TextFormField(
+                                        controller: savedLastName,
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 0, horizontal: 10),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(32),
+                                          ),
+                                          border: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null ||
+                                              value.trim().isEmpty) {
+                                            return AppLocalizations.of(context)
+                                                .editpage_plastname;
+                                          }
+                                          // Return null if the entered email is valid
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      )
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)
+                                            .editpage_bio,
+                                        style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black87),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      TextField(
+                                        controller: savedBio,
+                                        maxLines: 5,
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 10),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(32),
+                                          ),
+                                          border: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
               SizedBox(
-                height: height * 0.01,
-              ),
-              Container(
-                width: width * 0.3,
-                height: height * 0.2,
-                margin:
-                    EdgeInsets.only(left: width * 0.05, right: width * 0.02),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32),
-                  color: Colors.white,
-                ),
-                child: InkWell(
-                  onTap: () {
-                    // getImage
-                  },
-                  child: CircleAvatar(
-                    radius: 38.0,
-                    child: ClipOval(
-                      child: _image == null
-                          ? (imagePath == ''
-                              ? Image.asset(
-                                  "assets/img/home/avatar.jpg",
-                                  fit: BoxFit.fill,
-                                )
-                              : Image.file(
-                                  File(imagePath),
-                                  fit: BoxFit.fill,
-                                ))
-                          : Image.file(
-                              _image,
-                              fit: BoxFit.fill,
-                            ),
+                height: height * 0.07,
+                width: width * 0.9,
+                child: ElevatedButton(
+                  onPressed: isProcessing
+                      ? null
+                      : () {
+                          submitInfo();
+                        },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(const Color(0xff283488)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(83.0),
+                        side: const BorderSide(color: Color(0xff283488)),
+                      ),
                     ),
-                    backgroundColor: Colors.white,
                   ),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.zero,
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Form(
-                              key: _formKey,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 40),
-                                child: Column(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)
-                                              .editpage_firstname,
-                                          style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextFormField(
-                                          controller: savedFirstName,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 0,
-                                                    horizontal: 10),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(32),
-                                            ),
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey)),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.trim().isEmpty) {
-                                              return AppLocalizations.of(
-                                                      context)
-                                                  .editpage_pfirstname;
-                                            }
-                                            // Return null if the entered email is valid
-                                            return null;
-                                          },
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        )
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)
-                                              .editpage_lastname,
-                                          style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextFormField(
-                                          controller: savedLastName,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 0,
-                                                    horizontal: 10),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(32),
-                                            ),
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey)),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.trim().isEmpty) {
-                                              return AppLocalizations.of(
-                                                      context)
-                                                  .editpage_plastname;
-                                            }
-                                            // Return null if the entered email is valid
-                                            return null;
-                                          },
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        )
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)
-                                              .editpage_bio,
-                                          style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextField(
-                                          controller: savedBio,
-                                          maxLines: 5,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 5,
-                                                    horizontal: 10),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(32),
-                                            ),
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: height * 0.07,
-                        width: width * 0.9,
-                        child: ElevatedButton(
-                          onPressed: isProcessing
-                              ? null
-                              : () {
-                                  submitInfo();
-                                },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color(0xff283488)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(83.0),
-                                side:
-                                    const BorderSide(color: Color(0xff283488)),
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            isProcessing
-                                ? "...processing"
-                                : AppLocalizations.of(context).editpage_save,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    isProcessing
+                        ? "...processing"
+                        : AppLocalizations.of(context).editpage_save,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),
               ),

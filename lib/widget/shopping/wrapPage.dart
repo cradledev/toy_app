@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toy_app/components/components.dart';
 
 import 'package:toy_app/model/product.model.dart';
 import 'package:toy_app/service/product_repo.dart';
@@ -34,7 +35,7 @@ class _WrapPage extends State<WrapPage> {
       crossAxisCount: 2,
       mainAxisSpacing: 20.0,
       crossAxisSpacing: 6.0,
-      childAspectRatio: 0.75,
+      childAspectRatio: 0.8,
       padding: const EdgeInsets.all(15.0),
       itemBuilder: _itemBuilder,
       loadingBuilder: (context) {
@@ -76,7 +77,7 @@ class _WrapPage extends State<WrapPage> {
       },
       pageFuture: (pageIndex) {
         return ProductService.getProductsByCategoryId(
-            pageIndex, PAGE_SIZE, "wrap");
+            pageIndex, PAGE_SIZE, "التفاف");
       },
     );
   }
@@ -118,19 +119,21 @@ class _WrapPage extends State<WrapPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Padding(
+                  Container(
                     padding: const EdgeInsets.only(top: 0),
+                    height: MediaQuery.of(context).size.height * 0.23,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
                       child: entry?.images?.isEmpty ?? true
-                          ? Image.asset('assets/img/no_image.png', fit: BoxFit.fill,)
+                          ? Image.asset(
+                              'assets/img/no_image.png',
+                              fit: BoxFit.fill,
+                            )
                           : Image.network(
                               entry?.images[0],
-                              height: MediaQuery.of(context).size.height * 0.23,
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fill,
                             ),
                     ),
                   )
@@ -163,8 +166,8 @@ class _WrapPage extends State<WrapPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(32),
@@ -177,6 +180,7 @@ class _WrapPage extends State<WrapPage> {
                           padding: EdgeInsets.zero,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +201,7 @@ class _WrapPage extends State<WrapPage> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 5),
                                     child: Text(
-                                      '\$' + entry.price.toString(),
+                                      'ر.س ${entry?.price.toString()}',
                                       style: const TextStyle(
                                         fontFamily: 'Avenir Next',
                                         fontSize: 16,
@@ -209,8 +213,8 @@ class _WrapPage extends State<WrapPage> {
                                 ],
                               ),
                               SizedBox(
-                                height: 30,
-                                width: 30,
+                                height: 35,
+                                width: 35,
                                 child: RawMaterialButton(
                                   onPressed: () {},
                                   elevation: 1.0,
@@ -430,8 +434,7 @@ class _WrapPage extends State<WrapPage> {
                   return AlertDialog(
                     title:
                         Text(AppLocalizations.of(context).detailpage_success),
-                    content:
-                        Text(AppLocalizations.of(context).detailpage_cart),
+                    content: Text(AppLocalizations.of(context).detailpage_cart),
                     actions: [
                       ElevatedButton(
                         child: Text(AppLocalizations.of(context).detailpage_ok),
@@ -478,7 +481,7 @@ class _WrapPage extends State<WrapPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(AppLocalizations.of(context).detailpage_alert),
-              content: const Text("Please Select the Wrap Package."),
+              content: Text(AppLocalizations.of(context).warp_modal_description),
               actions: [
                 ElevatedButton(
                   child: Text(AppLocalizations.of(context).detailpage_ok),
@@ -496,10 +499,20 @@ class _WrapPage extends State<WrapPage> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    var itemHeight = height * 0.3;
-    var itemWidth = width * 0.4;
     return Scaffold(
       // backgroundColor: Color(0xff283488),
+      appBar: CustomAppBar(
+        title: Image.asset(
+          'assets/img/LoginRegistration/header.png',
+          // height: height * 0.1,
+          width: width * 0.5,
+          fit: BoxFit.cover,
+        ),
+        leadingAction: () {
+          Navigator.pushNamed(context, '/cart');
+          // Navigator.pop(context);
+        },
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -508,21 +521,7 @@ class _WrapPage extends State<WrapPage> {
               children: [
                 Container(
                   padding:
-                      EdgeInsets.only(top: height * 0.1, left: width * 0.05),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/cart');
-                      // Navigator.pop(context);
-                    },
-                    child: const Icon(Icons.arrow_back, color: Colors.black),
-                  ),
-                )
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(top: 15, left: width * 0.05),
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: Text(
                     AppLocalizations.of(context).wrappage_options,
                     style: const TextStyle(
@@ -539,10 +538,8 @@ class _WrapPage extends State<WrapPage> {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.only(
-                    top: height * 0.02,
-                    left: width * 0.05,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: Text(
                     AppLocalizations.of(context).wrappage_design,
                     style: const TextStyle(
@@ -580,12 +577,17 @@ class _WrapPage extends State<WrapPage> {
                       ),
                     ),
                   ),
-                  child: Text(
-                    processing
-                        ? "...processing"
-                        : AppLocalizations.of(context).wrappage_next,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                  ),
+                  child: processing
+                      ? const CircularProgressIndicator(
+                          backgroundColor: Colors.white,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 255, 255, 255)),
+                          strokeWidth: 2)
+                      : Text(
+                          AppLocalizations.of(context).wrappage_next,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 14),
+                        ),
                 ),
               ),
             ),

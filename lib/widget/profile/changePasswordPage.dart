@@ -102,12 +102,12 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
           child: Column(
             children: [
               Row(
-                children: const [
+                children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Text(
-                      "Change password",
-                      style: TextStyle(
+                      AppLocalizations.of(context).changepassword_title, 
+                      style: const TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
@@ -119,10 +119,10 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                 child: Row(
-                  children: const [
+                  children: [
                     Text(
-                      "You can change your password and save it here",
-                      style: TextStyle(
+                      AppLocalizations.of(context).change_password_subTitle,  
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xff999999),
                       ),
@@ -153,9 +153,9 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          "Old Password",
-                                          style: TextStyle(
+                                        Text(
+                                           AppLocalizations.of(context).old_password,  
+                                          style: const TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black87),
@@ -203,9 +203,9 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          "New Password",
-                                          style: TextStyle(
+                                        Text(
+                                          AppLocalizations.of(context).new_password,  
+                                          style: const TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black87),
@@ -258,9 +258,9 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          "Confirm Password",
-                                          style: TextStyle(
+                                        Text(
+                                          AppLocalizations.of(context).confirm_password, 
+                                          style: const TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black87),

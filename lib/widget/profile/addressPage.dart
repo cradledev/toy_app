@@ -142,13 +142,13 @@ class _AddressPage extends State<AddressPage> {
                   child: Column(
                     children: [
                       Row(
-                        children: const [
+                        children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             child: Text(
-                              "Address",
-                              style: TextStyle(
+                             AppLocalizations.of(context).profilepage_address,
+                            style: const TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -160,10 +160,10 @@ class _AddressPage extends State<AddressPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 0),
                         child: Row(
-                          children: const [
+                          children: [
                             Text(
-                              "You can edit your address details and save it here.",
-                              style: TextStyle(
+                              AppLocalizations.of(context).editpage_text2,
+                              style: const TextStyle(
                                 fontSize: 14,
                                 color: Color(0xff999999),
                               ),

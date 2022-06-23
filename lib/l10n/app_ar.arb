@@ -295,7 +295,7 @@
   "wraporderpage_subtotal": "المجموع الفرعي",
   "wraporderpage_checkout": "تسجيل خروج",
   "wrappage_options": "اختيارات الالتفاف",
-  "wrappage_design": "اختيار تصميم packging",
+  "wrappage_design": "اختر تصميم العبوات",
   "wrappage_next": "تالي",
   "detailpage_success": "نجاح",
   "detailpage_text1": "يتم اضافة هذا المنتج في الكشف المفضل !",
@@ -343,5 +343,10 @@
   "phone_numebr" : "رقم الهاتف",
   "language" : "لغة",
   "changepassword_title" : "غير كلمة السر",
-  "stock" : "مخزون"
+  "stock" : "مخزون",
+  "change_password_subTitle" : "يمكنك تغيير كلمة المرور الخاصة بك وحفظها هنا",
+  "old_password" : "كلمة المرور القديمة",
+	"new_password" : "كلمة السر الجديدة",
+	"confirm_password" : "تأكيد كلمة المرور",
+  "warp_modal_description" : "يرجى تحديد حزمة التفاف."
 }

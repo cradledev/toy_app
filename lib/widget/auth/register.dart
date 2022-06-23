@@ -147,7 +147,6 @@ class _Register extends State<Register> {
         'password': _userInfo['password']
       };
       String _tokenResponse = await userService.getToken(tokenPutData);
-      print(_tokenResponse);
       var putData = {
         "model": {
           "email": _userInfo['email'],
@@ -240,8 +239,8 @@ class _Register extends State<Register> {
           "display_captcha": true,
           "customer_attributes": [
             {
-              "name": "string",
-              "is_required": true,
+              "name": "bio",
+              "is_required": false,
               "default_value": "string",
               "attribute_control_type": "DropdownList",
               "values": [
@@ -264,38 +263,16 @@ class _Register extends State<Register> {
               }
             }
           ],
-          "gdpr_consents": [
-            {
-              "message": "string",
-              "is_required": true,
-              "required_message": "string",
-              "accepted": true,
-              "id": 0,
-              "custom_properties": {
-                "additionalProp1": "string",
-                "additionalProp2": "string",
-                "additionalProp3": "string"
-              }
-            }
-          ],
-          "custom_properties": {
-            "additionalProp1": "string",
-            "additionalProp2": "string",
-            "additionalProp3": "string"
-          }
+          "gdpr_consents": [],
+          "custom_properties": {}
         },
-        "form": {
-          "additionalProp1": "string",
-          "additionalProp2": "string",
-          "additionalProp3": "string"
-        }
+        "form": {'customer_attribute_1': "string"},
       };
       // var response;
       // // var response = await _appState.postAuth(
       // //     Uri.parse("${_appState.endpoint}/Customer/Register?returnUrl=false"),
       // //     jsonEncode(putData));
       bool isSuccessSignup = await userService.onSignup(putData, _tokenResponse);
-      print(isSuccessSignup);
       if (isSuccessSignup) {
         var putUserInfo = {
           'email': _userInfo['email'],
