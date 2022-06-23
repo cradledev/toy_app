@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
+import 'package:toy_app/components/custom_drawer_widget.dart';
 
 import 'package:toy_app/service/product_repo.dart';
 import 'package:toy_app/model/category_list_model.dart';
@@ -168,16 +170,29 @@ class _Categories extends State<Categories> {
       bottomNavigationBar:
           CustomBottomNavbar(context: context, selectedIndex: 1),
       appBar: CustomAppBar(
-        title: const Text(""),
-        leadingAction: () {
-          Navigator.pushNamed(context, '/search');
-        },
-        leadingIcon: const Icon(
+        title: Image.asset(
+          'assets/img/LoginRegistration/header.png',
+          // height: height * 0.1,
+          width: width * 0.5,
+          fit: BoxFit.cover,
+        ),
+        actionFlag: true,
+        actionIcon: const Icon(
           Icons.search,
           color: Colors.black,
           size: 30,
         ),
+        actionEvent: () {
+          Navigator.pushNamed(context, '/search');
+        },
+        leadingIcon: const Icon(
+          CupertinoIcons.line_horizontal_3,
+          color: Colors.black,
+          size: 30,
+        ),
+        
       ),
+      drawer: const CustomDrawerWidget(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

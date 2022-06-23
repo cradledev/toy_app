@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:toy_app/provider/navigation_provider.dart';
 import 'package:toy_app/routes.dart';
 import 'package:toy_app/widget/boarding/splash.dart';
 
@@ -25,6 +26,9 @@ void main() {
       ChangeNotifierProvider(
         create: (_) => AppLocale(),
       ),
+      ChangeNotifierProvider(
+            create: (_) => NavigationProvider(),
+          ),
       // ChangeNotifierProvider(
       //     create: (_) => DataNotifier(),
       //   ),

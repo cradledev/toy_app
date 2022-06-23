@@ -53,15 +53,21 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final Size preferredSize;
   final Widget title;
   final Function() leadingAction;
+  final Function() actionEvent;
   final Widget leadingIcon;
   final Color backgroundColor;
   final Color leadingIconColor;
+  final bool actionFlag;
+  final Widget actionIcon;
   const CustomAppBar(
       {Key key,
       this.title,
       this.leadingAction,
       this.leadingIcon,
       this.backgroundColor,
+      this.actionFlag = false,
+      this.actionIcon,
+      this.actionEvent,
       this.leadingIconColor})
       : preferredSize = const Size.fromHeight(50),
         super(key: key);
@@ -87,9 +93,21 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                 size: 30,
                 color: leadingIconColor ?? Colors.black,
               ),
-          onPressed: leadingAction,
+          onPressed: leadingAction ??
+              () {
+                Scaffold.of(context).openDrawer();
+              },
         ),
       ),
+      actions: actionFlag
+          ? [
+              IconButton(
+                icon: actionIcon,
+                tooltip: 'Search',
+                onPressed: actionEvent,
+              ),
+            ]
+          : null,
       centerTitle: true,
       flexibleSpace: Container(
         decoration: BoxDecoration(
@@ -683,7 +701,9 @@ class CustomDialogBox extends StatefulWidget {
   final String title, descriptions, text;
   final Image img;
 
-  const CustomDialogBox({Key key, this.title, this.descriptions, this.text, this.img}) : super(key: key);
+  const CustomDialogBox(
+      {Key key, this.title, this.descriptions, this.text, this.img})
+      : super(key: key);
 
   @override
   _CustomDialogBoxState createState() => _CustomDialogBoxState();
@@ -733,7 +753,8 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                     _handleRadioValueChange("en");
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: Row(
                       children: <Widget>[
                         Radio(
@@ -745,10 +766,8 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                           activeColor: Colors.blue,
                         ),
                         const Text("English",
-                            style:TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold)),
-                        
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -758,7 +777,8 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                     _handleRadioValueChange("ar");
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: Row(
                       children: <Widget>[
                         Radio(
@@ -770,10 +790,8 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                           value: "ar",
                         ),
                         const Text("Arabic",
-                            style:TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold)),
-                        
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),

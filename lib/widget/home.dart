@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toy_app/components/components.dart';
+import 'package:toy_app/components/custom_drawer_widget.dart';
 import 'package:toy_app/model/product.model.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
 import 'package:toy_app/service/product_repo.dart';
@@ -635,6 +637,16 @@ class _Home extends State<Home> {
         backgroundColor: const Color.fromARGB(255, 237, 236, 236),
         bottomNavigationBar:
             CustomBottomNavbar(context: context, selectedIndex: 0),
+        appBar: const CustomAppBar(
+          title: Text(""),
+          leadingIcon: Icon(
+                CupertinoIcons.line_horizontal_3,
+                size: 30,
+                color: Colors.white,
+              ),
+          backgroundColor: Color(0xff283488),
+        ),
+        drawer: const CustomDrawerWidget(),
         body: isPageLoading
             ? Center(
                 child: SizedBox(
@@ -661,7 +673,7 @@ class _Home extends State<Home> {
                               Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Container(
-                                  padding: const EdgeInsets.only(top: 70),
+                                  padding: const EdgeInsets.only(top: 8),
                                   child: Image.asset(
                                     "assets/img/home/header.png",
                                     scale: 1.6,
@@ -744,7 +756,7 @@ class _Home extends State<Home> {
                                                             blurRadius: 5,
                                                             color: Colors.black
                                                                 .withOpacity(
-                                                                    0.1),
+                                                                    0.3),
                                                           ),
                                                         ],
                                                         borderRadius:
@@ -766,7 +778,7 @@ class _Home extends State<Home> {
                                                             style: const TextStyle(
                                                                 fontSize: 28,
                                                                 color: Colors
-                                                                    .black87,
+                                                                    .white,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold),

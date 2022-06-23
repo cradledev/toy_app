@@ -65,7 +65,7 @@ class ProductService {
         cartItemList = [];
       }
 
-      cartItemList ?? List<ProductM>.empty();
+      // cartItemList ?? List<ProductM>.empty();
       var orderTotalModel = await getOrderTotalModelForShoppingCart();
       return {'cartItemList': cartItemList, 'orderTotalModel': orderTotalModel};
     } catch (err) {

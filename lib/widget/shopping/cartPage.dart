@@ -59,7 +59,6 @@ class _Cart extends State<Cart> {
         setState(() {
           cartItems = value['cartItemList'];
           orderTotalModel = value['orderTotalModel'];
-          print(orderTotalModel);
           for (var item in cartItems) {
             // _total_price += item.price * item.quantity;
             if (item.product.categoryName.toLowerCase().contains("wrap")) {
@@ -297,7 +296,7 @@ class _Cart extends State<Cart> {
                                     BoxShadow(
                                       offset: const Offset(0, 1),
                                       blurRadius: 5,
-                                      color: Colors.black.withOpacity(0.1),
+                                      color: Colors.black.withOpacity(0.2),
                                     ),
                                   ],
                                 ),
@@ -305,19 +304,32 @@ class _Cart extends State<Cart> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(32.0),
-                                          bottomLeft: Radius.circular(32.0)),
-                                      child: Image.network(
-                                        cartItems[index].product.images[0],
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.2,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.4,
-                                        fit: BoxFit.cover,
+                                    Container(
+                                      padding: EdgeInsets.zero,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.2,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      child: ClipRRect(
+                                        borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(32.0),
+                                            bottomLeft: Radius.circular(32.0)),
+                                        child: cartItems[index]
+                                                    .product
+                                                    ?.images
+                                                    ?.isEmpty ??
+                                                true
+                                            ? Image.asset(
+                                                'assets/img/no_image.png',
+                                                fit: BoxFit.fill,
+                                              )
+                                            : Image.network(
+                                                cartItems[index]
+                                                    ?.product
+                                                    ?.images[0],
+                                                fit: BoxFit.fill,
+                                              ),
                                       ),
                                     ),
                                     Container(
@@ -355,9 +367,9 @@ class _Cart extends State<Cart> {
                                                                     ?.isEmpty ??
                                                                 true
                                                             ? ""
-                                                            : cartItems[index]
+                                                            : "${cartItems[index]
                                                                 ?.product
-                                                                ?.name,
+                                                                ?.name?.substring(0, 15)}...",
                                                         style: const TextStyle(
                                                           fontFamily:
                                                               'Avenir Next',
@@ -534,7 +546,7 @@ class _Cart extends State<Cart> {
                   child: Text(
                     orderTotalModel == null
                         ? ""
-                        : orderTotalModel['sub_total'] ?? "",
+                        : orderTotalModel['sub_total'] == null ? "" : "ر.س ${orderTotalModel['sub_total']?.toString()?.substring(1)}",
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 24,
@@ -566,7 +578,7 @@ class _Cart extends State<Cart> {
                   child: Text(
                     orderTotalModel == null
                         ? ""
-                        : orderTotalModel['order_total_discount'] ?? "",
+                        : orderTotalModel['order_total_discount'] == null ? "" : "ر.س ${orderTotalModel['order_total_discount']?.toString()?.substring(1)}",
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 24,
@@ -598,7 +610,7 @@ class _Cart extends State<Cart> {
                   child: Text(
                     orderTotalModel == null
                         ? ""
-                        : orderTotalModel['order_total'] ?? "",
+                        : orderTotalModel['order_total'] == null ? "" : "ر.س ${orderTotalModel['order_total']?.toString()?.substring(1)}",
                     style: const TextStyle(
                       fontFamily: 'Avenir Next',
                       fontSize: 24,
@@ -609,7 +621,7 @@ class _Cart extends State<Cart> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Padding(
@@ -648,6 +660,9 @@ class _Cart extends State<Cart> {
                   ),
                 ),
               ),
+            ),
+            const SizedBox(
+              height: 20,
             ),
           ],
         ),

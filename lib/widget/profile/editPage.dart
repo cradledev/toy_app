@@ -54,9 +54,9 @@ class _Edit extends State<Edit> {
         'firstname': savedFirstName.text,
         'lastname': savedLastName.text,
         'bio': savedBio.text,
-        'email' : _appState.user.userEmail,
+        'email': _appState.user.userEmail,
         'country_id': _appState.countryId,
-        'phone' : _appState.phoneNumber,
+        'phone': _appState.phoneNumber,
         'city': _appState.profileCity,
         'address1': _appState.profileAddress1
       };
@@ -87,14 +87,13 @@ class _Edit extends State<Edit> {
 
   Future getImage() async {
     var pickedFile = await picker.getImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile = null) {
-        _image = File(pickedFile.path);
-        // print('hahaha');
-      } else {
-        print('No image selected.');
-      }
-    });
+
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+      // print('hahaha');
+    } else {
+      print('No image selected.');
+    }
   }
 
   @override
@@ -168,7 +167,9 @@ class _Edit extends State<Edit> {
                   color: Colors.white,
                 ),
                 child: InkWell(
-                  onTap: getImage,
+                  onTap: () {
+                    // getImage
+                  },
                   child: CircleAvatar(
                     radius: 38.0,
                     child: ClipOval(

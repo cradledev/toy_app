@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
@@ -9,6 +10,7 @@ import 'package:toy_app/components/components.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:provider/provider.dart';
+import 'package:toy_app/components/custom_drawer_widget.dart';
 import 'package:toy_app/helper/constant.dart';
 import 'package:toy_app/provider/index.dart';
 import 'package:toy_app/service/user_auth.dart';
@@ -111,10 +113,13 @@ class _Profile extends State<Profile> {
           width: width * 0.5,
           fit: BoxFit.cover,
         ),
-        leadingAction: () {
-          Navigator.pop(context);
-        },
+        leadingIcon: const Icon(
+          CupertinoIcons.line_horizontal_3,
+          size: 30,
+          color: Colors.black,
+        ),
       ),
+      drawer: const CustomDrawerWidget(),
       bottomNavigationBar:
           CustomBottomNavbar(context: context, selectedIndex: 4),
       body: isPageLoading
@@ -369,7 +374,7 @@ class _Profile extends State<Profile> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                         AppLocalizations.of(context).changepassword_title,
+                          AppLocalizations.of(context).changepassword_title,
                           style: const TextStyle(
                             fontSize: 18,
                           ),

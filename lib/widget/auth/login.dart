@@ -262,26 +262,26 @@ class _LoginScreenPage extends State<LoginScreen> {
                                     )
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.zero,
-                                      child: Row(
-                                        children: [
-                                          Text(AppLocalizations.of(context)
-                                              .login_fpwd),
-                                          Text(
-                                            AppLocalizations.of(context)
-                                                .login_tap,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 18),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                // Row(
+                                //   children: [
+                                //     Padding(
+                                //       padding: EdgeInsets.zero,
+                                //       child: Row(
+                                //         children: [
+                                //           Text(AppLocalizations.of(context)
+                                //               .login_fpwd),
+                                //           Text(
+                                //             AppLocalizations.of(context)
+                                //                 .login_tap,
+                                //             style: const TextStyle(
+                                //                 fontWeight: FontWeight.w600,
+                                //                 fontSize: 18),
+                                //           ),
+                                //         ],
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
                               ],
                             ),
                           ),
