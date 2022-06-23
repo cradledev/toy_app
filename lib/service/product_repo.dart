@@ -909,11 +909,14 @@ class ProductService {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       String _token = _prefs.getString("token") ?? '';
       customHeaders['Authorization'] = "Bearer $_token";
+      // print(id);
+      
       // var _productDetails = await http.get(
       //     Uri.parse(
       //         "$apiEndPoint/Product/GetProductDetails/$id?updateCartItemId=0"),
       //     headers: customHeaders);
       // var _detailBody = jsonDecode(_productDetails.body);
+      // print(1);
       // List<String> imgList = [];
       // List<String> detailImagList = [];
       // if (featured) {
@@ -942,11 +945,14 @@ class ProductService {
       //   'detailImages': detailImagList,
       //   'category': _productCategory
       // };
+
+
       var _productCategoryRes = await http.get(
           Uri.parse(
               "$backendEndpoint/ProductCategory/GetProductCategoriesByProductId/$id?showHidden=false"),
           headers: customHeaders);
       var _body = jsonDecode(_productCategoryRes.body);
+      print(_body.length);
       int _productCategoryId = _body[0]['category_id'];
       var _categoryDetailRes = await http.get(
           Uri.parse("$backendEndpoint/Category/GetById/$_productCategoryId"),
