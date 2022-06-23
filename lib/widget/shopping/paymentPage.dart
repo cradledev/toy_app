@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:myfatoorah_flutter/model/initsession/SDKInitSessionResponse.dart';
-import 'package:myfatoorah_flutter/myfatoorah_flutter.dart';
-import 'package:myfatoorah_flutter/utils/MFCountry.dart';
-import 'package:myfatoorah_flutter/utils/MFEnvironment.dart';
-import 'package:toy_app/components/components.dart';
 
 import 'package:toy_app/helper/constant.dart';
 
 import 'package:provider/provider.dart';
 import 'package:toy_app/provider/index.dart';
+
+import 'package:flutter_credit_card/credit_card_brand.dart';
+import 'package:flutter_credit_card/credit_card_form.dart';
+import 'package:flutter_credit_card/credit_card_model.dart';
+import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:toy_app/service/product_repo.dart';
 
 class Payment extends StatefulWidget {
   const Payment({Key key}) : super(key: key);
@@ -21,14 +22,28 @@ class Payment extends StatefulWidget {
 class _PaymentState extends State<Payment> {
   // provider setting
   AppState _appState;
-
+  final ProductService _productService = ProductService();
   String _response = '';
   final String _loading = "Loading...";
   var sessionIdValue = "";
-  MFPaymentCardView mfPaymentCardView;
+  String cardNumber = '';
+  String expiryDate = '';
+  String cardHolderName = '';
+  String cvvCode = '';
+  bool isCvvFocused = false;
+  bool useGlassMorphism = true;
+  bool useBackgroundImage = true;
+  OutlineInputBorder border;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
+    border = OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.grey.withOpacity(0.7),
+        width: 2.0,
+      ),
+    );
     super.initState();
     _appState = Provider.of<AppState>(context, listen: false);
     if (paymentAPIKey.isEmpty) {
@@ -38,212 +53,184 @@ class _PaymentState extends State<Payment> {
       });
       return;
     }
-
-    MFSDK.init(paymentAPIKey, MFCountry.KUWAIT, MFEnvironment.TEST);
-    initiateSession();
-    // (Optional) un comment the following lines if you want to set up properties of AppBar.
-
-    // MFSDK.setUpAppBar(
-    //     title: AppLocalizations.of(context).paymentpage_atext,
-    //     titleColor: Colors.black, // Color(0xFFFFFFFF)
-    //     backgroundColor: Colors.lightBlue, // Color(0xFF000000)
-    //     isShowAppBar: true); // For Android platform only
-
-    // (Optional) un comment this line, if you want to hide the AppBar.
-    // Note, if the platform is iOS, this line will not affected
-
-    MFSDK.setUpAppBar(isShowAppBar: false);
   }
 
-  void initiateSession() {
-    MFSDK.initiateSession((MFResult<MFInitiateSessionResponse> result) {
-          if (result.isSuccess()) {
-            mfPaymentCardView.load(result.response);
-          }
-          else
-            {
-              setState(() {
-                print(
-                    "Response: " + result.error.toJson().toString().toString());
-                _response = result.error.message;
-              });
-            }
-        });
-  }
-
-  void payWithEmbeddedPayment() {
-    double totalPrice = double.parse(_appState.cartTotalPrice);
-    var request =
-        MFInitiatePaymentRequest(totalPrice, MFCurrencyISO.UNITED_STATE_USD);
-
-    MFSDK.initiatePayment(
-        request,
-        MFAPILanguage.EN,
-        (MFResult<MFInitiatePaymentResponse> result) => {
-              if (result.isSuccess())
-                {print(result.response.toJson().toString())}
-              else
-                {print(result.error.message)}
-            });
-    var request1 = MFExecutePaymentRequest.constructor(totalPrice);
-
-    mfPaymentCardView.pay(
-        request1,
-        MFAPILanguage.EN,
-        (String invoiceId, MFResult<MFPaymentStatusResponse> result) => {
-              if (result.isSuccess())
-                {
-                  setState(() {
-                    print("invoiceId: " + invoiceId);
-                    print("Response: " + result.response.toJson().toString());
-                    _response = result.response.toJson().toString();
-                  })
-                }
-              else
-                {
-                  setState(() {
-                    print("invoiceId: " + invoiceId);
-                    print("Error: " + result.error.toJson().toString());
-                    _response = result.error.message;
-                  })
-                }
-            });
-  }
-
-  void getPaymentStatus() {
-    var request = MFPaymentStatusRequest(invoiceId: "1209756"); // 1209773
-
-    MFSDK.getPaymentStatus(
-        MFAPILanguage.EN,
-        request,
-        (MFResult<MFPaymentStatusResponse> result) => {
-              if (result.isSuccess())
-                {
-                  setState(() {
-                    print("Response: " + result.response.toJson().toString());
-                    _response = result.response.toJson().toString().toString();
-                  })
-                }
-              else
-                {
-                  setState(() {
-                    print("Response: " + result.error.toJson().toString());
-                    _response = result.error.message;
-                  })
-                }
-            });
-
+  void onCreditCardModelChange(CreditCardModel creditCardModel) {
     setState(() {
-      _response = _loading;
+      cardNumber = creditCardModel.cardNumber;
+      expiryDate = creditCardModel.expiryDate;
+      cardHolderName = creditCardModel.cardHolderName;
+      cvvCode = creditCardModel.cvvCode;
+      isCvvFocused = creditCardModel.isCvvFocused;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: Text(
-          AppLocalizations.of(context).paymentpage_pdetail,
-          style: const TextStyle(color: Colors.black),
-        ),
-        leadingAction: () {
-          Navigator.pop(context);
-        },
-      ),
-      body: Container(
-        margin: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.only(bottom: 25),
-            height: MediaQuery.of(context).size.height - 150,
-            width: MediaQuery.of(context).size.width,
+      body: SingleChildScrollView(
+
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+            // image: !useBackgroundImage
+            //     ? const DecorationImage(
+            //         image: ExactAssetImage('assets/img/onboarding/1-2.png'),
+            //         // fit: BoxFit.fill,
+            //       )
+            //     : null,
+            color: Colors.black54,
+          ),
+          child: SafeArea(
             child: Column(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(5.0),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: createPaymentCardView(),
-                      ),
-                    ],
-                  ),
+              children: <Widget>[
+                const SizedBox(
+                  height: 30,
                 ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context).paymentpage_subtotal,
-                            style: const TextStyle(
-                              fontFamily: 'Avenir Next',
-                              fontSize: 14,
-                              color: Color(0xff999999),
-                            ),
-                          ),
-                          Text(
-                          _appState.cartTotalPrice == null
-                                ? "0"
-                                : _appState.cartTotalPrice.toString(),
-                            style: const TextStyle(
-                              fontFamily: 'Avenir Next',
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xff1d1d1d),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          payWithEmbeddedPayment();
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color(0xff283488)),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(83.0),
-                              side: const BorderSide(color: Color(0xff283488)),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          AppLocalizations.of(context).paymentpage_confirm,
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 14),
-                        ),
-                      ),
-                    ),
-                    // ElevatedButton(
-                    //   child: Text('Pay (Embedded Payment)'),
-                    //   onPressed: payWithEmbeddedPayment,
-                    // ),
-                    // ElevatedButton(
-                    //   child: Text('Get Payment Status'),
-                    //   onPressed: getPaymentStatus,
-                    // ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Text(
-                        _response,
-                        style: const TextStyle(color: Colors.black),
+                CreditCardWidget(
+                  glassmorphismConfig:
+                      useGlassMorphism ? Glassmorphism.defaultConfig() : null,
+                  cardNumber: cardNumber,
+                  expiryDate: expiryDate,
+                  cardHolderName: cardHolderName,
+                  cvvCode: cvvCode,
+                  showBackView: isCvvFocused,
+                  obscureCardNumber: true,
+                  obscureCardCvv: true,
+                  isHolderNameVisible: true,
+                  cardBgColor: Colors.red,
+                  backgroundImage:
+                      useBackgroundImage ? 'assets/card_bg.png' : null,
+                  isSwipeGestureEnabled: true,
+                  onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
+                  customCardTypeIcons: <CustomCardTypeIcon>[
+                    CustomCardTypeIcon(
+                      cardType: CardType.mastercard,
+                      cardImage: Image.asset(
+                        'assets/mastercard.png',
+                        height: 48,
+                        width: 48,
                       ),
                     ),
                   ],
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        CreditCardForm(
+                          formKey: formKey,
+                          obscureCvv: true,
+                          obscureNumber: true,
+                          cardNumber: cardNumber,
+                          cvvCode: cvvCode,
+                          isHolderNameVisible: true,
+                          isCardNumberVisible: true,
+                          isExpiryDateVisible: true,
+                          cardHolderName: cardHolderName,
+                          expiryDate: expiryDate,
+                          themeColor: Colors.blue,
+                          textColor: Colors.white,
+                          cardNumberDecoration: InputDecoration(
+                            labelText: 'Number',
+                            hintText: 'XXXX XXXX XXXX XXXX',
+                            hintStyle: const TextStyle(color: Colors.white),
+                            labelStyle: const TextStyle(color: Colors.white),
+                            focusedBorder: border,
+                            enabledBorder: border,
+                          ),
+                          expiryDateDecoration: InputDecoration(
+                            hintStyle: const TextStyle(color: Colors.white),
+                            labelStyle: const TextStyle(color: Colors.white),
+                            focusedBorder: border,
+                            enabledBorder: border,
+                            labelText: 'Expired Date',
+                            hintText: 'XX/XX',
+                          ),
+                          cvvCodeDecoration: InputDecoration(
+                            hintStyle: const TextStyle(color: Colors.white),
+                            labelStyle: const TextStyle(color: Colors.white),
+                            focusedBorder: border,
+                            enabledBorder: border,
+                            labelText: 'CVV',
+                            hintText: 'XXX',
+                          ),
+                          cardHolderDecoration: InputDecoration(
+                            hintStyle: const TextStyle(color: Colors.white),
+                            labelStyle: const TextStyle(color: Colors.white),
+                            focusedBorder: border,
+                            enabledBorder: border,
+                            labelText: 'Card Holder',
+                          ),
+                          onCreditCardModelChange: onCreditCardModelChange,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            primary: const Color(0xff1b447b),
+                          ),
+                          child: Container(
+                            margin: const EdgeInsets.all(12),
+                            child: Text(
+                              AppLocalizations.of(context).paymentpage_confirm,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'halter',
+                                fontSize: 14,
+                                package: 'flutter_credit_card',
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            if (formKey.currentState.validate()) {
+                              print('valid!');
+                              _productService
+                                  .setPaymentMethod('Payments.MyFatoorah')
+                                  .then((value) {
+                                if (value == 'success') {
+                                  _productService.confirmOrder().then((value) {
+                                    if (value == 'success') {
+                                      print("success");
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                  AppLocalizations.of(context)
+                                                      .detailpage_success),
+                                              actions: [
+                                                ElevatedButton(
+                                                  child: Text(
+                                                      AppLocalizations.of(context)
+                                                          .detailpage_ok),
+                                                  onPressed: () {
+                                                    Navigator.pushNamed(
+                                                        context, '/home');
+                                                  },
+                                                )
+                                              ],
+                                            );
+                                          });
+                                    }
+                                  });
+                                }
+                              });
+                            } else {
+                              print('invalid!');
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -251,29 +238,5 @@ class _PaymentState extends State<Payment> {
         ),
       ),
     );
-  }
-
-  createPaymentCardView() {
-    mfPaymentCardView = MFPaymentCardView(
-//      inputColor: Colors.red,
-//      labelColor: Colors.yellow,
-//      errorColor: Colors.blue,
-//      borderColor: Colors.green,
-//      fontSize: 14,
-//      borderWidth: 1,
-//      borderRadius: 10,
-//      cardHeight: 220,
-//      cardHolderNameHint: "card holder name hint",
-//      cardNumberHint: "card number hint",
-//      expiryDateHint: "expiry date hint",
-//      cvvHint: "cvv hint",
-//      showLabels: true,
-//      cardHolderNameLabel: "card holder name label",
-//      cardNumberLabel: "card number label",
-//      expiryDateLabel: "expiry date label",
-//      cvvLabel: "cvv label",
-        );
-
-    return mfPaymentCardView;
   }
 }

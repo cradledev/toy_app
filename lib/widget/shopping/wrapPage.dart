@@ -278,7 +278,7 @@ class _WrapPage extends State<WrapPage> {
                           title: Text(
                               AppLocalizations.of(context).detailpage_success),
                           content: Text(
-                              AppLocalizations.of(context).detailpage_text1),
+                              AppLocalizations.of(context).detailpage_cart),
                           actions: [
                             ElevatedButton(
                               child: Text(
@@ -369,7 +369,7 @@ class _WrapPage extends State<WrapPage> {
                       title:
                           Text(AppLocalizations.of(context).detailpage_success),
                       content:
-                          Text(AppLocalizations.of(context).detailpage_text1),
+                          Text(AppLocalizations.of(context).detailpage_cart),
                       actions: [
                         ElevatedButton(
                           child:
@@ -431,7 +431,7 @@ class _WrapPage extends State<WrapPage> {
                     title:
                         Text(AppLocalizations.of(context).detailpage_success),
                     content:
-                        Text(AppLocalizations.of(context).detailpage_text1),
+                        Text(AppLocalizations.of(context).detailpage_cart),
                     actions: [
                       ElevatedButton(
                         child: Text(AppLocalizations.of(context).detailpage_ok),

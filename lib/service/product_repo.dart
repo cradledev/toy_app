@@ -73,6 +73,402 @@ class ProductService {
     }
   }
 
+  Future<String> setshippingdress(String _fname, String _lname, String _mail, String _address, String _city, String _postcode) async {
+      try {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      String _token = _prefs.getString("token") ?? '';
+      var res = await http.post(
+        Uri.parse(
+            "$apiEndPoint/Checkout/NewBillingAddress"),
+        body: jsonEncode({
+          "model": {
+            "existing_addresses": [
+              {
+                "first_name": "string",
+                "last_name": "string",
+                "email": "string",
+                "company_enabled": true,
+                "company_required": true,
+                "company": "string",
+                "country_enabled": true,
+                "country_id": 0,
+                "country_name": "string",
+                "state_province_enabled": true,
+                "state_province_id": 0,
+                "state_province_name": "string",
+                "county_enabled": true,
+                "county_required": true,
+                "county": "string",
+                "city_enabled": true,
+                "city_required": true,
+                "city": "string",
+                "street_address_enabled": true,
+                "street_address_required": true,
+                "address1": "string",
+                "street_address2_enabled": true,
+                "street_address2_required": true,
+                "address2": "string",
+                "zip_postal_code_enabled": true,
+                "zip_postal_code_required": true,
+                "zip_postal_code": "string",
+                "phone_enabled": true,
+                "phone_required": true,
+                "phone_number": "string",
+                "fax_enabled": true,
+                "fax_required": true,
+                "fax_number": "string",
+                "available_countries": [
+                  {
+                    "disabled": true,
+                    "group": {
+                      "disabled": true,
+                      "name": "string"
+                    },
+                    "selected": true,
+                    "text": "string",
+                    "value": "string"
+                  }
+                ],
+                "available_states": [
+                  {
+                    "disabled": true,
+                    "group": {
+                      "disabled": true,
+                      "name": "string"
+                    },
+                    "selected": true,
+                    "text": "string",
+                    "value": "string"
+                  }
+                ],
+                "formatted_custom_address_attributes": "string",
+                "custom_address_attributes": [
+                  {
+                    "name": "string",
+                    "is_required": true,
+                    "default_value": "string",
+                    "attribute_control_type": "DropdownList",
+                    "values": [
+                      {
+                        "name": "string",
+                        "is_pre_selected": true,
+                        "id": 0,
+                        "custom_properties": {
+                          "additionalProp1": "string",
+                          "additionalProp2": "string",
+                          "additionalProp3": "string"
+                        }
+                      }
+                    ],
+                    "id": 0,
+                    "custom_properties": {
+                      "additionalProp1": "string",
+                      "additionalProp2": "string",
+                      "additionalProp3": "string"
+                    }
+                  }
+                ],
+                "id": 0,
+                "custom_properties": {
+                  "additionalProp1": "string",
+                  "additionalProp2": "string",
+                  "additionalProp3": "string"
+                }
+              }
+            ],
+            "invalid_existing_addresses": [
+              {
+                "first_name": "string",
+                "last_name": "string",
+                "email": "string",
+                "company_enabled": true,
+                "company_required": true,
+                "company": "string",
+                "country_enabled": true,
+                "country_id": 0,
+                "country_name": "string",
+                "state_province_enabled": true,
+                "state_province_id": 0,
+                "state_province_name": "string",
+                "county_enabled": true,
+                "county_required": true,
+                "county": "string",
+                "city_enabled": true,
+                "city_required": true,
+                "city": "string",
+                "street_address_enabled": true,
+                "street_address_required": true,
+                "address1": "string",
+                "street_address2_enabled": true,
+                "street_address2_required": true,
+                "address2": "string",
+                "zip_postal_code_enabled": true,
+                "zip_postal_code_required": true,
+                "zip_postal_code": "string",
+                "phone_enabled": true,
+                "phone_required": true,
+                "phone_number": "string",
+                "fax_enabled": true,
+                "fax_required": true,
+                "fax_number": "string",
+                "available_countries": [
+                  {
+                    "disabled": true,
+                    "group": {
+                      "disabled": true,
+                      "name": "string"
+                    },
+                    "selected": true,
+                    "text": "string",
+                    "value": "string"
+                  }
+                ],
+                "available_states": [
+                  {
+                    "disabled": true,
+                    "group": {
+                      "disabled": true,
+                      "name": "string"
+                    },
+                    "selected": true,
+                    "text": "string",
+                    "value": "string"
+                  }
+                ],
+                "formatted_custom_address_attributes": "string",
+                "custom_address_attributes": [
+                  {
+                    "name": "string",
+                    "is_required": true,
+                    "default_value": "string",
+                    "attribute_control_type": "DropdownList",
+                    "values": [
+                      {
+                        "name": "string",
+                        "is_pre_selected": true,
+                        "id": 0,
+                        "custom_properties": {
+                          "additionalProp1": "string",
+                          "additionalProp2": "string",
+                          "additionalProp3": "string"
+                        }
+                      }
+                    ],
+                    "id": 0,
+                    "custom_properties": {
+                      "additionalProp1": "string",
+                      "additionalProp2": "string",
+                      "additionalProp3": "string"
+                    }
+                  }
+                ],
+                "id": 0,
+                "custom_properties": {
+                  "additionalProp1": "string",
+                  "additionalProp2": "string",
+                  "additionalProp3": "string"
+                }
+              }
+            ],
+            "billing_new_address": {
+              "first_name": _fname,
+              "last_name": _lname,
+              "email": _mail,
+              "company_enabled": true,
+              "company_required": true,
+              "company": "",
+              "country_enabled": true,
+              "country_id": 243,
+              "country_name": "Saudi Arabia",
+              "state_province_enabled": false,
+              "state_province_id": null,
+              "state_province_name": "",
+              "county_enabled": false,
+              "county_required": false,
+              "county": "",
+              "city_enabled": true,
+              "city_required": true,
+              "city": _city,
+              "street_address_enabled": true,
+              "street_address_required": true,
+              "address1": _address,
+              "street_address2_enabled": false,
+              "street_address2_required": false,
+              "address2": "",
+              "zip_postal_code_enabled": true,
+              "zip_postal_code_required": true,
+              "zip_postal_code": _postcode,
+              "phone_enabled": true,
+              "phone_required": true,
+              "phone_number": "",
+              "fax_enabled": true,
+              "fax_required": true,
+              "fax_number": "",
+              "available_countries": [
+                {
+                  "disabled": true,
+                  "group": {
+                    "disabled": true,
+                    "name": "string"
+                  },
+                  "selected": true,
+                  "text": "string",
+                  "value": "string"
+                }
+              ],
+              "available_states": [
+                {
+                  "disabled": true,
+                  "group": {
+                    "disabled": true,
+                    "name": "string"
+                  },
+                  "selected": true,
+                  "text": "string",
+                  "value": "string"
+                }
+              ],
+              "formatted_custom_address_attributes": "string",
+              "custom_address_attributes": [
+                {
+                  "name": "string",
+                  "is_required": true,
+                  "default_value": "string",
+                  "attribute_control_type": "DropdownList",
+                  "values": [
+                    {
+                      "name": "string",
+                      "is_pre_selected": true,
+                      "id": 0,
+                      "custom_properties": {
+                        "additionalProp1": "string",
+                        "additionalProp2": "string",
+                        "additionalProp3": "string"
+                      }
+                    }
+                  ],
+                  "id": 0,
+                  "custom_properties": {
+                    "additionalProp1": "string",
+                    "additionalProp2": "string",
+                    "additionalProp3": "string"
+                  }
+                }
+              ],
+              "id": 0,
+              "custom_properties": {
+                "additionalProp1": "string",
+                "additionalProp2": "string",
+                "additionalProp3": "string"
+              }
+            },
+            "ship_to_same_address": true,
+            "ship_to_same_address_allowed": true,
+            "new_address_preselected": true,
+            "custom_properties": {
+              "additionalProp1": "string",
+              "additionalProp2": "string",
+              "additionalProp3": "string"
+            }
+          },
+          "form": {
+            "additionalProp1": "string",
+            "additionalProp2": "string",
+            "additionalProp3": "string"
+          }
+        }),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Access-Control-Allow-Origin': '*',
+          "Authorization": "Bearer $_token"
+        },
+      );
+      if (res.statusCode == 200) {
+        return 'success';
+      } else {
+        return 'failed';
+      }
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<String> setPaymentMethod(String paymethond) async {
+    try {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      String _token = _prefs.getString("token") ?? '';
+      var res = await http.post(
+        Uri.parse(
+            "$apiEndPoint/Checkout/SelectPaymentMethod?paymentMethod=$paymethond"),
+        body: jsonEncode({
+  "payment_methods": [
+    {
+      "payment_method_system_name": paymethond,
+      "name": "string",
+      "description": "string",
+      "fee": "string",
+      "selected": true,
+      "logo_url": "string",
+      "custom_properties": {
+        "additionalProp1": "string",
+        "additionalProp2": "string",
+        "additionalProp3": "string"
+      }
+    }
+  ],
+  "display_reward_points": true,
+  "reward_points_balance": 0,
+  "reward_points_amount": "string",
+  "reward_points_enough_to_pay_for_order": true,
+  "use_reward_points": true,
+  "custom_properties": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Access-Control-Allow-Origin': '*',
+          "Authorization": "Bearer $_token"
+        },
+      );
+
+      if (res.statusCode == 200) {
+        return 'success';
+      } else {
+        return 'failed';
+      }
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<String> confirmOrder() async {
+    try {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      String _token = _prefs.getString("token") ?? '';
+      var res = await http.get(
+        Uri.parse(
+            "$apiEndPoint/Checkout/ConfirmOrder"),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Access-Control-Allow-Origin': '*',
+          "Authorization": "Bearer $_token"
+        },
+      );
+
+      if (res.statusCode == 200) {
+        
+        return 'success';
+      } else {
+        return 'failed';
+      }
+    } catch (err) {
+      rethrow;
+    }
+  }
+
   Future<String> setFavouriteItem(
       int _clientID, int productId, int quantity) async {
     try {

@@ -5,6 +5,8 @@ import 'package:toy_app/components/components.dart';
 
 import 'package:provider/provider.dart';
 import 'package:toy_app/provider/index.dart';
+import 'package:toy_app/service/product_repo.dart';
+
 
 class Delivery extends StatefulWidget {
   const Delivery({Key key}) : super(key: key);
@@ -18,6 +20,7 @@ class _DeliveryPage extends State<Delivery> {
   AppState _appState;
 
   final _formKey = GlobalKey<FormState>();
+  final ProductService _productService = ProductService();
   String _address = '';
   String _city = '';
   String _index = '';
@@ -27,20 +30,27 @@ class _DeliveryPage extends State<Delivery> {
     super.initState();
     _appState = Provider.of<AppState>(context, listen: false);
   }
-
-  @override
-  Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    void submitDelivery() async {
+void submitDelivery() async {
       final bool isValid = _formKey.currentState?.validate();
       if (isValid == true) {
         _appState.address = _address;
         _appState.city = _city;
         _appState.index = _index;
+        _productService.setshippingdress(_appState.firstName, _appState.lastName, _appState.user.userEmail ,_address, _city, _index).then((value) {
+          if(value == "success") {
         Navigator.pushNamed(context, '/payment');
+
+          }
+        });
+
       }
     }
+
+  @override
+  Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+
 
     return Scaffold(
       backgroundColor: Colors.white,

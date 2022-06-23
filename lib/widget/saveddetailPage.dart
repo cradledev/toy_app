@@ -33,7 +33,7 @@ class _DetailPage extends State<DetailPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(AppLocalizations.of(context).saveddetailpage_success),
-              content: Text(AppLocalizations.of(context).saveddetailpage_text1),
+              content: Text(AppLocalizations.of(context).saveddetailpage_cart),
               actions: [
                 ElevatedButton(
                   child: Text(AppLocalizations.of(context).saveddetailpage_ok),

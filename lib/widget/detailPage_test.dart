@@ -118,7 +118,7 @@ class _DetailPageTest extends State<DetailPageTest> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text(AppLocalizations.of(context).detailpage_success),
-                  content: Text(AppLocalizations.of(context).detailpage_text1),
+                  content: Text(AppLocalizations.of(context).detailpage_cart),
                   actions: [
                     ElevatedButton(
                       child: Text(AppLocalizations.of(context).detailpage_ok),
