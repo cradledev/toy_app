@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
-import 'package:toy_app/model/product.model.dart';
+import 'package:toy_app/model/produt_model.dart';
+
 import 'package:toy_app/service/product_repo.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,7 +27,7 @@ class _DetailPage extends State<DetailPage> {
 
   void submitCartItem(int productId) async {
     String response =
-        await _productService.addCartItem(productId, _quantity, 0, 0);
+        await _productService.addCartItem(productId, _quantity, 0);
     if (response == 'success') {
       showDialog(
           context: context,
@@ -67,9 +68,8 @@ class _DetailPage extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
-    final args = ModalRoute.of(context).settings.arguments as ProductM;
-    String url = args.images[0];
-    if (args.images.length > 1) url = args.images[1];
+    final args = ModalRoute.of(context).settings.arguments as ProductModel;
+    String url = args.image;
     final avatarContent = Stack(
       children: <Widget>[
         SizedBox(
@@ -280,7 +280,8 @@ class _DetailPage extends State<DetailPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
                 child: Text(
-                  args.approvedratingsum.toString(),
+                  "",
+                  // args.approvedratingsum.toString(),
                   style: const TextStyle(
                     fontFamily: 'Avenir Next',
                     fontSize: 16,

@@ -54,8 +54,6 @@ class _Saved extends State<Saved> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    var itemHeight = height * 0.3;
-    var itemWidth = width * 0.4;
 
     return Scaffold(
       bottomNavigationBar: CustomBottomNavbar(
@@ -83,7 +81,6 @@ class _Saved extends State<Saved> {
           color: Colors.black,
           size: 30,
         ),
-        
       ),
       drawer: const CustomDrawerWidget(),
       body: SingleChildScrollView(
@@ -146,20 +143,21 @@ class _Saved extends State<Saved> {
                       : GridView.builder(
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 0.8),
+                                  crossAxisCount: 2, childAspectRatio: 0.8),
                           itemCount: favouriteItems.length,
                           itemBuilder: (BuildContext context, index) => InkWell(
                             hoverColor: Colors.pink,
                             onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                DetailPageTest.routeName,
-                                arguments: favouriteItems[index].product,
-                              );
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return DetailPageTest(
+                                    productId:
+                                        favouriteItems[index].productId);
+                              }));
                             },
                             child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               width: MediaQuery.of(context).size.width * 0.4,
                               height: MediaQuery.of(context).size.height * 0.3,
                               decoration: BoxDecoration(
@@ -190,8 +188,7 @@ class _Saved extends State<Saved> {
                                               topLeft: Radius.circular(32),
                                               topRight: Radius.circular(32)),
                                           child: favouriteItems[index]
-                                                      ?.product
-                                                      ?.images[0]
+                                                      ?.productImage
                                                       ?.isEmpty ??
                                                   true
                                               ? Image.asset(
@@ -200,8 +197,7 @@ class _Saved extends State<Saved> {
                                                 )
                                               : Image.network(
                                                   favouriteItems[index]
-                                                      ?.product
-                                                      ?.images[0],
+                                                      ?.productImage,
                                                   fit: BoxFit.fill,
                                                 ),
                                         ),
@@ -244,10 +240,12 @@ class _Saved extends State<Saved> {
                                                                       .symmetric(
                                                                   vertical: 5),
                                                           child: Text(
-                                                            favouriteItems[index]?.product?.name?.isEmpty ??
+                                                            favouriteItems[index]
+                                                                        ?.productName
+                                                                        ?.isEmpty ??
                                                                     true
                                                                 ? ""
-                                                                : "${favouriteItems[index]?.product?.name?.substring(0, 15)}...",
+                                                                : "${favouriteItems[index]?.productName?.substring(0, 15)}...",
                                                             style:
                                                                 const TextStyle(
                                                               fontFamily:
@@ -264,10 +262,12 @@ class _Saved extends State<Saved> {
                                                                       .symmetric(
                                                                   vertical: 5),
                                                           child: Text(
-                                                            favouriteItems[index]?.product?.price?.isNaN ??
+                                                            favouriteItems[index]
+                                                                        ?.unitPrice
+                                                                        ?.isEmpty ??
                                                                     true
                                                                 ? ""
-                                                                : 'ر.س ${favouriteItems[index]?.product?.price.toString()}',
+                                                                : 'ر.س ${favouriteItems[index]?.unitPrice?.substring(1)}',
                                                             style:
                                                                 const TextStyle(
                                                               fontFamily:

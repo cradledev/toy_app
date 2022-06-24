@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
-import 'package:toy_app/model/product.model.dart';
+import 'package:toy_app/model/product_detail_model.dart';
+import 'package:toy_app/model/produt_model.dart';
+
 import 'package:toy_app/service/product_repo.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,7 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:toy_app/provider/index.dart';
 
 class DetailPageTest extends StatefulWidget {
-  const DetailPageTest({Key key}) : super(key: key);
+  const DetailPageTest({Key key, this.productId}) : super(key: key);
+  final int productId;
   static const routeName = '/test';
 
   @override
@@ -26,20 +29,44 @@ class _DetailPageTest extends State<DetailPageTest> {
   int _quantity = 1;
   final ProductService _productService = ProductService();
   var quantity = TextEditingController();
-  int categoryId = 0;
-  String categoryName = "";
-  int shoppingCartItemId = 0;
+  // int shoppingCartItemId = 0;
   bool processing = false;
   bool isProcessingFavour = false;
+  bool isPageLoading = false;
+  ProductService productService;
+  ProductDetailModel productDetail;
   @override
   void initState() {
     super.initState();
     _init();
   }
 
-  void _init() {
+  Future<void> onGetProductDetailInfo() async {
+    try {
+      productDetail =
+          await productService.getProductDetailById(widget.productId);
+    } catch (e) {
+      print(e);
+      setState(() {
+        isPageLoading = false;
+      });
+    }
+  }
+
+  void _init() async {
+    if (mounted) {
+      setState(() {
+        isPageLoading = true;
+      });
+      _appState = Provider.of<AppState>(context, listen: false);
+      productService = ProductService();
+      await onGetProductDetailInfo();
+      // await getCartByProductId();
+      setState(() {
+        isPageLoading = false;
+      });
+    }
     // app state
-    _appState = Provider.of<AppState>(context, listen: false);
   }
 
   void submitFavourite(id) {
@@ -162,7 +189,7 @@ class _DetailPageTest extends State<DetailPageTest> {
         _addProductToShoppingCartAsGuest(productId, price, _quantity);
       }
       _productService
-          .addCartItem(productId, _quantity, shoppingCartItemId,
+          .addCartItem(productId, _quantity,
               _appState.user.customerId)
           .then((response) {
         if (response == 'success') {
@@ -236,24 +263,25 @@ class _DetailPageTest extends State<DetailPageTest> {
     }
   }
 
-  void getCartByProductId(int id, int productId) async {
-    var response = await _productService.getShoppingMiniCart(productId);
-    shoppingCartItemId = response['shoppingCartItemId'];
-    if (response['quantity'] > 0) {
-      quantity.text = response['quantity'].toString();
-    }
-  }
+  // Future<void> getCartByProductId() async {
+  //   try {
+  //     var response =
+  //         await _productService.getShoppingMiniCart(widget.productId);
+  //     shoppingCartItemId = response['shoppingCartItemId'];
+  //     if (response['quantity'] > 0) {
+  //       quantity.text = response['quantity'].toString();
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     setState(() {
+  //       isPageLoading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     var mq = MediaQuery.of(context).size;
-    final args = ModalRoute.of(context).settings.arguments as ProductM;
-    String productImageUrl =
-        args?.images?.isEmpty ?? true ? "" : args?.images[0];
-    categoryId = args?.categoryId?.isNaN ?? true ? 0 : args?.categoryId;
-    categoryName =
-        args?.categoryName?.isEmpty ?? true ? "" : args?.categoryName;
-    getCartByProductId(_appState.user.customerId, args?.id);
 
     Widget topContent = Stack(
       children: [
@@ -262,10 +290,10 @@ class _DetailPageTest extends State<DetailPageTest> {
           decoration: BoxDecoration(
             color: Colors.white,
             image: DecorationImage(
-                image: productImageUrl?.isEmpty ?? true
+                image: productDetail?.image?.isEmpty ?? true
                     ? const AssetImage('assets/img/no_image.png')
                     : NetworkImage(
-                        productImageUrl,
+                        productDetail?.image,
                       ),
                 fit: BoxFit.fill,
                 opacity: 0.7),
@@ -292,7 +320,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                     // if (!_appState.user.isGuest) {
                     //   submitFavourite(args?.id);
                     // }
-                    submitFavourite(args?.id);
+                    submitFavourite(widget.productId);
                   },
             child: isProcessingFavour
                 ? const Center(
@@ -330,14 +358,17 @@ class _DetailPageTest extends State<DetailPageTest> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                args?.name?.isEmpty ?? true ? "" : args?.name,
+                                productDetail?.name?.isEmpty ?? true
+                                    ? ""
+                                    : productDetail?.name,
                                 style: const TextStyle(
                                   fontFamily: 'Avenir Next',
                                   fontSize: 32,
@@ -348,20 +379,20 @@ class _DetailPageTest extends State<DetailPageTest> {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Text(
-                            // args.approvedratingsum.toString(),
-                            AppLocalizations.of(context).stock +
-                                args.stock.toString(),
-                            style: const TextStyle(
-                              fontFamily: 'Avenir Next',
-                              fontSize: 16,
-                              color: Color(0xff1d1d1d),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(horizontal: 12),
+                        //   child: Text(
+                        //     "",
+                        //     // AppLocalizations.of(context).stock +
+                        //     //     args.stock.toString(),
+                        //     style: const TextStyle(
+                        //       fontFamily: 'Avenir Next',
+                        //       fontSize: 16,
+                        //       color: Color(0xff1d1d1d),
+                        //       fontWeight: FontWeight.bold,
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -370,7 +401,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        categoryName ?? "",
+                        productDetail?.categoryName ?? "",
                         style: const TextStyle(
                           fontFamily: 'Avenir Next',
                           fontSize: 14,
@@ -410,14 +441,14 @@ class _DetailPageTest extends State<DetailPageTest> {
                         incIconSize: 35,
                         decIconSize: 35,
                         onChanged: (value) {
-                          print(value);
                           if (!value.isNaN) {
                             quantity.text = value.toString();
                             _quantity = value;
                           }
                         },
                         min: 1,
-                        max: args.stock,
+                        max: 100,
+                        // max: args.stock,
                         initialValue: _quantity,
                         numberFieldDecoration: const InputDecoration(
                           border: InputBorder.none,
@@ -447,7 +478,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        args.shortdescription ?? "",
+                        productDetail?.shortdescription ?? "",
                         style: const TextStyle(
                           fontFamily: "Avenir Next",
                           fontSize: 14,
@@ -477,18 +508,8 @@ class _DetailPageTest extends State<DetailPageTest> {
                       onPressed: processing
                           ? null
                           : () {
-                              // if (!_appState.user.isGuest) {
-                              //   submitCartItem(args?.id, args?.price);
-                              // } else {
-                              //   ScaffoldMessenger.of(context)
-                              //       .showSnackBar(const SnackBar(
-                              //     content:
-                              //         Text("You must login, not as a Guest."),
-                              //     backgroundColor: Colors.orange,
-                              //   ));
-                              // }
-                              submitCartItem(args?.id, args?.price);
-                              // Navigator.pushNamed(context, '/home');
+                              submitCartItem(
+                                  widget.productId, productDetail?.price);
                             },
                       style: ButtonStyle(
                         backgroundColor:
@@ -501,13 +522,18 @@ class _DetailPageTest extends State<DetailPageTest> {
                           ),
                         ),
                       ),
-                      child: Text(
-                        processing
-                            ? "...processing"
-                            : AppLocalizations.of(context).detailpage_acart,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 14),
-                      ),
+                      child: processing
+                          ? const CircularProgressIndicator(
+                              backgroundColor: Colors.transparent,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              strokeWidth: 2,
+                            )
+                          : Text(
+                              AppLocalizations.of(context).detailpage_acart,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                            ),
                     ),
                   ),
                 ),
@@ -518,7 +544,7 @@ class _DetailPageTest extends State<DetailPageTest> {
                         padding: EdgeInsets.fromLTRB(
                             16, 16, mq.width * 0.0853, mq.height * 0.02),
                         child: Text(
-                          'ر.س ${args.price.toString()}',
+                          'ر.س ${productDetail?.price?.toStringAsFixed(2)}',
                           style: const TextStyle(
                             fontFamily: "Avenir Next",
                             fontSize: 24,
@@ -536,13 +562,31 @@ class _DetailPageTest extends State<DetailPageTest> {
         ],
       ),
     );
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [topContent, bottomContent],
-        ),
-      ),
-    );
+    return isPageLoading
+        ? Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: const <Widget>[
+                  Center(
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )
+        : Scaffold(
+            backgroundColor: Colors.white,
+            body: SingleChildScrollView(
+              child: Column(
+                children: [topContent, bottomContent],
+              ),
+            ),
+          );
   }
 }

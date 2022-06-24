@@ -4,5 +4,6 @@ enum NavigationItem {
   login,
   setting,
   contactUS,
-  home
+  home,
+  language
 }

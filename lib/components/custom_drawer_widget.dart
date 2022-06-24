@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toy_app/components/components.dart';
 import 'package:toy_app/model/navigation_item.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -49,7 +50,8 @@ class CustomDrawerWidget extends StatelessWidget {
                       children: [
                         buildMenuItem(context,
                             item: NavigationItem.home,
-                            text: AppLocalizations.of(context).babytoyspage_home,
+                            text:
+                                AppLocalizations.of(context).babytoyspage_home,
                             icon: Icons.home)
                       ],
                     ),
@@ -62,7 +64,8 @@ class CustomDrawerWidget extends StatelessWidget {
                         appState?.user?.isGuest == false
                             ? buildMenuItem(context,
                                 item: NavigationItem.setting,
-                                text: AppLocalizations.of(context).profilepage_setting,
+                                text: AppLocalizations.of(context)
+                                    .profilepage_setting,
                                 icon: Icons.settings)
                             : const SizedBox(
                                 height: 0,
@@ -79,6 +82,18 @@ class CustomDrawerWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Column(
                       children: [
+                        buildMenuItem(context,
+                            item: NavigationItem.language,
+                            text: AppLocalizations.of(context).language,
+                            icon: Icons.language_outlined)
+                      ],
+                    ),
+                  ),
+                  const Divider(color: Colors.white70),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      children: [
                         appState?.user?.isGuest == true
                             ? buildMenuItem(context,
                                 item: NavigationItem.login,
@@ -86,7 +101,8 @@ class CustomDrawerWidget extends StatelessWidget {
                                 icon: Icons.login_outlined)
                             : buildMenuItem(context,
                                 item: NavigationItem.logout,
-                                text: AppLocalizations.of(context).profilepage_logout,
+                                text: AppLocalizations.of(context)
+                                    .profilepage_logout,
                                 icon: Icons.logout_outlined),
                       ],
                     ),
@@ -189,6 +205,9 @@ class CustomDrawerWidget extends StatelessWidget {
       case NavigationItem.home:
         Navigator.pushNamed(context, '/home');
         break;
+      case NavigationItem.language:
+        onChangeLanguage(context);
+        break;
       case NavigationItem.setting:
         Navigator.pushNamed(
           context,
@@ -200,6 +219,14 @@ class CustomDrawerWidget extends StatelessWidget {
       default:
         break;
     }
+  }
+
+  void onChangeLanguage(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const CustomDialogBox();
+        });
   }
 
   Widget buildHeader(

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
 
-import 'package:toy_app/model/product.model.dart';
+
+import 'package:toy_app/model/produt_model.dart';
 import 'package:toy_app/service/product_repo.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -12,25 +13,25 @@ import 'package:toy_app/provider/index.dart';
 
 class WrapPage extends StatefulWidget {
   WrapPage({Key key, this.id, this.productId, this.product}) : super(key: key);
-  int id;
-  int productId;
-  ProductM product;
+  final int id;
+  final int productId;
+  ProductModel product;
   @override
   State<WrapPage> createState() => _WrapPage();
 }
 
 class _WrapPage extends State<WrapPage> {
   // future setting
-  static const int PAGE_SIZE = 4;
+  static const int PAGE_SIZE = 6;
   // provider setting
   AppState _appState;
   int activeWrapId = 0;
   int activeWrapCartId = 0;
-  ProductM activeItem;
+  ProductModel activeItem;
   bool processing = false;
   final ProductService _productService = ProductService();
   Widget _build() {
-    return PagewiseGridView<ProductM>.count(
+    return PagewiseGridView<ProductModel>.count(
       pageSize: PAGE_SIZE,
       crossAxisCount: 2,
       mainAxisSpacing: 20.0,
@@ -82,7 +83,7 @@ class _WrapPage extends State<WrapPage> {
     );
   }
 
-  Widget _itemBuilder(context, ProductM entry, _) {
+  Widget _itemBuilder(context, ProductModel entry, _) {
     return InkWell(
       // hoverColor: Colors.pink,
       onTap: () {
@@ -126,13 +127,13 @@ class _WrapPage extends State<WrapPage> {
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
-                      child: entry?.images?.isEmpty ?? true
+                      child: entry?.image?.isEmpty ?? true
                           ? Image.asset(
                               'assets/img/no_image.png',
                               fit: BoxFit.fill,
                             )
                           : Image.network(
-                              entry?.images[0],
+                              entry?.image,
                               fit: BoxFit.fill,
                             ),
                     ),
@@ -267,7 +268,7 @@ class _WrapPage extends State<WrapPage> {
           _productService.deleteCartItem(widget.id).then((value) {
             if (value == "success") {
               _productService
-                  .addCartItem(activeWrapId, _quantity, activeWrapCartId,
+                  .addCartItem(activeWrapId, _quantity,
                       _appState.user.customerId)
                   .then((response) {
                 if (response == 'success') {
@@ -358,7 +359,7 @@ class _WrapPage extends State<WrapPage> {
           });
         } else {
           _productService
-              .addCartItem(activeWrapId, _quantity, activeWrapCartId,
+              .addCartItem(activeWrapId, _quantity,
                   _appState.user.customerId)
               .then((response) {
             if (response == 'success') {
@@ -420,7 +421,7 @@ class _WrapPage extends State<WrapPage> {
       } else {
         print(2);
         _productService
-            .addCartItem(activeWrapId, _quantity, activeWrapCartId,
+            .addCartItem(activeWrapId, _quantity,
                 _appState.user.customerId)
             .then((response) {
           if (response == 'success') {

@@ -1,35 +1,34 @@
-import 'package:toy_app/model/product.model.dart';
 
 class CartModel {
   int id;
-  double price;
   int quantity;
-  ProductM product;
   String unitPrice;
   String subTotal;
   String discount;
+  String productName;
+  int productId;
+  String productImage;
   CartModel({
     this.id,
-    this.price,
     this.quantity,
-    this.product,
     this.unitPrice,
     this.subTotal,
     this.discount,
+    this.productId,
+    this.productName,
+    this.productImage
   });
 
   factory CartModel.fromJson(Map<String, dynamic> json) {
-    ProductM _product =
-        ProductM.fromJson(json['product'], json['imageAndCate']);
-    double _price = double.parse(json['price'].toString());
     return CartModel(
       id: json['id'],
-      price: _price,
       quantity: json['quantity'],
-      product: _product,
       unitPrice: json['unit_price'],
       subTotal: json['sub_total'],
       discount: json['discount'],
+      productId: json['product_id'],
+      productName: json['product_name'],
+      productImage: json['picture']['image_url']
     );
   }
 }

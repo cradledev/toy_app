@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:toy_app/components/custom_drawer_widget.dart';
-import 'package:toy_app/model/product.model.dart';
+
+import 'package:toy_app/model/produt_model.dart';
 import 'package:toy_app/model/user_model.dart';
 import 'package:toy_app/service/user_auth.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
@@ -27,7 +29,7 @@ class Home extends StatefulWidget {
 
 class _Home extends State<Home> {
   // future setting
-  static const int PAGE_SIZE = 4;
+  static const int PAGE_SIZE = 3;
   // slider setting
   List<Map<String, dynamic>> imgList = <Map<String, dynamic>>[];
   List<int> bannerProductIds = [];
@@ -40,300 +42,30 @@ class _Home extends State<Home> {
   // product service
   ProductService productService;
   UserService userService;
-
+  List<ProductModel> newProducts = [];
   Widget _buildNewArrival() {
-    return PagewiseListView<ProductM>(
-      pageSize: 50,
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.all(15.0),
-      itemBuilder: _itemBuilder,
-      loadingBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircularProgressIndicator(),
-                ],
-              )),
-        );
-      },
-      retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
-        );
-      },
-      noItemsFoundBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text('No Items Found'),
-                ],
-              )),
-        );
-      },
-      pageFuture: (pageIndex) {
-        return ProductService.getNewArrival(pageIndex, 50);
-      },
-    );
+    return Container(
+        padding: EdgeInsets.zero,
+        child: ListView.builder(
+            itemCount: newProducts.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (BuildContext context, int index) {
+              ProductModel _product = newProducts[index];
+              return listItemBuilder(context, _product);
+            }));
   }
 
-  Widget _buildTopCollection() {
-    return PagewiseListView<ProductM>(
-      pageSize: PAGE_SIZE,
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.all(15.0),
-      itemBuilder: _itemBuilder,
-      loadingBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircularProgressIndicator(),
-                ],
-              )),
-        );
-      },
-      retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
-        );
-      },
-      noItemsFoundBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text('No Items Found'),
-                ],
-              )),
-        );
-      },
-      pageFuture: (pageIndex) {
-        return ProductService.onGetPopularProducts(
-            pageIndex: pageIndex,
-            pageSize: PAGE_SIZE,
-            token: _appState.user.token);
-      },
-    );
-  }
-
-  Widget _buildRecommend() {
-    return PagewiseListView<ProductM>(
-      pageSize: 50,
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.all(15.0),
-      itemBuilder: _recommendItemBuilder,
-      loadingBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircularProgressIndicator(),
-                ],
-              )),
-        );
-      },
-      retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
-        );
-      },
-      noItemsFoundBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text('No Items Found'),
-                ],
-              )),
-        );
-      },
-      pageFuture: (pageIndex) {
-        return ProductService.getRecommendProduct(pageIndex, 50);
-      },
-    );
-  }
-
-  Widget _recommendItemBuilder(context, ProductM entry, _) {
+  Widget listItemBuilder(BuildContext context, ProductModel entry) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(
-          context,
-          DetailPageTest.routeName,
-          arguments: entry,
-        );
-      },
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.4,
-        width: MediaQuery.of(context).size.width * 0.4,
-        margin: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
-          color: Colors.white,
-        ),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.only(top: 0),
-                  height: MediaQuery.of(context).size.height * 0.19,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(32),
-                        topRight: Radius.circular(32)),
-                    child: entry?.images?.isEmpty ?? true
-                        ? Image.asset(
-                            'assets/img/no_image.png',
-                            fit: BoxFit.fill,
-                          )
-                        : Image.network(
-                            entry?.images[0],
-                            fit: BoxFit.fill,
-                          ),
-                  ),
-                )
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                  width: MediaQuery.of(context).size.width * 0.38,
-                  margin: const EdgeInsets.only(bottom: 5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(28),
-                    color: const Color(0xFF283488),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.zero,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      entry?.name?.isEmpty ?? true
-                                          ? ""
-                                          : '${entry?.name?.substring(0, 12)}...',
-                                      style: const TextStyle(
-                                        fontFamily: 'Avenir Next',
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      'ر.س ${entry?.price.toString()}',
-                                      style: const TextStyle(
-                                        fontFamily: 'Avenir Next',
-                                        fontSize: 16,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 30,
-                              width: 30,
-                              child: RawMaterialButton(
-                                onPressed: () {},
-                                elevation: 1.0,
-                                fillColor: Colors.white,
-                                child: const Icon(
-                                  Icons.shopping_cart_outlined,
-                                  size: 16.0,
-                                  color: Color(0xff283488),
-                                ),
-                                padding: const EdgeInsets.all(0),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _itemBuilder(context, ProductM entry, _) {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          DetailPageTest.routeName,
-          arguments: entry,
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return DetailPageTest(productId : entry.id);
+          }));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Container(
-          height: MediaQuery.of(context).size.height * 0.4,
+          height: MediaQuery.of(context).size.height * 0.3,
           width: MediaQuery.of(context).size.width * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32),
@@ -348,18 +80,18 @@ class _Home extends State<Home> {
                 children: <Widget>[
                   Container(
                     padding: const EdgeInsets.only(top: 0),
-                    height: MediaQuery.of(context).size.height * 0.19,
+                    height: MediaQuery.of(context).size.height * 0.2,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
-                      child: entry?.images?.isEmpty ?? true
+                      child: entry?.image?.isEmpty ?? true
                           ? Image.asset(
                               'assets/img/no_image.png',
                               fit: BoxFit.fill,
                             )
                           : Image.network(
-                              entry?.images[0],
+                              entry?.image,
                               fit: BoxFit.fill,
                             ),
                     ),
@@ -454,8 +186,368 @@ class _Home extends State<Home> {
     );
   }
 
+  Widget _buildTopCollection() {
+    return PagewiseListView<ProductModel>(
+      pageSize: PAGE_SIZE,
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.all(15.0),
+      itemBuilder: _itemBuilder,
+      loadingBuilder: (context) {
+        return Center(
+          child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircularProgressIndicator(),
+                ],
+              )),
+        );
+      },
+      retryBuilder: (context, callback) {
+        return Center(
+          child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      child: const Text('Retry'), onPressed: () => callback())
+                ],
+              )),
+        );
+      },
+      noItemsFoundBuilder: (context) {
+        return Center(
+          child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text('No Items Found'),
+                ],
+              )),
+        );
+      },
+      pageFuture: (pageIndex) {
+        return ProductService.onGetPopularProducts(
+            pageIndex: pageIndex,
+            pageSize: PAGE_SIZE,
+            token: _appState.user.token);
+      },
+    );
+  }
+
+  Widget _buildRecommend() {
+    return PagewiseListView<ProductModel>(
+      pageSize: 50,
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.all(15.0),
+      itemBuilder: _recommendItemBuilder,
+      loadingBuilder: (context) {
+        return Center(
+          child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircularProgressIndicator(),
+                ],
+              )),
+        );
+      },
+      retryBuilder: (context, callback) {
+        return Center(
+          child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      child: const Text('Retry'), onPressed: () => callback())
+                ],
+              )),
+        );
+      },
+      noItemsFoundBuilder: (context) {
+        return Center(
+          child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text('No Items Found'),
+                ],
+              )),
+        );
+      },
+      pageFuture: (pageIndex) {
+        return ProductService.getRecommendProduct(pageIndex, 50);
+      },
+    );
+  }
+
+  Widget _recommendItemBuilder(context, ProductModel entry, _) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return DetailPageTest(productId : entry.id);
+          }));
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.4,
+        width: MediaQuery.of(context).size.width * 0.4,
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32),
+          color: Colors.white,
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.only(top: 0),
+                  height: MediaQuery.of(context).size.height * 0.19,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(32),
+                        topRight: Radius.circular(32)),
+                    child: entry?.image?.isEmpty ?? true
+                        ? Image.asset(
+                            'assets/img/no_image.png',
+                            fit: BoxFit.fill,
+                          )
+                        : Image.network(
+                            entry?.image,
+                            fit: BoxFit.fill,
+                          ),
+                  ),
+                )
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  width: MediaQuery.of(context).size.width * 0.38,
+                  margin: const EdgeInsets.only(bottom: 5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(28),
+                    color: const Color(0xFF283488),
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.zero,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: Text(
+                                      entry?.name?.isEmpty ?? true
+                                          ? ""
+                                          : '${entry?.name?.substring(0, 12)}...',
+                                      style: const TextStyle(
+                                        fontFamily: 'Avenir Next',
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: Text(
+                                      'ر.س ${entry?.price?.toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                        fontFamily: 'Avenir Next',
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 30,
+                              width: 30,
+                              child: RawMaterialButton(
+                                onPressed: () {},
+                                elevation: 1.0,
+                                fillColor: Colors.white,
+                                child: const Icon(
+                                  Icons.shopping_cart_outlined,
+                                  size: 16.0,
+                                  color: Color(0xff283488),
+                                ),
+                                padding: const EdgeInsets.all(0),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _itemBuilder(context, ProductModel entry, _) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return DetailPageTest(productId : entry.id);
+          }));
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.4,
+          width: MediaQuery.of(context).size.width * 0.4,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(32),
+            color: Colors.white,
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.only(top: 0),
+                    height: MediaQuery.of(context).size.height * 0.19,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(32),
+                          topRight: Radius.circular(32)),
+                      child: entry?.image?.isEmpty ?? true
+                          ? Image.asset(
+                              'assets/img/no_image.png',
+                              fit: BoxFit.fill,
+                            )
+                          : Image.network(
+                              entry?.image,
+                              fit: BoxFit.fill,
+                            ),
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(32),
+                          bottomRight: Radius.circular(32)),
+                      color: Color(0xffffffff),
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.zero,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: Text(
+                                        entry?.name?.isEmpty ?? true
+                                            ? ""
+                                            : "${entry?.name?.substring(0, 13)}...",
+                                        style: const TextStyle(
+                                          fontFamily: 'Avenir Next',
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: Text(
+                                        'ر.س ${entry?.price?.toStringAsFixed(2)}',
+                                        style: const TextStyle(
+                                          fontFamily: 'Avenir Next',
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 35,
+                                width: 35,
+                                child: RawMaterialButton(
+                                  onPressed: () {},
+                                  elevation: 1.0,
+                                  fillColor: const Color(0xff283488),
+                                  child: const Icon(
+                                    Icons.shopping_cart_outlined,
+                                    size: 16.0,
+                                    color: Colors.white,
+                                  ),
+                                  padding: const EdgeInsets.all(0),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(17.5)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildRobots() {
-    return PagewiseListView<ProductM>(
+    return PagewiseListView<ProductModel>(
       pageSize: PAGE_SIZE,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(15.0),
@@ -504,7 +596,7 @@ class _Home extends State<Home> {
 
   // Widget popular list item
   Widget _buildPopular() {
-    return PagewiseListView<ProductM>(
+    return PagewiseListView<ProductModel>(
       pageSize: PAGE_SIZE,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(15.0),
@@ -546,15 +638,17 @@ class _Home extends State<Home> {
               )),
         );
       },
-      pageFuture: (pageIndex) => ProductService.onGetPopularProducts(
-          pageIndex: pageIndex,
-          pageSize: PAGE_SIZE,
-          token: _appState.user.token),
+      pageFuture:(pageIndex) => ProductService.getProductsByCategoryId(
+          pageIndex, PAGE_SIZE, "العاب ريموت"),
+      // pageFuture: (pageIndex) => ProductService.onGetPopularProducts(
+      //     pageIndex: pageIndex,
+      //     pageSize: PAGE_SIZE,
+      //     token: _appState.user.token),
     );
   }
 
   Widget _buildBabyToys() {
-    return PagewiseListView<ProductM>(
+    return PagewiseListView<ProductModel>(
       pageSize: PAGE_SIZE,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(15.0),
@@ -658,15 +752,15 @@ class _Home extends State<Home> {
           List _guestShoppingCartObject =
               jsonDecode(_guestShoppingCart) as List;
           for (var shoppingItem in _guestShoppingCartObject) {
-            var response = await productService
-                .getShoppingMiniCart(shoppingItem['productId']);
-            int shoppingCartItemId = response['shoppingCartItemId'];
+            // var response = await productService
+            //     .getShoppingMiniCart(shoppingItem['productId']);
+            // int shoppingCartItemId = response['shoppingCartItemId'];
             int _tmpQuantity = shoppingItem['quantity'];
-            if (response['quantity'] > 0) {
-              _tmpQuantity = _tmpQuantity + response['quantity'];
-            }
+            // if (response['quantity'] > 0) {
+            //   _tmpQuantity = _tmpQuantity + response['quantity'];
+            // }
             await productService.addCartItem(shoppingItem['productId'],
-                _tmpQuantity, shoppingCartItemId, _appState.user.customerId);
+                _tmpQuantity, _appState.user.customerId);
           }
         }
         _appState.setLocalStorage(key: 'guestWishlist', value: "");
@@ -689,9 +783,9 @@ class _Home extends State<Home> {
       await onGetUser();
       // initializing shopping and wishlist
       await onInitShoppingCartAndFavorite();
-      // get new products 
-      productService.onGetNewProducts(_appState.user.token).then((value) {
-        imgList = value;
+      // get new products
+      productService.getNewArrival().then((value) {
+        newProducts = value;
         setState(() {
           isPageLoading = false;
         });
@@ -722,11 +816,11 @@ class _Home extends State<Home> {
             CustomBottomNavbar(context: context, selectedIndex: 0),
         appBar: CustomAppBar(
           title: Image.asset(
-          'assets/img/LoginRegistration/header.png',
-          // height: height * 0.1,
-          width: width * 0.5,
-          fit: BoxFit.cover,
-        ),
+            'assets/img/LoginRegistration/header.png',
+            // height: height * 0.1,
+            width: width * 0.5,
+            fit: BoxFit.cover,
+          ),
           leadingIcon: const Icon(
             CupertinoIcons.line_horizontal_3,
             size: 30,
@@ -794,7 +888,7 @@ class _Home extends State<Home> {
                               ],
                             ),
                           ),
-                          imgList.isNotEmpty
+                          newProducts.isNotEmpty
                               ? Padding(
                                   padding: const EdgeInsets.only(
                                       top: 15, bottom: 30),
@@ -811,7 +905,7 @@ class _Home extends State<Home> {
                                           autoPlayCurve: Curves.fastOutSlowIn,
                                           enlargeCenterPage: true,
                                         ),
-                                        items: imgList.map((item) {
+                                        items: newProducts.map((item) {
                                           return Builder(
                                             builder: (BuildContext context) {
                                               return Stack(
@@ -822,7 +916,7 @@ class _Home extends State<Home> {
                                                           BorderRadius.circular(
                                                               35.0),
                                                       child: Image.network(
-                                                        item['image'],
+                                                        item.image,
                                                         height: 250.0,
                                                         fit: BoxFit.fill,
                                                       ),
@@ -860,7 +954,7 @@ class _Home extends State<Home> {
                                                                 .center,
                                                         children: [
                                                           Text(
-                                                            item['name'],
+                                                            item.name,
                                                             textAlign: TextAlign
                                                                 .center,
                                                             style: const TextStyle(
@@ -1135,7 +1229,7 @@ class _Home extends State<Home> {
                           ),
                         ),
                         SizedBox(
-                          height: height * 0.35,
+                          height: height * 0.32,
                           child: _buildNewArrival(),
                         )
                       ],

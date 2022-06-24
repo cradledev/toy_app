@@ -26,21 +26,24 @@ class _Categories extends State<Categories> {
   List<CategoryList> categoryList = [];
   bool isPageLoading = false;
   Widget _build() {
-    return FutureBuilder(
-      future: ProductService.getAllCategories(),
-      builder: (BuildContext ctx, AsyncSnapshot<List> snapshot) =>
-          snapshot.hasData
-              ? GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 0.8),
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, index) {
-                    return _itemBuilder(context, snapshot.data[index]);
-                  })
-              : const Center(
-                  child: CircularProgressIndicator(),
-                ),
-    );
+    return isPageLoading
+        ? Center(
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    CircularProgressIndicator(),
+                  ],
+                )),
+          )
+        : GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, childAspectRatio: 0.8),
+            itemCount: categoryList.length,
+            itemBuilder: (BuildContext context, index) {
+              return _itemBuilder(context, categoryList[index]);
+            });
   }
 
   Widget _itemBuilder(context, CategoryList entry) {
@@ -139,25 +142,27 @@ class _Categories extends State<Categories> {
   @override
   void initState() {
     super.initState();
-
-    onInit();
+    if (mounted) {
+      onInit();
+    }
+    
   }
 
   void onInit() {
     _appState = Provider.of<AppState>(context, listen: false);
-    // setState(() {
-    //   isPageLoading = true;
-    // });
-    // ProductService.getAllCategories().then((value) {
-    //   setState(() {
-    //     isPageLoading = false;
-    //   });
-    //   categoryList = value;
-    // }).catchError((error) {
-    //   setState(() {
-    //     isPageLoading = false;
-    //   });
-    // });
+    setState(() {
+      isPageLoading = true;
+    });
+    ProductService.getAllCategories().then((value) {
+      setState(() {
+        isPageLoading = false;
+      });
+      categoryList = value;
+    }).catchError((error) {
+      setState(() {
+        isPageLoading = false;
+      });
+    });
   }
 
   @override
@@ -190,7 +195,6 @@ class _Categories extends State<Categories> {
           color: Colors.black,
           size: 30,
         ),
-        
       ),
       drawer: const CustomDrawerWidget(),
       body: SingleChildScrollView(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:toy_app/model/product.model.dart';
+import 'package:toy_app/model/produt_model.dart';
+
 import 'package:toy_app/pack/lib/bottom_navy_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -545,17 +546,15 @@ class ProductSearchItemBuilder extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final ProductM entry;
+  final ProductModel entry;
 
   @override
   Widget build(BuildContext context) => InkWell(
         hoverColor: Colors.pink,
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            DetailPageTest.routeName,
-            arguments: entry,
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return DetailPageTest(productId : entry.id);
+          }));
         },
         child: Container(
           padding: EdgeInsets.zero,
@@ -582,13 +581,13 @@ class ProductSearchItemBuilder extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(32.0),
                       bottomLeft: Radius.circular(32.0)),
-                  child: entry?.images?.isEmpty ?? true
+                  child: entry?.image?.isEmpty ?? true
                       ? Image.asset(
                           'assets/img/no_image.png',
                           fit: BoxFit.fill,
                         )
                       : Image.network(
-                          entry?.images[0],
+                          entry?.image,
                           fit: BoxFit.fill,
                         ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
-import 'package:toy_app/model/product.model.dart';
+import 'package:toy_app/model/produt_model.dart';
+
 import 'package:toy_app/widget/detailPage_test.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,7 +26,7 @@ class _Searchlist extends State<Searchlist> {
   // provider setting
   AppState _appState;
 
-  final PagingController<int, ProductM> _pagingController =
+  final PagingController<int, ProductModel> _pagingController =
       PagingController(firstPageKey: 0);
   @override
   void initState() {
@@ -138,7 +139,7 @@ class _Searchlist extends State<Searchlist> {
                   child: PagedListView.separated(
                     pagingController: _pagingController,
                     padding: const EdgeInsets.all(16),
-                    builderDelegate: PagedChildBuilderDelegate<ProductM>(
+                    builderDelegate: PagedChildBuilderDelegate<ProductModel>(
                       itemBuilder: (context, product, index) =>
                           ProductSearchItemBuilder(entry: product),
                       firstPageErrorIndicatorBuilder: (context) => Center(

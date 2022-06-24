@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:toy_app/model/cart_model.dart';
-import 'package:toy_app/model/product.model.dart';
+import 'package:toy_app/model/produt_model.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
 import 'package:toy_app/service/product_repo.dart';
 
@@ -28,7 +28,7 @@ class _Cart extends State<Cart> {
   final ProductService _productService = ProductService();
   final TextEditingController _textCouponController = TextEditingController();
   List<CartModel> cartItems;
-  double _total_price = 0;
+  // double _total_price = 0;
   String total_price = '0';
   String cart_count = '0';
   bool loading = false;
@@ -36,7 +36,7 @@ class _Cart extends State<Cart> {
   bool isIncludingWrapPackage = false;
   int wrapPackageProductId = 0;
   int wrapPackageCartItemId = 0;
-  ProductM wrapPackageProduct;
+  ProductModel wrapPackageProduct;
   bool isApplyingCouponCode = false;
   Map<String, dynamic> orderTotalModel;
   // List<bool> checkValue = [];
@@ -53,24 +53,20 @@ class _Cart extends State<Cart> {
       });
       _appState = Provider.of<AppState>(context, listen: false);
       _productService.getCartItems().then((Map<String, dynamic> value) {
-        // for (int j = 0; j < 50; j++) {
-        //   checkValue.add(false);
-        // }
-        setState(() {
-          cartItems = value['cartItemList'];
-          orderTotalModel = value['orderTotalModel'];
-          for (var item in cartItems) {
-            // _total_price += item.price * item.quantity;
-            if (item.product.categoryName.toLowerCase().contains("التفاف")) {
-              isIncludingWrapPackage = true;
-              wrapPackageProductId = item.product.id;
-              wrapPackageCartItemId = item.id;
-              wrapPackageProduct = item.product;
-            }
+        cartItems = value['cartItemList'];
+        for (var item in cartItems) {
+          // _total_price += item.price * item.quantity;
+          if (item.productName.toLowerCase().contains("التفاف")) {
+            isIncludingWrapPackage = true;
+            wrapPackageProductId = item.productId;
+            wrapPackageCartItemId = item.id;
           }
-          // total_price = _total_price.toStringAsFixed(2);
-          total_price = orderTotalModel['order_total'];
-          cart_count = cartItems.length.toString();
+        }
+        orderTotalModel = value['orderTotalModel'];
+
+        total_price = orderTotalModel['order_total'];
+        cart_count = cartItems.length.toString();
+        setState(() {
           loading = false;
         });
       }).catchError((err) {
@@ -280,11 +276,12 @@ class _Cart extends State<Cart> {
                                   itemBuilder: (BuildContext context, index) =>
                                       InkWell(
                                     onTap: () async {
-                                      Navigator.pushNamed(
-                                        context,
-                                        DetailPageTest.routeName,
-                                        arguments: cartItems[index].product,
-                                      );
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return DetailPageTest(
+                                            productId:
+                                                cartItems[index].productId);
+                                      }));
                                     },
                                     child: Container(
                                       padding: EdgeInsets.zero,
@@ -329,8 +326,7 @@ class _Cart extends State<Cart> {
                                                           Radius.circular(
                                                               32.0)),
                                               child: cartItems[index]
-                                                          .product
-                                                          ?.images
+                                                          .productImage
                                                           ?.isEmpty ??
                                                       true
                                                   ? Image.asset(
@@ -339,8 +335,7 @@ class _Cart extends State<Cart> {
                                                     )
                                                   : Image.network(
                                                       cartItems[index]
-                                                          ?.product
-                                                          ?.images[0],
+                                                          ?.productImage,
                                                       fit: BoxFit.fill,
                                                     ),
                                             ),
@@ -380,22 +375,19 @@ class _Cart extends State<Cart> {
                                                           children: [
                                                             Text(
                                                               cartItems[index]
-                                                                          ?.product
-                                                                          ?.name
+                                                                          ?.productName
                                                                           ?.isEmpty ??
                                                                       true
                                                                   ? ""
                                                                   : cartItems[index]
-                                                                              .product
-                                                                              .name
+                                                                              .productName
                                                                               .toString()
                                                                               .length >
                                                                           15
-                                                                      ? "${cartItems[index]?.product?.name?.substring(0, 15)}..."
+                                                                      ? "${cartItems[index]?.productName?.substring(0, 15)}..."
                                                                       : cartItems[
                                                                               index]
-                                                                          ?.product
-                                                                          ?.name,
+                                                                          ?.productName,
                                                               style:
                                                                   const TextStyle(
                                                                 fontFamily:
@@ -460,7 +452,7 @@ class _Cart extends State<Cart> {
                                                                     .discount ==
                                                                 null
                                                             ? Text(
-                                                                'ر.س ${cartItems[index].price.toString()}X${cartItems[index].quantity.toString()}',
+                                                                'ر.س ${cartItems[index].unitPrice?.substring(1)}X${cartItems[index].quantity.toString()}',
                                                                 style:
                                                                     const TextStyle(
                                                                   fontFamily:
@@ -472,23 +464,23 @@ class _Cart extends State<Cart> {
                                                               )
                                                             : Column(
                                                                 children: [
+                                                                  // Text(
+                                                                  //   'ر.س ${cartItems[index].unitPrice?.substring(1)}X${cartItems[index].quantity.toString()}',
+                                                                  //   style:
+                                                                  //       const TextStyle(
+                                                                  //     fontFamily:
+                                                                  //         'Avenir Next',
+                                                                  //     fontSize:
+                                                                  //         14,
+                                                                  //     color: Colors
+                                                                  //         .black,
+                                                                  //     decoration:
+                                                                  //         TextDecoration
+                                                                  //             .lineThrough,
+                                                                  //   ),
+                                                                  // ),
                                                                   Text(
-                                                                    'ر.س ${cartItems[index].price.toString()}X${cartItems[index].quantity.toString()}',
-                                                                    style:
-                                                                        const TextStyle(
-                                                                      fontFamily:
-                                                                          'Avenir Next',
-                                                                      fontSize:
-                                                                          14,
-                                                                      color: Colors
-                                                                          .black,
-                                                                      decoration:
-                                                                          TextDecoration
-                                                                              .lineThrough,
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    'ر.س ${cartItems[index].unitPrice.toString()}X${cartItems[index].quantity.toString()}',
+                                                                    'ر.س ${cartItems[index].unitPrice?.substring(1)}X${cartItems[index].quantity.toString()}',
                                                                     style:
                                                                         const TextStyle(
                                                                       fontFamily:

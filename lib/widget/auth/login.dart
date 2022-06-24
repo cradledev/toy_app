@@ -147,12 +147,10 @@ class _LoginScreenPage extends State<LoginScreen> {
                             child: Column(
                               children: [
                                 Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      AppLocalizations.of(context)
-                                          .login_email,
+                                      AppLocalizations.of(context).login_email,
                                       style: const TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w400,
@@ -175,8 +173,8 @@ class _LoginScreenPage extends State<LoginScreen> {
                                               BorderRadius.circular(32),
                                         ),
                                         border: const OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.grey)),
+                                            borderSide:
+                                                BorderSide(color: Colors.grey)),
                                       ),
                                       validator: (value) {
                                         if (value == null ||
@@ -198,8 +196,7 @@ class _LoginScreenPage extends State<LoginScreen> {
                                           _userEmail = value;
                                         });
                                       },
-                                      keyboardType:
-                                          TextInputType.emailAddress,
+                                      keyboardType: TextInputType.emailAddress,
                                     ),
                                     const SizedBox(
                                       height: 30,
@@ -207,8 +204,7 @@ class _LoginScreenPage extends State<LoginScreen> {
                                   ],
                                 ),
                                 Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       AppLocalizations.of(context).login_pwd,
@@ -235,8 +231,8 @@ class _LoginScreenPage extends State<LoginScreen> {
                                               BorderRadius.circular(32),
                                         ),
                                         border: const OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.grey)),
+                                            borderSide:
+                                                BorderSide(color: Colors.grey)),
                                       ),
                                       validator: (value) {
                                         if (value == null ||
@@ -318,12 +314,18 @@ class _LoginScreenPage extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  child: Text(
-                    _loadingStatus
-                        ? "Hold on..."
-                        : AppLocalizations.of(context).login_login,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                  ),
+                  child: _loadingStatus
+                      ? const CircularProgressIndicator(
+                          backgroundColor: Colors.transparent,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          strokeWidth: 2,
+                        )
+                      : Text(
+                          AppLocalizations.of(context).login_login,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 14),
+                        ),
                 ),
               ),
             ],

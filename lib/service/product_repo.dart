@@ -3,69 +3,28 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toy_app/model/product.model.dart';
-
 import 'package:toy_app/model/category_list_model.dart';
 import 'package:toy_app/model/cart_model.dart';
 import 'package:toy_app/helper/constant.dart';
+import 'package:toy_app/model/product_detail_model.dart';
+import 'package:toy_app/model/produt_model.dart';
 
 class ProductService {
   Future<Map<String, dynamic>> getCartItems() async {
     try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       String _token = _prefs.getString("token") ?? '';
-      var response = await http.get(
-        Uri.parse("$apiEndPoint/ShoppingCart/Cart"),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Access-Control-Allow-Origin': '*',
-          "Authorization": "Bearer $_token"
-        },
-      );
+      customHeaders["Authorization"] = "Bearer $_token";
+      var response = await http.get(Uri.parse("$apiEndPoint/ShoppingCart/Cart"),
+          headers: customHeaders);
       var _body = jsonDecode(response.body);
       List<CartModel> cartItemList = [];
       if ((_body['items'] as List).isNotEmpty) {
-        List<dynamic> _productIds =
-            _body['items'].map((e) => e['product_id']).toList();
-        _productIds ?? List<dynamic>.empty();
-        if (_productIds.isNotEmpty) {
-          String _implodeIds = _productIds.join(";");
-          var _productsRes = await http.get(
-            Uri.parse("$backendEndpoint/Product/GetProductsByIds/$_implodeIds"),
-            headers: {
-              'Content-Type': 'application/json; charset=UTF-8',
-              'Access-Control-Allow-Origin': '*',
-              "Authorization": "Bearer $_token"
-            },
-          );
-          var _products = jsonDecode(_productsRes.body);
-          for (var item in _products) {
-            var _imageAndCategories =
-                await getImageUrlsByProductId(id: item['id']);
-            var _cartItem = (_body['items'] as List)
-                .where((e) => e['product_id'] == item['id'])
-                .toList();
-            var _json = {
-              'id': _cartItem[0]['id'],
-              'price': item['price'],
-              'quantity': _cartItem[0]['quantity'],
-              'unit_price': _cartItem[0]['unit_price'],
-              'sub_total': _cartItem[0]['sub_total'],
-              'discount': _cartItem[0]['discount'],
-              'product': item,
-              'imageAndCate': _imageAndCategories
-            };
-            var tmp = CartModel.fromJson(_json);
-            cartItemList.add(tmp);
-          }
-        } else {
-          cartItemList = [];
-        }
-      } else {
-        cartItemList = [];
+        cartItemList =
+            (_body['items'] as List).map((e) => CartModel.fromJson(e)).toList();
       }
 
-      // cartItemList ?? List<ProductM>.empty();
+      // cartItemList ?? List<ProductModel>.empty();
       var orderTotalModel = await getOrderTotalModelForShoppingCart();
       return {'cartItemList': cartItemList, 'orderTotalModel': orderTotalModel};
     } catch (err) {
@@ -491,43 +450,24 @@ class ProductService {
       var _body = jsonDecode(response.body);
       List<CartModel> cartItemList = [];
       if ((_body as List).isNotEmpty) {
-        List<dynamic> _productIds = _body.map((e) => e['product_id']).toList();
-        _productIds ?? List<dynamic>.empty();
-        if (_productIds.isNotEmpty) {
-          String _implodeIds = _productIds.join(";");
-          var _productsRes = await http.get(
-            Uri.parse("$backendEndpoint/Product/GetProductsByIds/$_implodeIds"),
-            headers: {
-              'Content-Type': 'application/json; charset=UTF-8',
-              'Access-Control-Allow-Origin': '*',
-              "Authorization": "Bearer $_token"
-            },
-          );
-          var _products = jsonDecode(_productsRes.body);
-          for (var item in _products) {
-            var _imageAndCategories =
-                await getImageUrlsByProductId(id: item['id']);
-            var _cartItem = (_body as List)
-                .where((e) => e['product_id'] == item['id'])
-                .toList();
-            var _json = {
-              'id': _cartItem[0]['id'],
-              'price': item['price'],
-              'quantity': _cartItem[0]['quantity'],
-              'product': item,
-              'imageAndCate': _imageAndCategories
-            };
-            var tmp = CartModel.fromJson(_json);
-            cartItemList.add(tmp);
-          }
-        } else {
-          cartItemList = [];
+        for (var item in _body) {
+          var productDetail = await getProductDetailById(item['product_id']);
+          var _json = {
+            'id': item['id'],
+            'unit_price': "p${productDetail.price.toString()}",
+            'quantity': item['quantity'],
+            'product_id': productDetail.id,
+            'product_name': productDetail.name,
+            'picture': {'image_url': productDetail.image}
+          };
+          var tmp = CartModel.fromJson(_json);
+          cartItemList.add(tmp);
         }
       } else {
         cartItemList = [];
       }
 
-      cartItemList ?? List<ProductM>.empty();
+      cartItemList ?? List<ProductModel>.empty();
       return cartItemList;
     } catch (err) {
       rethrow;
@@ -599,106 +539,25 @@ class ProductService {
     }
   }
 
-  Future<String> addCartItem(
-      int productId, int quantity, int catItemId, int _clientID) async {
+  Future<String> addCartItem(int productId, int quantity, int _clientID) async {
     try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       String _token = _prefs.getString("token") ?? '';
-      http.Response cartResponse;
-
-      if (catItemId == 0) {
-        // cartResponse = await http.post(
-        //   Uri.parse(
-        //       "$backendEndpoint/ShoppingCartItem/AddToCart/$_clientID/$productId/0?shoppingCartType=ShoppingCart&customerEnteredPrice=0&quantity=$quantity&addRequiredProducts=true"),
-        //   body: jsonEncode("string"),
-        //   headers: {
-        //     'Content-Type': 'application/json; charset=UTF-8',
-        //     'Access-Control-Allow-Origin': '*',
-        //     "Authorization": "Bearer $_token"
-        //   },
-        // );
-        cartResponse = await http.post(
-          Uri.parse(
-              "$apiEndPoint/ShoppingCart/AddProductToCartFromCatalog/$productId?shoppingCartType=ShoppingCart&quantity=$quantity"),
-          body: jsonEncode("string"),
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Access-Control-Allow-Origin': '*',
-            "Authorization": "Bearer $_token"
-          },
-        );
-        print("adding ===========");
-      } else {
-        // cartResponse = await http.post(
-        //   Uri.parse(
-        //       "$backendEndpoint/ShoppingCartItem/UpdateShoppingCartItem/$_clientID/$catItemId?customerEnteredPrice=0&quantity=$quantity&resetCheckoutData=true"),
-        //   body: jsonEncode("string"),
-        //   headers: {
-        //     'Content-Type': 'application/json; charset=UTF-8',
-        //     'Access-Control-Allow-Origin': '*',
-        //     "Authorization": "Bearer $_token"
-        //   },
-        // );
-        var putData = {
-          "itemquantity$catItemId": quantity,
-          "updatecart": true,
-          "removefromcart": false,
-          "CountryId": 234,
-          "StateProvinceId": 0,
-          "ZipPostalCode": "",
-          "checkout_attribute_1": 1,
-          "discountcouponcode": "",
-          "giftcardcouponcode": ""
-        };
-        // var changeAttribute = {
-        //   "itemquantity$catItemId": quantity,
-        //   "CountryId": 0,
-        //   "is_editable": 1,
-        //   "StateProvinceId": 0,
-        //   "ZipPostalCode": "",
-        //   "checkout_attribute_1": 1,
-        //   "discountcouponcode": "",
-        //   "giftcardcouponcode": ""
-        // };
-        var _res = await http
-            .get(Uri.parse("$apiEndPoint/ShoppingCart/Cart"), headers: {
+      var cartResponse = await http.post(
+        Uri.parse(
+            "$apiEndPoint/ShoppingCart/AddProductToCartFromCatalog/$productId?shoppingCartType=ShoppingCart&quantity=$quantity"),
+        body: jsonEncode("string"),
+        headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Access-Control-Allow-Origin': '*',
           "Authorization": "Bearer $_token"
-        });
-        var _body = jsonDecode(_res.body);
-        var _carts = _body['items'] as List;
-        for (var item in _carts) {
-          if (item['id'] != catItemId) {
-            putData["itemquantity${item['id']}"] = item['quantity'];
-            // changeAttribute["itemquantity${item['id']}"] = item['quantity'];
-          }
-        }
-        // print(putData);
-        cartResponse = await http.post(
-          Uri.parse("$apiEndPoint/ShoppingCart/UpdateCart"),
-          body: jsonEncode(putData),
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Access-Control-Allow-Origin': '*',
-            "Authorization": "Bearer $_token"
-          },
-        );
-        // cartResponse = await http.post(
-        //   Uri.parse("$apiEndPoint/ShoppingCart/CheckoutAttributeChange"),
-        //   body: jsonEncode(changeAttribute),
-        //   headers: {
-        //     'Content-Type': 'application/json; charset=UTF-8',
-        //     'Access-Control-Allow-Origin': '*',
-        //     "Authorization": "Bearer $_token"
-        //   },
-        // );
-      }
-
+        },
+      );
+      var body = jsonDecode(cartResponse.body);
       if (cartResponse.statusCode == 200) {
-        return 'success';
+        return "success";
       } else {
-        return 'failed';
+        throw Exception(body['errors'].toString());
       }
     } catch (err) {
       rethrow;
@@ -736,9 +595,12 @@ class ProductService {
       String _token = _prefs.getString("token") ?? '';
       customHeaders['Authorization'] = "Bearer $_token";
       final response = await http.get(
-          Uri.parse(
-              "$backendEndpoint/Category/GetAllCategoriesByParentCategoryId/0?showHidden=false"),
+          Uri.parse("$apiEndPoint/Catalog/GetCatalogRoot"),
           headers: customHeaders);
+      // final response = await http.get(
+      //     Uri.parse(
+      //         "$backendEndpoint/Category/GetAllCategoriesByParentCategoryId/0?showHidden=false"),
+      //     headers: customHeaders);
 
       List<CategoryList> categoryProductList = [];
       if (response.statusCode == 200) {
@@ -750,15 +612,39 @@ class ProductService {
           // List _bodyList = (_body['items'] as List);
           // _bodyList.removeWhere(
           //     (element) => element['name'].toString().toLowerCase() == "wrap");
-          for (var item in _body) {
-            var _tmpResult = await http.get(
-                Uri.parse(
-                    "$backendEndpoint/Picture/GetPictureUrl/${item['picture_id']}?targetSize=0&showDefaultPicture=true"),
-                headers: customHeaders);
-            var _tmpBody = jsonDecode(_tmpResult.body);
-            var tmp = CategoryList.fromJson(item, _tmpBody['url']);
-            categoryProductList.add(tmp);
-          }
+          // Map _payloads = {
+          //   "price": "string",
+          //   "specification_option_ids": [0],
+          //   "manufacturer_ids": [0],
+          //   "order_by": 0,
+          //   "view_mode": "string",
+          //   "page_index": 0,
+          //   "page_number": 1,
+          //   "page_size": 3,
+          //   "total_items": 0,
+          //   "total_pages": 0,
+          //   "first_item": 0,
+          //   "last_item": 0,
+          //   "has_previous_page": true,
+          //   "has_next_page": true,
+          //   "custom_properties": {
+          //     "additionalProp1": "string",
+          //     "additionalProp2": "string",
+          //     "additionalProp3": "string"
+          //   }
+          // };
+          // for (var item in _body) {
+          //   var _tmpResult = await http.post(
+          //       Uri.parse("$apiEndPoint/Catalog/GetCategory/${item['id']}"),
+          //       body: jsonEncode(_payloads),
+          //       headers: customHeaders);
+          //   var _tmpBody = jsonDecode(_tmpResult.body);
+          //   var tmp = CategoryList.fromJson(item,
+          //       _tmpBody['category_model_dto']['picture_model']['image_url']);
+          //   categoryProductList.add(tmp);
+          // }
+            
+            categoryProductList = (_body as List).map((e) => CategoryList.fromJson(e, "")).toList();
         }
         return categoryProductList;
       } else {
@@ -771,28 +657,44 @@ class ProductService {
   }
 
   // get new arrival products
-  static Future<List<ProductM>> getNewArrival(page, perPage) async {
+  Future<List<ProductModel>> getNewArrival() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String _token = _prefs.getString("token") ?? '';
-    var response = await http.get(
-        Uri.parse("$backendEndpoint/Product/GetProductsMarkedAsNew?storeId=0"),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Access-Control-Allow-Origin': '*',
-          "Authorization": "Bearer $_token"
-        });
-    var _body = jsonDecode(response.body);
-    List<ProductM> categoryProductList = [];
-    for (var item in _body) {
-      var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
-      var tmp = ProductM.fromJson(item, _imageAndCategories);
-      categoryProductList.add(tmp);
+    customHeaders["Authorization"] = "Bearer $_token";
+    List<ProductModel> categoryProductList = [];
+    try {
+      var response = await http.get(
+          Uri.parse("$apiEndPoint/Product/NewProducts"),
+          headers: customHeaders);
+      var _body = jsonDecode(response.body);
+
+      categoryProductList =
+          (_body as List).map((e) => ProductModel.fromJson(e)).toList();
+    } catch (e) {
+      print(e);
     }
+
     return categoryProductList;
+
+    // var response = await http.get(
+    //     Uri.parse("$backendEndpoint/Product/GetProductsMarkedAsNew?storeId=0"),
+    //     headers: {
+    //       'Content-Type': 'application/json; charset=UTF-8',
+    //       'Access-Control-Allow-Origin': '*',
+    //       "Authorization": "Bearer $_token"
+    //     });
+    // var _body = jsonDecode(response.body);
+    // List<ProductModel> categoryProductList = [];
+    // for (var item in _body) {
+    //   var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
+    //   var tmp = ProductM.fromJson(item, _imageAndCategories);
+    //   categoryProductList.add(tmp);
+    // }
+    // return categoryProductList;
   }
 
   // get recommend products
-  static Future<List<ProductM>> getRecommendProduct(page, perPage) async {
+  static Future<List<ProductModel>> getRecommendProduct(page, perPage) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String _token = _prefs.getString("token") ?? '';
     customHeaders["Authorization"] = "Bearer $_token";
@@ -800,79 +702,104 @@ class ProductService {
         Uri.parse("$backendEndpoint/Product/GetAllProductsDisplayedOnHomepage"),
         headers: customHeaders);
     var _body = jsonDecode(response.body);
-    List<ProductM> categoryProductList = [];
+    List<ProductModel> categoryProductList = [];
     for (var item in _body) {
       var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
-      var tmp = ProductM.fromJson(item, _imageAndCategories);
+      var tmp = ProductModel.fromJson(item);
       categoryProductList.add(tmp);
     }
     return categoryProductList;
   }
 
   // get products by category slug name
-  static Future<List<ProductM>> getProductsByCategoryId(
+  static Future<List<ProductModel>> getProductsByCategoryId(
       page, perPage, String slug) async {
     String _slug = slug.toLowerCase();
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String _token = _prefs.getString("token") ?? '';
+    customHeaders["Authorization"] = "Bearer $_token";
     var response = await http.get(
         Uri.parse(
             "$backendEndpoint/Category/GetAll?categoryName=$_slug&storeId=0&pageIndex=0&pageSize=2147483647&showHidden=false"),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Access-Control-Allow-Origin': '*',
-          "Authorization": "Bearer $_token"
-        });
+        headers: customHeaders);
     var body = jsonDecode(response.body);
 
-    List<ProductM> categoryProductList = [];
+    List<ProductModel> categoryProductList = [];
     if ((body['items'] as List).isNotEmpty) {
       int _categoryId = body['items'][0]['id'];
-      var _prodcutResponse = await http.get(
-          Uri.parse(
-              "$backendEndpoint/Product/GetAll?pageIndex=$page&pageSize=$perPage&categoryIds=$_categoryId&storeId=0&vendorId=0&warehouseId=0&visibleIndividuallyOnly=false&excludeFeaturedProducts=false&productTagId=0&searchDescriptions=false&searchManufacturerPartNumber=true&searchSku=true&searchProductTags=false&languageId=0&showHidden=true"),
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Access-Control-Allow-Origin': '*',
-            "Authorization": "Bearer $_token"
-          });
-      var _body = jsonDecode(_prodcutResponse.body);
-      for (var item in _body['items']) {
-        var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
-        var tmp = ProductM.fromJson(item, _imageAndCategories);
-        categoryProductList.add(tmp);
-      }
+      Map _payloads = {
+        "price": "string",
+        "specification_option_ids": [0],
+        "manufacturer_ids": [0],
+        "order_by": 0,
+        "view_mode": "string",
+        "page_index": page,
+        "page_number": page + 1,
+        "page_size": perPage,
+        "total_items": 0,
+        "total_pages": 0,
+        "first_item": 0,
+        "last_item": 0,
+        "has_previous_page": true,
+        "has_next_page": true,
+        "custom_properties": {
+          "additionalProp1": "string",
+          "additionalProp2": "string",
+          "additionalProp3": "string"
+        }
+      };
+      var res = await http.post(
+          Uri.parse("$apiEndPoint/Catalog/GetCategoryProducts/$_categoryId"),
+          body: jsonEncode(_payloads),
+          headers: customHeaders);
+      var _body = jsonDecode(res.body);
+      categoryProductList =
+          (_body['catalog_products_model']['products'] as List)
+              .map((e) => ProductModel.fromJson(e))
+              .toList();
     }
-
-    categoryProductList ?? List<ProductM>.empty();
     return categoryProductList;
   }
 
-  static Future<List<ProductM>> getProductsByDirectCategoryId(
+  static Future<List<ProductModel>> getProductsByDirectCategoryId(
       page, perPage, int categoryId) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String _token = _prefs.getString("token") ?? '';
-    List<ProductM> categoryProductList = [];
-    var _prodcutResponse = await http.get(
-        Uri.parse(
-            "$backendEndpoint/Product/GetAll?pageIndex=$page&pageSize=$perPage&categoryIds=$categoryId&storeId=0&vendorId=0&warehouseId=0&visibleIndividuallyOnly=false&excludeFeaturedProducts=false&productTagId=0&searchDescriptions=false&searchManufacturerPartNumber=true&searchSku=true&searchProductTags=false&languageId=0&showHidden=true"),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Access-Control-Allow-Origin': '*',
-          "Authorization": "Bearer $_token"
-        });
-    var _body = jsonDecode(_prodcutResponse.body);
-    for (var item in _body['items']) {
-      var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
-      var tmp = ProductM.fromJson(item, _imageAndCategories);
-      categoryProductList.add(tmp);
-    }
-
-    categoryProductList ?? List<ProductM>.empty();
+    customHeaders["Authorization"] = "Bearer $_token";
+    List<ProductModel> categoryProductList = [];
+    Map _payloads = {
+      "price": "string",
+      "specification_option_ids": [0],
+      "manufacturer_ids": [0],
+      "order_by": 0,
+      "view_mode": "string",
+      "page_index": page,
+      "page_number": page + 1,
+      "page_size": perPage,
+      "total_items": 0,
+      "total_pages": 0,
+      "first_item": 0,
+      "last_item": 0,
+      "has_previous_page": true,
+      "has_next_page": true,
+      "custom_properties": {
+        "additionalProp1": "string",
+        "additionalProp2": "string",
+        "additionalProp3": "string"
+      }
+    };
+    var res = await http.post(
+        Uri.parse("$apiEndPoint/Catalog/GetCategoryProducts/$categoryId"),
+        body: jsonEncode(_payloads),
+        headers: customHeaders);
+    var _body = jsonDecode(res.body);
+    categoryProductList = (_body['catalog_products_model']['products'] as List)
+        .map((e) => ProductModel.fromJson(e))
+        .toList();
     return categoryProductList;
   }
 
-  static Future<List<ProductM>> searchProductsByName(
+  static Future<List<ProductModel>> searchProductsByName(
       page, perPage, String slug) async {
     String _slug = slug.toLowerCase();
     SharedPreferences _prefs = await SharedPreferences.getInstance();
@@ -887,16 +814,16 @@ class ProductService {
           "Authorization": "Bearer $_token"
         });
     var _body = jsonDecode(_prodcutResponse.body);
-    List<ProductM> categoryProductList = [];
+    List<ProductModel> categoryProductList = [];
     if ((_body['items'] as List).isEmpty) {
-      categoryProductList = List<ProductM>.empty();
+      categoryProductList = List<ProductModel>.empty();
     } else {
       for (var item in _body['items']) {
         var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
-        var tmp = ProductM.fromJson(item, _imageAndCategories);
+        var tmp = ProductModel.fromJson(item);
         categoryProductList.add(tmp);
       }
-      categoryProductList ?? List<ProductM>.empty();
+      categoryProductList ?? List<ProductModel>.empty();
     }
 
     // print(categoryProductList[0].name);
@@ -910,7 +837,7 @@ class ProductService {
       String _token = _prefs.getString("token") ?? '';
       customHeaders['Authorization'] = "Bearer $_token";
       // print(id);
-      
+
       // var _productDetails = await http.get(
       //     Uri.parse(
       //         "$apiEndPoint/Product/GetProductDetails/$id?updateCartItemId=0"),
@@ -945,7 +872,6 @@ class ProductService {
       //   'detailImages': detailImagList,
       //   'category': _productCategory
       // };
-
 
       var _productCategoryRes = await http.get(
           Uri.parse(
@@ -1003,31 +929,29 @@ class ProductService {
     }
   }
 
-  static Future<Map<String, dynamic>> getProductDetailById(int _id) async {
+  Future<ProductDetailModel> getProductDetailById(int _id) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String _token = _prefs.getString("token") ?? '';
-    var _productDetails = await http.get(
-        Uri.parse(
-            "$apiEndPoint/Product/GetProductDetails/$_id?updateCartItemId=0"),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Access-Control-Allow-Origin': '*',
-          "Authorization": "Bearer $_token"
-        });
-    var _detailBody = jsonDecode(_productDetails.body);
-
-    return _detailBody;
+    customHeaders["Authorization"] = "Bearer $_token";
+    try {
+      var _productDetails = await http.get(
+          Uri.parse(
+              "$apiEndPoint/Product/GetProductDetails/$_id?updateCartItemId=0"),
+          headers: customHeaders);
+      var _detailBody = jsonDecode(_productDetails.body);
+      return ProductDetailModel.fromJson(_detailBody['product_details_model']);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> getShoppingMiniCart(int _productId) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String _token = _prefs.getString("token") ?? '';
-    var _productDetails =
-        await http.get(Uri.parse("$apiEndPoint/ShoppingCart/Cart"), headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Access-Control-Allow-Origin': '*',
-      "Authorization": "Bearer $_token"
-    });
+    customHeaders["Authorization"] = "Bearer $_token";
+    var _productDetails = await http.get(
+        Uri.parse("$apiEndPoint/ShoppingCart/Cart"),
+        headers: customHeaders);
     var _body = jsonDecode(_productDetails.body);
     var _carts = _body['items'] as List;
     var product =
@@ -1066,7 +990,7 @@ class ProductService {
   }
 
   /// Get Popular products (this is sorted by quantity)
-  static Future<List<ProductM>> onGetPopularProducts(
+  static Future<List<ProductModel>> onGetPopularProducts(
       {pageSize, pageIndex, token}) async {
     try {
       customHeaders['Authorization'] = "Bearer $token";
@@ -1076,31 +1000,20 @@ class ProductService {
           headers: customHeaders);
       if (res.statusCode == 200) {
         var body = jsonDecode(res.body);
-
-        if (body['total_count'] == 0) {
-          return List<ProductM>.empty();
-        } else {
-          List<dynamic> _productIds =
-              body['items'].map((e) => e['product_id']).toList();
-          _productIds ?? List<dynamic>.empty();
-          if (_productIds.isNotEmpty) {
-            String _implodeIds = _productIds.join(";");
-            var _productsRes = await http.get(
-              Uri.parse(
-                  "$backendEndpoint/Product/GetProductsByIds/$_implodeIds"),
-              headers: customHeaders,
-            );
-            List<ProductM> categoryProductList = <ProductM>[];
-            for (var item in jsonDecode(_productsRes.body)) {
-              var _imageAndCategories =
-                  await getImageUrlsByProductId(id: item['id']);
-              ProductM tmp = ProductM.fromJson(item, _imageAndCategories);
-              categoryProductList.add(tmp);
-            }
-            return categoryProductList;
-          } else {
-            return List<ProductM>.empty();
+        List<ProductModel> categoryProductList = [];
+        if (body['total_count'] > 0) {
+          for (var item in body['items']) {
+            var _productDetails = await http.get(
+                Uri.parse(
+                    "$apiEndPoint/Product/GetProductDetails/${item['product_id']}?updateCartItemId=0"),
+                headers: customHeaders);
+            var _detailBody = jsonDecode(_productDetails.body);
+            categoryProductList.add(
+                ProductModel.fromJson(_detailBody['product_details_model']));
           }
+          return categoryProductList;
+        } else {
+          return List<ProductModel>.empty();
         }
       } else {
         throw Exception(res.body);
@@ -1111,7 +1024,7 @@ class ProductService {
   }
 
   // top collection products
-  static Future<List<ProductM>> onGetTopCollectionProducts(
+  static Future<List<ProductModel>> onGetTopCollectionProducts(
       {pageSize, pageIndex, token}) async {
     try {
       customHeaders['Authorization'] = "Bearer $token";
@@ -1120,7 +1033,7 @@ class ProductService {
       if (res.statusCode == 200) {
         var body = jsonDecode(res.body);
         if (body['total_count'] == 0) {
-          return List<ProductM>.empty();
+          return List<ProductModel>.empty();
         } else {
           List<dynamic> _productIds =
               body['items'].map((e) => e['product_id']).toList();
@@ -1132,16 +1045,16 @@ class ProductService {
                   "$backendEndpoint/Product/GetProductsByIds/$_implodeIds"),
               headers: customHeaders,
             );
-            List<ProductM> categoryProductList = <ProductM>[];
+            List<ProductModel> categoryProductList = <ProductModel>[];
             for (var item in jsonDecode(_productsRes.body)) {
               var _imageAndCategories =
                   await getImageUrlsByProductId(id: item['id']);
-              ProductM tmp = ProductM.fromJson(item, _imageAndCategories);
+              ProductModel tmp = ProductModel.fromJson(item);
               categoryProductList.add(tmp);
             }
             return categoryProductList;
           } else {
-            return List<ProductM>.empty();
+            return List<ProductModel>.empty();
           }
         }
       } else {

@@ -272,7 +272,8 @@ class _Register extends State<Register> {
       // // var response = await _appState.postAuth(
       // //     Uri.parse("${_appState.endpoint}/Customer/Register?returnUrl=false"),
       // //     jsonEncode(putData));
-      bool isSuccessSignup = await userService.onSignup(putData, _tokenResponse);
+      bool isSuccessSignup =
+          await userService.onSignup(putData, _tokenResponse);
       if (isSuccessSignup) {
         var putUserInfo = {
           'email': _userInfo['email'],
@@ -292,7 +293,8 @@ class _Register extends State<Register> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text("Error!"),
-              content: Text(AppLocalizations.of(context).saveddetailpage_failed),
+              content:
+                  Text(AppLocalizations.of(context).saveddetailpage_failed),
               actions: [
                 ElevatedButton(
                   child: Text(AppLocalizations.of(context).login_ok),
@@ -393,438 +395,450 @@ class _Register extends State<Register> {
                       children: [
                         Container(
                           height: MediaQuery.of(context).size.height - 100,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              child: Form(
-                                key: _formKey,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      height: 30,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context).register_create,
-                                      style: const TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context).register_description1,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Color(0xff999999),
-                                        height: 1.2,
-                                      ),
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context).register_description2,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Color(0xff999999),
-                                        height: 1.2,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsets.zero,
-                                        child: Column(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context).register_create,
+                                  style: const TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)
+                                      .register_description1,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Color(0xff999999),
+                                    height: 1.2,
+                                  ),
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)
+                                      .register_description2,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Color(0xff999999),
+                                    height: 1.2,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 40,
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.zero,
+                                    child: Column(
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  AppLocalizations.of(context)
-                                                      .register_fname,
-                                                  style: const TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight: FontWeight.w400,
-                                                      color: Colors.black87),
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .register_fname,
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            TextFormField(
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 0,
+                                                        horizontal: 10),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                    color: Colors.grey,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
                                                 ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                TextFormField(
-                                                  decoration: InputDecoration(
-                                                    contentPadding:
-                                                        const EdgeInsets.symmetric(
-                                                            vertical: 0, horizontal: 10),
-                                                    enabledBorder: OutlineInputBorder(
-                                                      borderSide: const BorderSide(
-                                                        color: Colors.grey,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(32),
-                                                    ),
-                                                    hintText: AppLocalizations.of(context)
+                                                hintText:
+                                                    AppLocalizations.of(context)
                                                         .register_fname,
-                                                    hintStyle: const TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.normal),
-                                                    border: const OutlineInputBorder(
+                                                hintStyle: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                                border:
+                                                    const OutlineInputBorder(
                                                         borderSide: BorderSide(
-                                                            color: Colors.grey)),
-                                                  ),
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.trim().isEmpty) {
-                                                      return AppLocalizations.of(context)
-                                                          .register_pfname;
-                                                    }
-                                                    // Return null if the entered email is valid
-                                                    return null;
-                                                  },
-                                                  controller: _firstnameController,
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      _firstName = value;
-                                                    });
-                                                  },
-                                                ),
-                                                const SizedBox(
-                                                  height: 30,
-                                                )
-                                              ],
+                                                            color:
+                                                                Colors.grey)),
+                                              ),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.trim().isEmpty) {
+                                                  return AppLocalizations.of(
+                                                          context)
+                                                      .register_pfname;
+                                                }
+                                                // Return null if the entered email is valid
+                                                return null;
+                                              },
+                                              controller: _firstnameController,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _firstName = value;
+                                                });
+                                              },
                                             ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  AppLocalizations.of(context)
-                                                      .register_lname,
-                                                  style: const TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight: FontWeight.w400,
-                                                      color: Colors.black87),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                TextFormField(
-                                                  decoration: InputDecoration(
-                                                    contentPadding:
-                                                        const EdgeInsets.symmetric(
-                                                            vertical: 0, horizontal: 10),
-                                                    enabledBorder: OutlineInputBorder(
-                                                      borderSide: const BorderSide(
-                                                        color: Colors.grey,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(32),
-                                                    ),
-                                                    hintText: AppLocalizations.of(context)
-                                                        .register_lname,
-                                                    hintStyle: const TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.normal),
-                                                    border: const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: Colors.grey)),
-                                                  ),
-                                                  controller: _lastnameController,
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.trim().isEmpty) {
-                                                      return AppLocalizations.of(context)
-                                                          .register_plname;
-                                                    }
-                                                    // Return null if the entered email is valid
-                                                    return null;
-                                                  },
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      _lastName = value;
-                                                    });
-                                                  },
-                                                ),
-                                                const SizedBox(
-                                                  height: 30,
-                                                )
-                                              ],
-                                            ),
+                                            const SizedBox(
+                                              height: 30,
+                                            )
                                           ],
                                         ),
-                                      ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .register_lname,
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            TextFormField(
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 0,
+                                                        horizontal: 10),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                    color: Colors.grey,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                hintText:
+                                                    AppLocalizations.of(context)
+                                                        .register_lname,
+                                                hintStyle: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                                border:
+                                                    const OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color:
+                                                                Colors.grey)),
+                                              ),
+                                              controller: _lastnameController,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.trim().isEmpty) {
+                                                  return AppLocalizations.of(
+                                                          context)
+                                                      .register_plname;
+                                                }
+                                                // Return null if the entered email is valid
+                                                return null;
+                                              },
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _lastName = value;
+                                                });
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              height: 30,
+                                            )
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   SingleChildScrollView(
                     child: Column(
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.9,
-                            padding: const EdgeInsets.only(
-                              left: 20,
-                              right: 20,
-                            ),
-                            child: Form(
-                              key: _formKey1,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: 30,
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.9,
+                          padding: const EdgeInsets.only(
+                            left: 20,
+                            right: 20,
+                          ),
+                          child: Form(
+                            key: _formKey1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)
+                                      .registeremail_caccount,
+                                  style: const TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  Text(
-                                    AppLocalizations.of(context)
-                                        .registeremail_caccount,
-                                    style: const TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)
+                                      .registeremail_description1,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Color(0xff999999),
+                                    height: 1.2,
                                   ),
-                                  const SizedBox(
-                                    height: 20,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)
+                                      .registeremail_tap,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Color(0xff999999),
+                                    height: 1.2,
                                   ),
-                                  Text(
-                                    AppLocalizations.of(context)
-                                        .registeremail_description1,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xff999999),
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context).registeremail_tap,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      color: Color(0xff999999),
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 40,
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.zero,
-                                      child: Column(
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)
-                                                    .registeremail_email,
-                                                style: const TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.black87),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              TextFormField(
-                                                decoration: InputDecoration(
-                                                  contentPadding:
-                                                      const EdgeInsets.symmetric(
-                                                          vertical: 0,
-                                                          horizontal: 10),
-                                                  enabledBorder: OutlineInputBorder(
-                                                    borderSide: const BorderSide(
-                                                      color: Colors.grey,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(32),
+                                ),
+                                const SizedBox(
+                                  height: 40,
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.zero,
+                                    child: Column(
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .registeremail_email,
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            TextFormField(
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 0,
+                                                        horizontal: 10),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                    color: Colors.grey,
                                                   ),
-                                                  border: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.grey)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
                                                 ),
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.trim().isEmpty) {
-                                                    return AppLocalizations.of(
-                                                            context)
-                                                        .registeremail_pmail;
-                                                  }
-                                                  // Check if the entered email has the right format
-                                                  if (!RegExp(r'\S+@\S+\.\S+')
-                                                      .hasMatch(value)) {
-                                                    return AppLocalizations.of(
-                                                            context)
-                                                        .registeremail_vmail;
-                                                  }
-                                                  // Return null if the entered email is valid
-                                                  return null;
-                                                },
-                                                controller: _emailController,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _email = value;
-                                                  });
-                                                },
+                                                border:
+                                                    const OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color:
+                                                                Colors.grey)),
                                               ),
-                                              const SizedBox(
-                                                height: 30,
-                                              )
-                                            ],
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)
-                                                    .registeremail_pwd,
-                                                style: const TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.black87),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              TextFormField(
-                                                keyboardType:
-                                                    TextInputType.visiblePassword,
-                                                obscureText: true,
-                                                decoration: InputDecoration(
-                                                  contentPadding:
-                                                      const EdgeInsets.symmetric(
-                                                          vertical: 0,
-                                                          horizontal: 10),
-                                                  enabledBorder: OutlineInputBorder(
-                                                    borderSide: const BorderSide(
-                                                      color: Colors.grey,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(32),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.trim().isEmpty) {
+                                                  return AppLocalizations.of(
+                                                          context)
+                                                      .registeremail_pmail;
+                                                }
+                                                // Check if the entered email has the right format
+                                                if (!RegExp(r'\S+@\S+\.\S+')
+                                                    .hasMatch(value)) {
+                                                  return AppLocalizations.of(
+                                                          context)
+                                                      .registeremail_vmail;
+                                                }
+                                                // Return null if the entered email is valid
+                                                return null;
+                                              },
+                                              controller: _emailController,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _email = value;
+                                                });
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              height: 30,
+                                            )
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .registeremail_pwd,
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            TextFormField(
+                                              keyboardType:
+                                                  TextInputType.visiblePassword,
+                                              obscureText: true,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 0,
+                                                        horizontal: 10),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                    color: Colors.grey,
                                                   ),
-                                                  border: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.grey)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
                                                 ),
-                                                controller: _passwordController,
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.trim().isEmpty) {
-                                                    return AppLocalizations.of(
-                                                            context)
-                                                        .registeremail_ppwd;
-                                                  }
-                                                  if (value.trim().length < 8) {
-                                                    return AppLocalizations.of(
-                                                            context)
-                                                        .registeremail_lpwd;
-                                                  }
-                                                  return null;
-                                                },
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _password = value;
-                                                  });
-                                                },
+                                                border:
+                                                    const OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color:
+                                                                Colors.grey)),
                                               ),
-                                              const SizedBox(
-                                                height: 30,
-                                              )
-                                            ],
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)
-                                                    .registeremail_cpwd,
-                                                style: const TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.black87),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              TextFormField(
-                                                decoration: InputDecoration(
-                                                  contentPadding:
-                                                      const EdgeInsets.symmetric(
-                                                          vertical: 0,
-                                                          horizontal: 10),
-                                                  enabledBorder: OutlineInputBorder(
-                                                    borderSide: const BorderSide(
-                                                      color: Colors.grey,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(32),
+                                              controller: _passwordController,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.trim().isEmpty) {
+                                                  return AppLocalizations.of(
+                                                          context)
+                                                      .registeremail_ppwd;
+                                                }
+                                                if (value.trim().length < 8) {
+                                                  return AppLocalizations.of(
+                                                          context)
+                                                      .registeremail_lpwd;
+                                                }
+                                                return null;
+                                              },
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _password = value;
+                                                });
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              height: 30,
+                                            )
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .registeremail_cpwd,
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            TextFormField(
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 0,
+                                                        horizontal: 10),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                    color: Colors.grey,
                                                   ),
-                                                  border: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.grey)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
                                                 ),
-                                                keyboardType:
-                                                    TextInputType.visiblePassword,
-                                                obscureText: true,
-                                                controller: _confirmController,
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.trim().isEmpty) {
-                                                    return AppLocalizations.of(
-                                                            context)
-                                                        .registeremail_pcpwd;
-                                                  }
-                                                  if (value != _password) {
-                                                    return AppLocalizations.of(
-                                                            context)
-                                                        .registeremail_ipwd;
-                                                  }
-                            
-                                                  // Return null if the entered email is valid
-                                                  return null;
-                                                },
-                                                
+                                                border:
+                                                    const OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color:
+                                                                Colors.grey)),
                                               ),
-                                              const SizedBox(
-                                                height: 30,
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                              keyboardType:
+                                                  TextInputType.visiblePassword,
+                                              obscureText: true,
+                                              controller: _confirmController,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.trim().isEmpty) {
+                                                  return AppLocalizations.of(
+                                                          context)
+                                                      .registeremail_pcpwd;
+                                                }
+                                                if (value != _password) {
+                                                  return AppLocalizations.of(
+                                                          context)
+                                                      .registeremail_ipwd;
+                                                }
+
+                                                // Return null if the entered email is valid
+                                                return null;
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              height: 30,
+                                            )
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: (_loadingStatus)
-                  ? const CircularProgressIndicator(
-                      backgroundColor: Colors.white,
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Color(0xff283488)),
-                      strokeWidth: 2)
-                  : const SizedBox(
-                      height: 0,
-                    ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -842,8 +856,8 @@ class _Register extends State<Register> {
                     child: ElevatedButton(
                       onPressed: _loadingStatus ? null : _onNextPage,
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            const Color(0xff283488)),
+                        backgroundColor:
+                            MaterialStateProperty.all(const Color(0xff283488)),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
@@ -852,16 +866,22 @@ class _Register extends State<Register> {
                           ),
                         ),
                       ),
-                      child: Text(
-                        (_currentPage != _numPages - 1)
-                            ? AppLocalizations.of(context).registeremail_next
-                            : _loadingStatus
-                                ? "Hold on..."
-                                : AppLocalizations.of(context)
-                                    .registeremail_register_button,
-                        style: const TextStyle(
-                            color: Colors.white, fontSize: 14),
-                      ),
+                      child: _loadingStatus
+                          ? const CircularProgressIndicator(
+                              backgroundColor: Colors.transparent,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              strokeWidth: 2,
+                            )
+                          : Text(
+                              (_currentPage != _numPages - 1)
+                                  ? AppLocalizations.of(context)
+                                      .registeremail_next
+                                  : AppLocalizations.of(context)
+                                      .registeremail_register_button,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                            ),
                     ),
                   ),
                 ],

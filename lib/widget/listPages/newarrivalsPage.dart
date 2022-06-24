@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
+import 'package:toy_app/model/produt_model.dart';
 import 'package:toy_app/widget/detailPage_test.dart';
-import 'package:toy_app/model/product.model.dart';
 import 'package:toy_app/service/product_repo.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -9,7 +9,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:toy_app/provider/index.dart';
 
-import 'package:flutter_pagewise/flutter_pagewise.dart';
 
 class Newarrivals extends StatefulWidget {
   const Newarrivals({Key key}) : super(key: key);
@@ -19,71 +18,62 @@ class Newarrivals extends StatefulWidget {
 }
 
 class _Newarrivals extends State<Newarrivals> {
-  // future setting
-  static const int PAGE_SIZE = 4;
   // provider setting
   AppState _appState;
+  ProductService productService;
   Widget _build() {
-    return PagewiseGridView<ProductM>.count(
-      pageSize: 100,
-      crossAxisCount: 2,
-      mainAxisSpacing: 20.0,
-      crossAxisSpacing: 6.0,
-      childAspectRatio: 0.8,
-      padding: const EdgeInsets.all(15.0),
-      itemBuilder: _itemBuilder,
-      loadingBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircularProgressIndicator(),
-                ],
-              )),
+    return FutureBuilder(
+      builder: (context, projectSnap) {
+        if (projectSnap.connectionState == ConnectionState.none &&
+            projectSnap.hasData == null) {
+          //print('project snapshot data is: ${projectSnap.data}');
+          return Center(
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text('No Items Found'),
+                  ],
+                )),
+          );
+        }
+        if (ConnectionState.active != null && !projectSnap.hasData) {
+          return Center(
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    CircularProgressIndicator(),
+                  ],
+                )),
+          );
+        }
+        return GridView.builder(
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20),
+          itemCount: projectSnap.data.length,
+          itemBuilder: (context, index) {
+            ProductModel _product = projectSnap.data[index];
+            return _itemBuilder(context, _product);
+          },
         );
       },
-      retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
-        );
-      },
-      noItemsFoundBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text('No Items Found'),
-                ],
-              )),
-        );
-      },
-      pageFuture: (pageIndex) {
-        return ProductService.getNewArrival(pageIndex, 100);
-      },
+      future: productService.getNewArrival(),
     );
   }
 
-  Widget _itemBuilder(context, ProductM entry, _) {
+  Widget _itemBuilder(context, ProductModel entry) {
     return InkWell(
       // hoverColor: Colors.pink,
       onTap: () {
-        Navigator.pushNamed(
-          context,
-          DetailPageTest.routeName,
-          arguments: entry,
-        );
+       Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return DetailPageTest(productId : entry.id);
+          }));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -115,10 +105,10 @@ class _Newarrivals extends State<Newarrivals> {
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(32),
                           topRight: Radius.circular(32)),
-                      child: entry?.images?.isEmpty ?? true
+                      child: entry?.image?.isEmpty ?? true
                           ? Image.asset('assets/img/no_image.png', fit: BoxFit.fill,)
                           : Image.network(
-                              entry?.images[0],
+                              entry?.image,
                               fit: BoxFit.fill,
                             ),
                     ),
@@ -218,6 +208,7 @@ class _Newarrivals extends State<Newarrivals> {
   void initState() {
     super.initState();
     _appState = Provider.of<AppState>(context, listen: false);
+    productService = ProductService();
   }
 
   @override
@@ -281,6 +272,7 @@ class _Newarrivals extends State<Newarrivals> {
               ],
             ),
             SizedBox(height: height * 0.65, child: _build()),
+            
           ],
         ),
       ),
