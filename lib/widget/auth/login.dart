@@ -287,18 +287,6 @@ class _LoginScreenPage extends State<LoginScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: (_loadingStatus)
-                    ? const CircularProgressIndicator(
-                        backgroundColor: Colors.white,
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Color(0xff283488)),
-                        strokeWidth: 2)
-                    : const SizedBox(
-                        height: 0,
-                      ),
-              ),
               SizedBox(
                 height: 60,
                 width: width * 0.9,

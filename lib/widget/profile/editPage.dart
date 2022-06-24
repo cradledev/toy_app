@@ -41,7 +41,7 @@ class _Edit extends State<Edit> {
     SharedPreferences savedPref = await SharedPreferences.getInstance();
     savedFirstName.text = _appState.firstName;
     savedLastName.text = _appState.lastName;
-    savedBio.text = _appState.bio == null ? "" : _appState.bio['default_value'];
+    savedBio.text = _appState.bio == null ? "" : _appState.bio['default_value'] == "string" ? "" : _appState.bio['default_value'];
     setState(() {
       imagePath = (savedPref.getString('path') ?? "");
     });
@@ -65,7 +65,6 @@ class _Edit extends State<Edit> {
       } else {
         list['avatar'] = imagePath;
       }
-      print(list);
       setState(() {
         isProcessing = true;
       });

@@ -59,8 +59,8 @@ class _Home extends State<Home> {
     return InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return DetailPageTest(productId : entry.id);
-          }));
+          return DetailPageTest(productId: entry.id);
+        }));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -291,8 +291,8 @@ class _Home extends State<Home> {
     return InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return DetailPageTest(productId : entry.id);
-          }));
+          return DetailPageTest(productId: entry.id);
+        }));
       },
       child: Container(
         height: MediaQuery.of(context).size.height * 0.4,
@@ -419,8 +419,8 @@ class _Home extends State<Home> {
     return InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return DetailPageTest(productId : entry.id);
-          }));
+          return DetailPageTest(productId: entry.id);
+        }));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -638,7 +638,7 @@ class _Home extends State<Home> {
               )),
         );
       },
-      pageFuture:(pageIndex) => ProductService.getProductsByCategoryId(
+      pageFuture: (pageIndex) => ProductService.getProductsByCategoryId(
           pageIndex, PAGE_SIZE, "العاب ريموت"),
       // pageFuture: (pageIndex) => ProductService.onGetPopularProducts(
       //     pageIndex: pageIndex,
@@ -786,8 +786,10 @@ class _Home extends State<Home> {
       // get new products
       productService.getNewArrival().then((value) {
         newProducts = value;
-        setState(() {
-          isPageLoading = false;
+        Future.delayed(const Duration(microseconds: 1000), () {
+          setState(() {
+            isPageLoading = false;
+          });
         });
       }).catchError((error) {
         setState(() {
@@ -806,41 +808,43 @@ class _Home extends State<Home> {
         _languageCode = locale.languageCode;
       });
     });
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 237, 236, 236),
-        bottomNavigationBar:
-            CustomBottomNavbar(context: context, selectedIndex: 0),
-        appBar: CustomAppBar(
-          title: Image.asset(
-            'assets/img/LoginRegistration/header.png',
-            // height: height * 0.1,
-            width: width * 0.5,
-            fit: BoxFit.cover,
-          ),
-          leadingIcon: const Icon(
-            CupertinoIcons.line_horizontal_3,
-            size: 30,
-            color: Colors.white,
-          ),
-          backgroundColor: const Color(0xff283488),
-        ),
-        drawer: const CustomDrawerWidget(),
-        body: isPageLoading
-            ? Center(
-                child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        CircularProgressIndicator(),
-                      ],
-                    )),
-              )
-            : SingleChildScrollView(
+    return isPageLoading
+        ? Scaffold(
+            body: Center(
+              child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      CircularProgressIndicator(),
+                    ],
+                  )),
+            ),
+          )
+        : WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: Scaffold(
+              backgroundColor: const Color.fromARGB(255, 237, 236, 236),
+              bottomNavigationBar:
+                  CustomBottomNavbar(context: context, selectedIndex: 0),
+              appBar: CustomAppBar(
+                title: Image.asset(
+                  'assets/img/LoginRegistration/header.png',
+                  // height: height * 0.1,
+                  width: width * 0.5,
+                  fit: BoxFit.cover,
+                ),
+                leadingIcon: const Icon(
+                  CupertinoIcons.line_horizontal_3,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                backgroundColor: const Color(0xff283488),
+              ),
+              drawer: const CustomDrawerWidget(),
+              body: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1497,7 +1501,7 @@ class _Home extends State<Home> {
                   ],
                 ),
               ),
-      ),
-    );
+            ),
+          );
   }
 }

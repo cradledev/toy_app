@@ -84,12 +84,12 @@ class _Profile extends State<Profile> {
             ? 0
             : (_orderBody['orders'] as List).length;
       });
-      _appState.profileAddress1 = _body['street_address'];
-      _appState.profileCity = _body['city'];
+      _appState.profileAddress1 = _body['street_address'] == "string" ? "" : _body['street_address'];
+      _appState.profileCity = _body['city'] == "string" ? "" : _body['city'];
       _appState.countryId = _body['country_id'] ?? 234;
-      _appState.firstName = _body['first_name'];
-      _appState.lastName = _body['last_name'];
-      _appState.phoneNumber = _body['phone'];
+      _appState.firstName = _body['first_name'] == "string" ? "" : _body['first_name'];
+      _appState.lastName = _body['last_name'] == "string" ? "" : _body['last_name'];
+      _appState.phoneNumber = _body['phone'] == "string" ? "" : _body['phone'];
       var _bioAttr = (_body['customer_attributes'] as List)
           .where((e) => e['name'] == "bio")
           .toList();
