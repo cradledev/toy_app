@@ -895,18 +895,19 @@ class _Home extends State<Home> {
                           newProducts.isNotEmpty
                               ? Padding(
                                   padding: const EdgeInsets.only(
-                                      top: 15, bottom: 30),
+                                      top: 8, bottom: 0),
                                   child: Column(
                                     children: [
                                       CarouselSlider(
                                         options: CarouselOptions(
+                                          viewportFraction: 1,
                                           height: 250.0,
                                           autoPlay: true,
                                           autoPlayInterval:
-                                              const Duration(seconds: 3),
+                                              const Duration(seconds: 5),
                                           autoPlayAnimationDuration:
-                                              const Duration(milliseconds: 800),
-                                          autoPlayCurve: Curves.fastOutSlowIn,
+                                              const Duration(milliseconds: 150),
+                                          autoPlayCurve: Curves.easeInOutQuad,
                                           enlargeCenterPage: true,
                                         ),
                                         items: newProducts.map((item) {
@@ -918,7 +919,7 @@ class _Home extends State<Home> {
                                                     ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              35.0),
+                                                              0.0),
                                                       child: Image.network(
                                                         item.image,
                                                         height: 250.0,
@@ -947,7 +948,7 @@ class _Home extends State<Home> {
                                                         ],
                                                         borderRadius:
                                                             BorderRadius
-                                                                .circular(35.0),
+                                                                .circular(0.0),
                                                       ),
                                                       // margin:
                                                       //     const EdgeInsets.only(top: 30),

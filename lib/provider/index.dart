@@ -169,7 +169,7 @@ class AppState extends ChangeNotifier {
 
   Future<Locale> getLocale() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    String languageCode = _prefs.getString(selectedLang) ?? 'en';
+    String languageCode = _prefs.getString(selectedLang) ?? 'ar';
     return Locale(languageCode);
   }
 

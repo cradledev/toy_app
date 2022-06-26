@@ -734,9 +734,10 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
   }
 
   void _handleRadioValueChange(String value) {
-    Navigator.of(context).pop();
+    print(value);
     _appState.setLocale(value);
     _appLocale.changeLocale(Locale(value));
+    Navigator.of(context).pop();
   }
 
   @override
