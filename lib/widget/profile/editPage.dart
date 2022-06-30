@@ -326,7 +326,7 @@ class _Edit extends State<Edit> {
                                               color: Colors.grey,
                                             ),
                                             borderRadius:
-                                                BorderRadius.circular(32),
+                                                BorderRadius.circular(16),
                                           ),
                                           border: const OutlineInputBorder(
                                               borderSide: BorderSide(

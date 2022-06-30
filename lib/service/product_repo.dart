@@ -667,7 +667,6 @@ class ProductService {
           Uri.parse("$apiEndPoint/Product/NewProducts"),
           headers: customHeaders);
       var _body = jsonDecode(response.body);
-
       categoryProductList =
           (_body as List).map((e) => ProductModel.fromJson(e)).toList();
     } catch (e) {
@@ -699,12 +698,12 @@ class ProductService {
     String _token = _prefs.getString("token") ?? '';
     customHeaders["Authorization"] = "Bearer $_token";
     var response = await http.get(
-        Uri.parse("$backendEndpoint/Product/GetAllProductsDisplayedOnHomepage"),
+        Uri.parse("$apiEndPoint/Product/RecentlyViewedProducts"),
         headers: customHeaders);
     var _body = jsonDecode(response.body);
     List<ProductModel> categoryProductList = [];
     for (var item in _body) {
-      var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
+      // var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
       var tmp = ProductModel.fromJson(item);
       categoryProductList.add(tmp);
     }
@@ -794,7 +793,9 @@ class ProductService {
         headers: customHeaders);
     var _body = jsonDecode(res.body);
     categoryProductList = (_body['catalog_products_model']['products'] as List)
-        .map((e) => ProductModel.fromJson(e))
+        .map((e) {
+          return ProductModel.fromJson(e);
+        })
         .toList();
     return categoryProductList;
   }
@@ -819,7 +820,7 @@ class ProductService {
       categoryProductList = List<ProductModel>.empty();
     } else {
       for (var item in _body['items']) {
-        var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
+        // var _imageAndCategories = await getImageUrlsByProductId(id: item['id']);
         var tmp = ProductModel.fromJson(item);
         categoryProductList.add(tmp);
       }
@@ -878,7 +879,6 @@ class ProductService {
               "$backendEndpoint/ProductCategory/GetProductCategoriesByProductId/$id?showHidden=false"),
           headers: customHeaders);
       var _body = jsonDecode(_productCategoryRes.body);
-      print(_body.length);
       int _productCategoryId = _body[0]['category_id'];
       var _categoryDetailRes = await http.get(
           Uri.parse("$backendEndpoint/Category/GetById/$_productCategoryId"),
@@ -1047,8 +1047,8 @@ class ProductService {
             );
             List<ProductModel> categoryProductList = <ProductModel>[];
             for (var item in jsonDecode(_productsRes.body)) {
-              var _imageAndCategories =
-                  await getImageUrlsByProductId(id: item['id']);
+              // var _imageAndCategories =
+              //     await getImageUrlsByProductId(id: item['id']);
               ProductModel tmp = ProductModel.fromJson(item);
               categoryProductList.add(tmp);
             }

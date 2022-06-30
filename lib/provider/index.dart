@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toy_app/model/user_model.dart';
 
 class AppState extends ChangeNotifier {
-  final String _endpoint = "http://147.182.244.82:80/api-frontend";
-  final String _backendEndpint = "http://147.182.244.82:80/api-backend";
+  final String _endpoint = "https://alhussaintoys.azurewebsites.net/api-frontend";
+  final String _backendEndpint = "https://alhussaintoys.azurewebsites.net/api-backend";
 
   final String selectedLang = "selectedLang";
   UserModel _user;

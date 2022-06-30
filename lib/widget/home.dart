@@ -43,6 +43,7 @@ class _Home extends State<Home> {
   ProductService productService;
   UserService userService;
   List<ProductModel> newProducts = [];
+  // List<ProductModel> recommendProducts = [];
   Widget _buildNewArrival() {
     return Container(
         padding: EdgeInsets.zero,
@@ -638,12 +639,18 @@ class _Home extends State<Home> {
               )),
         );
       },
-      pageFuture: (pageIndex) => ProductService.getProductsByCategoryId(
-          pageIndex, PAGE_SIZE, "العاب ريموت"),
+      // pageFuture: (pageIndex) => ProductService.getProductsByCategoryId(
+      //     pageIndex, PAGE_SIZE, "العاب ريموت"),
       // pageFuture: (pageIndex) => ProductService.onGetPopularProducts(
       //     pageIndex: pageIndex,
       //     pageSize: PAGE_SIZE,
       //     token: _appState.user.token),
+      pageFuture : (pageIndex) {
+        return ProductService.onGetPopularProducts(
+            pageIndex: pageIndex,
+            pageSize: PAGE_SIZE,
+            token: _appState.user.token);
+      }
     );
   }
 
@@ -895,7 +902,7 @@ class _Home extends State<Home> {
                           newProducts.isNotEmpty
                               ? Padding(
                                   padding: const EdgeInsets.only(
-                                      top: 8, bottom: 0),
+                                      top: 8, bottom: 8, left: 4, right: 4),
                                   child: Column(
                                     children: [
                                       CarouselSlider(
@@ -919,7 +926,7 @@ class _Home extends State<Home> {
                                                     ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              0.0),
+                                                              8.0),
                                                       child: Image.network(
                                                         item.image,
                                                         height: 250.0,
@@ -948,7 +955,7 @@ class _Home extends State<Home> {
                                                         ],
                                                         borderRadius:
                                                             BorderRadius
-                                                                .circular(0.0),
+                                                                .circular(8.0),
                                                       ),
                                                       // margin:
                                                       //     const EdgeInsets.only(top: 30),
@@ -1462,43 +1469,43 @@ class _Home extends State<Home> {
                         ),
                       ),
                     ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context).home_recommended,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/recommended');
-                                },
-                                child: (_languageCode == "en")
-                                    ? const Icon(
-                                        Icons.keyboard_arrow_right_outlined,
-                                        color: Colors.black,
-                                        size: 30,
-                                      )
-                                    : const Icon(
-                                        Icons.keyboard_arrow_left_outlined,
-                                        color: Colors.black,
-                                        size: 30,
-                                      ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                            height: height * 0.35, child: _buildRecommend())
-                      ],
-                    ),
+                    // Column(
+                    //   children: [
+                    //     Padding(
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 20, vertical: 20),
+                    //       child: Row(
+                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //         children: [
+                    //           Text(
+                    //             AppLocalizations.of(context).home_recommended,
+                    //             style: const TextStyle(
+                    //                 color: Colors.black,
+                    //                 fontWeight: FontWeight.bold),
+                    //           ),
+                    //           InkWell(
+                    //             onTap: () {
+                    //               Navigator.pushNamed(context, '/recommended');
+                    //             },
+                    //             child: (_languageCode == "en")
+                    //                 ? const Icon(
+                    //                     Icons.keyboard_arrow_right_outlined,
+                    //                     color: Colors.black,
+                    //                     size: 30,
+                    //                   )
+                    //                 : const Icon(
+                    //                     Icons.keyboard_arrow_left_outlined,
+                    //                     color: Colors.black,
+                    //                     size: 30,
+                    //                   ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     SizedBox(
+                    //         height: height * 0.35, child: _buildRecommend())
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

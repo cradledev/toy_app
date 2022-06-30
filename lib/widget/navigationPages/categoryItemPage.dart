@@ -157,7 +157,8 @@ class _CategoryItems extends State<CategoryItems> {
                                       padding:
                                           const EdgeInsets.symmetric(vertical: 5),
                                       child: Text(
-                                        "${entry?.name?.substring(0,15)}...",
+                                        entry.name.length > 16 ?  
+                                        "${entry?.name?.substring(0,15)}..." : entry?.name,
                                         style: const TextStyle(
                                           fontFamily: 'Avenir Next',
                                           fontSize: 14,
@@ -232,7 +233,12 @@ class _CategoryItems extends State<CategoryItems> {
       bottomNavigationBar:
           CustomBottomNavbar(context: context, selectedIndex: 1),
       appBar: CustomAppBar(
-        title: const Text(""),
+        title: Image.asset(
+          'assets/img/LoginRegistration/header.png',
+          // height: height * 0.1,
+          width: width * 0.5,
+          fit: BoxFit.cover,
+        ),
         leadingAction: () {
           Navigator.pop(context);
         },
@@ -252,7 +258,7 @@ class _CategoryItems extends State<CategoryItems> {
                 children: [
                   Container(
                     padding: EdgeInsets.only(
-                        top: 16, left: width * 0.05, right: width * 0.05),
+                        top: 8, left: width * 0.05, right: width * 0.05),
                     child: Text(
                       cateName.isEmpty ?? true ? "" : cateName,
                       style: const TextStyle(
