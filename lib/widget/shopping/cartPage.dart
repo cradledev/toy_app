@@ -685,10 +685,49 @@ class _Cart extends State<Cart> {
                       ));
                     }
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(AppLocalizations.of(context).login_plogin),
-                      backgroundColor: Colors.orange,
-                    ));
+                    int _tmpCartCount = int.parse(cart_count.toString());
+                    if (_tmpCartCount > 0) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(AppLocalizations.of(context)
+                                  .detailpage_checkout_guest),
+                              actions: [
+                                ElevatedButton(
+                                  child: Text(AppLocalizations.of(context)
+                                      .detailpage_ok),
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/delivery');
+                                  },
+                                ),
+                                ElevatedButton(
+                                  child: Text(AppLocalizations.of(context)
+                                      .detailpage_cancel),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.grey,
+                                    onPrimary: Colors.white,
+                                    onSurface: Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(AppLocalizations.of(context)
+                                          .login_plogin),
+                                      backgroundColor: Colors.orange,
+                                    ));
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ],
+                            );
+                          });
+                    }else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("No Cart items."),
+                        backgroundColor: Colors.orange,
+                      ));
+                    }
                   }
 
                   // _appState.cartTotalPrice = total_price;
