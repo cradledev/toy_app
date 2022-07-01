@@ -232,7 +232,7 @@ class ProductService {
               "state_province_name": "",
               "county_enabled": false,
               "county_required": false,
-              "county": "",
+              "county": "Saudi Arabia",
               "city_enabled": true,
               "city_required": true,
               "city": _city,
@@ -399,7 +399,7 @@ class ProductService {
       );
 
       if (res.statusCode == 200) {
-        return 'success';
+        return jsonDecode(res.body)['redirect_payment_url'];
       } else {
         return 'failed';
       }

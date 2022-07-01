@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:toy_app/components/components.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:provider/provider.dart';
 import 'package:toy_app/provider/index.dart';
 import 'package:toy_app/service/product_repo.dart';
-
+import 'package:toy_app/widget/shopping/myfatoorah.dart';
+import 'package:toy_app/helper/constant.dart';
 
 class Delivery extends StatefulWidget {
   const Delivery({Key key}) : super(key: key);
@@ -24,33 +28,90 @@ class _DeliveryPage extends State<Delivery> {
   String _address = '';
   String _city = '';
   String _index = '';
+  String _fname = '';
+  String _lname = '';
+
 
   @override
   void initState() {
     super.initState();
     _appState = Provider.of<AppState>(context, listen: false);
+    getUserInfo();
   }
-void submitDelivery() async {
-      final bool isValid = _formKey.currentState?.validate();
-      if (isValid == true) {
-        _appState.address = _address;
-        _appState.city = _city;
-        _appState.index = _index;
-        _productService.setshippingdress(_appState.firstName, _appState.lastName, _appState.user.userEmail ,_address, _city, _index).then((value) {
-          if(value == "success") {
-        Navigator.pushNamed(context, '/payment');
 
-          }
-        });
+  void getUserInfo() async {
+    String _token = _appState.user.token;
+        var _profileInfoRes = await http.get(
+      Uri.parse("$apiEndPoint/Customer/info"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Access-Control-Allow-Origin': '*',
+        "Authorization": "Bearer $_token"
+      },
+    );
+    var _body = jsonDecode(_profileInfoRes.body);
+    _appState.firstName = _body['first_name'] == "string" ? "" : _body['first_name'];
+    _appState.lastName = _body['last_name'] == "string" ? "" : _body['last_name'];
+    _fname = _appState.firstName;
+    _lname = _appState.lastName;
+  }
 
-      }
+  void submitDelivery() async {
+    final bool isValid = _formKey.currentState?.validate();
+    if (isValid == true) {
+      _appState.address = _address;
+      _appState.city = _city;
+      _appState.index = _index;
+      _productService
+          .setshippingdress(_fname, _lname,
+              _appState.user.userEmail, _address, _city, _index)
+          .then((value) {
+        if (value == "success") {
+          // Navigator.pushNamed(context, '/payment');
+          _productService.setPaymentMethod('Payments.MyFatoorah').then((value) {
+            if (value == 'success') {
+              _productService.confirmOrder().then((value) {
+                if (value != 'failed') {
+                  print(value);
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(
+                              AppLocalizations.of(context).detailpage_success),
+                          actions: [
+                            ElevatedButton(
+                              child: Text(
+                                  AppLocalizations.of(context).detailpage_ok),
+                              onPressed: () {
+                                 Navigator.push(
+          context,
+          PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 800),
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return FadeTransition(
+                    opacity: animation,
+                    child: MyFatoorah(inputurl: value));
+              }),
+        );
+                              },
+                            )
+                          ],
+                        );
+                      });
+                }
+              });
+            }
+          });
+        }
+      });
     }
+  }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-
 
     return Scaffold(
       backgroundColor: Colors.white,
