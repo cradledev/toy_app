@@ -84,39 +84,49 @@ class _DetailPageTest extends State<DetailPageTest> {
         if (_appState.user.isGuest) {
           _addProductToWishlistAsGuest(id, _quantity);
         }
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(AppLocalizations.of(context).detailpage_success),
-                content: Text(AppLocalizations.of(context).detailpage_text1),
-                actions: [
-                  ElevatedButton(
-                    child: Text(AppLocalizations.of(context).detailpage_ok),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/saved');
-                    },
-                  )
-                ],
-              );
-            });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context).detailpage_text1),
+          duration: const Duration(seconds: 1),
+          backgroundColor: Colors.green,
+        ));
+        // showDialog(
+        //     context: context,
+        //     builder: (BuildContext context) {
+        //       return AlertDialog(
+        //         title: Text(AppLocalizations.of(context).detailpage_success),
+        //         content: Text(AppLocalizations.of(context).detailpage_text1),
+        //         actions: [
+        //           ElevatedButton(
+        //             child: Text(AppLocalizations.of(context).detailpage_ok),
+        //             onPressed: () {
+        //               Navigator.pushNamed(context, '/saved');
+        //             },
+        //           )
+        //         ],
+        //       );
+        //     });
       } else {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(AppLocalizations.of(context).detailpage_failed),
-                content: Text(AppLocalizations.of(context).detailpage_text2),
-                actions: [
-                  ElevatedButton(
-                    child: Text(AppLocalizations.of(context).detailpage_ok),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              );
-            });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context).detailpage_text2),
+          backgroundColor: Colors.orange,
+          duration: const Duration(seconds: 1),
+        ));
+        // showDialog(
+        //     context: context,
+        //     builder: (BuildContext context) {
+        //       return AlertDialog(
+        //         title: Text(AppLocalizations.of(context).detailpage_failed),
+        //         content: Text(AppLocalizations.of(context).detailpage_text2),
+        //         actions: [
+        //           ElevatedButton(
+        //             child: Text(AppLocalizations.of(context).detailpage_ok),
+        //             onPressed: () {
+        //               Navigator.pop(context);
+        //             },
+        //           )
+        //         ],
+        //       );
+        //     });
       }
     }).catchError((err) {
       print(err);
@@ -189,8 +199,7 @@ class _DetailPageTest extends State<DetailPageTest> {
         _addProductToShoppingCartAsGuest(productId, price, _quantity);
       }
       _productService
-          .addCartItem(productId, _quantity,
-              _appState.user.customerId)
+          .addCartItem(productId, _quantity, _appState.user.customerId)
           .then((response) {
         if (response == 'success') {
           setState(() {
@@ -199,43 +208,52 @@ class _DetailPageTest extends State<DetailPageTest> {
           if (_appState.user.isGuest) {
             _addProductToShoppingCartAsGuest(productId, price, _quantity);
           }
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(AppLocalizations.of(context).detailpage_success),
-                  content: Text(AppLocalizations.of(context).detailpage_cart),
-                  actions: [
-                    ElevatedButton(
-                      child: Text(AppLocalizations.of(context).detailpage_ok),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/cart');
-                      },
-                    )
-                  ],
-                );
-              });
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context).detailpage_cart),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 1),
+          ));
+          // showDialog(
+          //     context: context,
+          //     builder: (BuildContext context) {
+          //       return AlertDialog(
+          //         title: Text(AppLocalizations.of(context).detailpage_success),
+          //         content: Text(AppLocalizations.of(context).detailpage_cart),
+          //         actions: [
+          //           ElevatedButton(
+          //             child: Text(AppLocalizations.of(context).detailpage_ok),
+          //             onPressed: () {
+          //               Navigator.pushNamed(context, '/cart');
+          //             },
+          //           )
+          //         ],
+          //       );
+          //     });
         } else {
           setState(() {
             processing = false;
           });
-
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(AppLocalizations.of(context).detailpage_failed),
-                  content: Text(AppLocalizations.of(context).detailpage_text2),
-                  actions: [
-                    ElevatedButton(
-                      child: Text(AppLocalizations.of(context).detailpage_ok),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    )
-                  ],
-                );
-              });
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context).detailpage_text2),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 1),
+          ));
+          // showDialog(
+          //     context: context,
+          //     builder: (BuildContext context) {
+          //       return AlertDialog(
+          //         title: Text(AppLocalizations.of(context).detailpage_failed),
+          //         content: Text(AppLocalizations.of(context).detailpage_text2),
+          //         actions: [
+          //           ElevatedButton(
+          //             child: Text(AppLocalizations.of(context).detailpage_ok),
+          //             onPressed: () {
+          //               Navigator.pop(context);
+          //             },
+          //           )
+          //         ],
+          //       );
+          //     });
         }
       }).catchError((err) {
         print(err);
@@ -244,22 +262,27 @@ class _DetailPageTest extends State<DetailPageTest> {
         });
       });
     } else {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(AppLocalizations.of(context).detailpage_alert),
-              content: Text(AppLocalizations.of(context).detailpage_text4),
-              actions: [
-                ElevatedButton(
-                  child: Text(AppLocalizations.of(context).detailpage_ok),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            );
-          });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(AppLocalizations.of(context).detailpage_text4),
+        backgroundColor: Colors.orange,
+        duration: const Duration(seconds: 1),
+      ));
+      // showDialog(
+      //     context: context,
+      //     builder: (BuildContext context) {
+      //       return AlertDialog(
+      //         title: Text(AppLocalizations.of(context).detailpage_alert),
+      //         content: Text(AppLocalizations.of(context).detailpage_text4),
+      //         actions: [
+      //           ElevatedButton(
+      //             child: Text(AppLocalizations.of(context).detailpage_ok),
+      //             onPressed: () {
+      //               Navigator.pop(context);
+      //             },
+      //           )
+      //         ],
+      //       );
+      //     });
     }
   }
 

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:toy_app/components/custom_drawer_widget.dart';
@@ -29,7 +28,7 @@ class Home extends StatefulWidget {
 
 class _Home extends State<Home> {
   // future setting
-  static const int PAGE_SIZE = 3;
+  static const int PAGE_SIZE = 12;
   // slider setting
   List<Map<String, dynamic>> imgList = <Map<String, dynamic>>[];
   List<int> bannerProductIds = [];
