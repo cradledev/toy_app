@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:toy_app/components/components.dart';
 import 'package:toy_app/widget/home.dart';
+import 'package:toy_app/components/components.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -23,19 +24,6 @@ class MyFatoorahState extends State<MyFatoorah> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-
-    // return WillPopScope(
-    //   onWillPop: () async {
-    //     Navigator.pushAndRemoveUntil(
-    //         context,
-    //         MaterialPageRoute(builder: (context) => const Home()),
-    //         (route) => false);
-    //     return false;
-    //   },
-    //   child: WebView(
-    //     initialUrl: widget.inputurl,
-    //   ),
-    // );
     return WillPopScope(
       onWillPop: () async {
         Navigator.pushAndRemoveUntil(
@@ -60,7 +48,6 @@ class MyFatoorahState extends State<MyFatoorah> {
         body: WebView(
           initialUrl: widget.inputurl,
         ),
-      ),
-    );
-  }
+      ));
+   }
 }
