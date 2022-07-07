@@ -608,6 +608,7 @@ class ProductService {
         if ((_body as List).isEmpty) {
           categoryProductList = List<CategoryList>.empty();
         } else {
+          print(_body);
           // List referValues = ["warp"];
           // List _bodyList = (_body['items'] as List);
           // _bodyList.removeWhere(

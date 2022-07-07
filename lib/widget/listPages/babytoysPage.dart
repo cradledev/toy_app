@@ -45,17 +45,18 @@ class _Babytoys extends State<Babytoys> {
         );
       },
       retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
-        );
+        // return Center(
+        //   child: SizedBox(
+        //       width: MediaQuery.of(context).size.width,
+        //       child: Row(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           ElevatedButton(
+        //               child: const Text('Retry'), onPressed: () => callback())
+        //         ],
+        //       )),
+        // );
+        return const SizedBox(width: 0,);
       },
       noItemsFoundBuilder: (context) {
         return Center(

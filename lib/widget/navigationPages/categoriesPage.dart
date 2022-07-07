@@ -19,8 +19,6 @@ class Categories extends StatefulWidget {
 }
 
 class _Categories extends State<Categories> {
-  // future setting
-  static const int PAGE_SIZE = 100;
   // provider setting
   AppState _appState;
   List<CategoryList> categoryList = [];

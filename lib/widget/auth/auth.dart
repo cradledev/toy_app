@@ -47,47 +47,51 @@ class _Auth extends State<Auth> {
                     height: height * 0.1,
                   ),
                 ),
-                SizedBox(
-                  height: height * 0.15,
-                ),
-                Text(
-                  AppLocalizations.of(context).auth_welcome,
-                  style: const TextStyle(
-                    fontFamily: 'Avenir Next',
-                    fontSize: 32,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: height * 0.01,
-                ),
-                Text(
-                  AppLocalizations.of(context).auth_description1,
-                  style: const TextStyle(
-                    fontFamily: 'Avenir Next',
-                    fontSize: 14,
-                    color: Color(0xff999999),
-                    fontWeight: FontWeight.normal,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  AppLocalizations.of(context).auth_description2,
-                  style: const TextStyle(
-                    fontFamily: 'Avenir Next',
-                    fontSize: 14,
-                    color: Color(0xff999999),
-                    fontWeight: FontWeight.normal,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: height * 0.1,
-                ),
               ],
             ),
+          ),
+          Column(
+            children: [
+              Text(
+                AppLocalizations.of(context).auth_welcome,
+                style: const TextStyle(
+                  fontFamily: 'Avenir Next',
+                  fontSize: 38,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: height * 0.015,
+              ),
+              Text(
+                AppLocalizations.of(context).auth_description1,
+                style: const TextStyle(
+                  fontFamily: 'Avenir Next',
+                  fontSize: 14,
+                  color: Color(0xff999999),
+                  fontWeight: FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Text(
+                AppLocalizations.of(context).auth_description2,
+                style: const TextStyle(
+                  fontFamily: 'Avenir Next',
+                  fontSize: 14,
+                  color: Color(0xff999999),
+                  fontWeight: FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: height * 0.08,
+              ),
+            ],
           ),
           SizedBox(
             height: height * 0.07,
@@ -107,7 +111,10 @@ class _Auth extends State<Auth> {
               ),
               child: Text(
                 AppLocalizations.of(context).auth_login,
-                style: const TextStyle(color: Color(0xff283488), fontSize: 14),
+                style: const TextStyle(
+                    color: Color(0xff283488),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900),
               ),
             ),
           ),
@@ -133,7 +140,10 @@ class _Auth extends State<Auth> {
               ),
               child: Text(
                 AppLocalizations.of(context).auth_signup,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900),
               ),
             ),
           ),

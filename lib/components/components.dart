@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:toy_app/model/produt_model.dart';
@@ -189,7 +190,7 @@ class CustomBottomNavbar extends StatelessWidget {
       onItemSelected: (index) => {onTabTapped(index)},
       items: <BottomNavyBarItem>[
         BottomNavyBarItem(
-          icon: const Icon(Icons.home),
+          icon: const Icon(Icons.home_filled),
           title: Text(AppLocalizations.of(context).babytoyspage_home),
           activeBackColor: const Color(0xFF283488),
           activeColor: Colors.white,
@@ -205,7 +206,7 @@ class CustomBottomNavbar extends StatelessWidget {
           inactiveColor: Colors.grey[600],
         ),
         BottomNavyBarItem(
-          icon: const Icon(Icons.shopping_cart),
+          icon: const Icon(Icons.shopping_cart_outlined),
           title: Text(AppLocalizations.of(context).babytoyspage_scart),
           activeBackColor: const Color(0xFF283488),
           activeColor: Colors.white,
@@ -221,7 +222,7 @@ class CustomBottomNavbar extends StatelessWidget {
           inactiveColor: Colors.grey[600],
         ),
         BottomNavyBarItem(
-          icon: const Icon(Icons.account_circle_outlined),
+          icon: const Icon(CupertinoIcons.person),
           title: Text(AppLocalizations.of(context).babytoyspage_profile),
           activeBackColor: const Color(0xFF283488),
           activeColor: Colors.white,

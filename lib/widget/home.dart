@@ -42,6 +42,8 @@ class _Home extends State<Home> {
   ProductService productService;
   UserService userService;
   List<ProductModel> newProducts = [];
+  int _current = 0;
+  // final GlobalKey<CarouselSliderState> _sliderKey = GlobalKey();
   // List<ProductModel> recommendProducts = [];
   Widget _buildNewArrival() {
     return Container(
@@ -205,16 +207,19 @@ class _Home extends State<Home> {
         );
       },
       retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
+        // return Center(
+        //   child: SizedBox(
+        //       width: MediaQuery.of(context).size.width,
+        //       child: Row(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           ElevatedButton(
+        //               child: const Text('Retry'), onPressed: () => callback())
+        //         ],
+        //       )),
+        // );
+        return const SizedBox(
+          width: 0,
         );
       },
       noItemsFoundBuilder: (context) {
@@ -257,16 +262,19 @@ class _Home extends State<Home> {
         );
       },
       retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
+        // return Center(
+        //   child: SizedBox(
+        //       width: MediaQuery.of(context).size.width,
+        //       child: Row(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           ElevatedButton(
+        //               child: const Text('Retry'), onPressed: () => callback())
+        //         ],
+        //       )),
+        // );
+        return const SizedBox(
+          width: 0,
         );
       },
       noItemsFoundBuilder: (context) {
@@ -565,16 +573,19 @@ class _Home extends State<Home> {
         );
       },
       retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
+        // return Center(
+        //   child: SizedBox(
+        //       width: MediaQuery.of(context).size.width,
+        //       child: Row(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           ElevatedButton(
+        //               child: const Text('Retry'), onPressed: () => callback())
+        //         ],
+        //       )),
+        // );
+        return const SizedBox(
+          width: 0,
         );
       },
       noItemsFoundBuilder: (context) {
@@ -597,60 +608,62 @@ class _Home extends State<Home> {
   // Widget popular list item
   Widget _buildPopular() {
     return PagewiseListView<ProductModel>(
-      pageSize: PAGE_SIZE,
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.all(15.0),
-      itemBuilder: _recommendItemBuilder,
-      loadingBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircularProgressIndicator(),
-                ],
-              )),
-        );
-      },
-      retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
-        );
-      },
-      noItemsFoundBuilder: (context) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text('No Items Found'),
-                ],
-              )),
-        );
-      },
-      // pageFuture: (pageIndex) => ProductService.getProductsByCategoryId(
-      //     pageIndex, PAGE_SIZE, "العاب ريموت"),
-      // pageFuture: (pageIndex) => ProductService.onGetPopularProducts(
-      //     pageIndex: pageIndex,
-      //     pageSize: PAGE_SIZE,
-      //     token: _appState.user.token),
-      pageFuture : (pageIndex) {
-        return ProductService.onGetPopularProducts(
-            pageIndex: pageIndex,
-            pageSize: PAGE_SIZE,
-            token: _appState.user.token);
-      }
-    );
+        pageSize: PAGE_SIZE,
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.all(15.0),
+        itemBuilder: _recommendItemBuilder,
+        loadingBuilder: (context) {
+          return Center(
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    CircularProgressIndicator(),
+                  ],
+                )),
+          );
+        },
+        retryBuilder: (context, callback) {
+          return const SizedBox(
+            width: 0,
+          );
+          // return Center(
+          //   child: SizedBox(
+          //       width: MediaQuery.of(context).size.width,
+          //       child: Row(
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         children: [
+          //           ElevatedButton(
+          //               child: const Text('Retry'), onPressed: () => callback())
+          //         ],
+          //       )),
+          // );
+        },
+        noItemsFoundBuilder: (context) {
+          return Center(
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text('No Items Found'),
+                  ],
+                )),
+          );
+        },
+        // pageFuture: (pageIndex) => ProductService.getProductsByCategoryId(
+        //     pageIndex, PAGE_SIZE, "العاب ريموت"),
+        // pageFuture: (pageIndex) => ProductService.onGetPopularProducts(
+        //     pageIndex: pageIndex,
+        //     pageSize: PAGE_SIZE,
+        //     token: _appState.user.token),
+        pageFuture: (pageIndex) {
+          return ProductService.onGetPopularProducts(
+              pageIndex: pageIndex,
+              pageSize: PAGE_SIZE,
+              token: _appState.user.token);
+        });
   }
 
   Widget _buildBabyToys() {
@@ -672,16 +685,19 @@ class _Home extends State<Home> {
         );
       },
       retryBuilder: (context, callback) {
-        return Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      child: const Text('Retry'), onPressed: () => callback())
-                ],
-              )),
+        // return Center(
+        //   child: SizedBox(
+        //       width: MediaQuery.of(context).size.width,
+        //       child: Row(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           ElevatedButton(
+        //               child: const Text('Retry'), onPressed: () => callback())
+        //         ],
+        //       )),
+        // );
+        return const SizedBox(
+          width: 0,
         );
       },
       noItemsFoundBuilder: (context) {
@@ -811,7 +827,7 @@ class _Home extends State<Home> {
     var height = MediaQuery.of(context).size.height;
     _appState.getLocale().then((locale) {
       setState(() {
-        _languageCode = locale.languageCode;
+        _languageCode = locale.toString();
       });
     });
     return isPageLoading
@@ -858,22 +874,6 @@ class _Home extends State<Home> {
                       color: const Color(0xff283488),
                       child: Column(
                         children: [
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   mainAxisSize: MainAxisSize.max,
-                          //   children: [
-                          //     Align(
-                          //       alignment: Alignment.bottomCenter,
-                          //       child: Container(
-                          //         padding: const EdgeInsets.only(top: 8),
-                          //         child: Image.asset(
-                          //           "assets/img/home/header.png",
-                          //           scale: 1.6,
-                          //         ),
-                          //       ),
-                          //     )
-                          //   ],
-                          // ),
                           InkWell(
                             onTap: () {
                               Navigator.pushNamed(context, '/search');
@@ -885,12 +885,14 @@ class _Home extends State<Home> {
                                 Align(
                                   alignment: Alignment.bottomCenter,
                                   child: Container(
-                                    padding: const EdgeInsets.only(top: 8),
+                                    padding: const EdgeInsets.only(
+                                        top: 8, left: 4, right: 6),
+                                    width: MediaQuery.of(context).size.width,
                                     child: const Image(
                                       image: AssetImage(
                                         'assets/img/home/1-3.png',
                                       ),
-                                      fit: BoxFit.scaleDown,
+                                      fit: BoxFit.cover,
                                       height: 50,
                                     ),
                                   ),
@@ -908,6 +910,7 @@ class _Home extends State<Home> {
                                         options: CarouselOptions(
                                           viewportFraction: 1,
                                           height: 250.0,
+                                          disableCenter: false,
                                           autoPlay: true,
                                           autoPlayInterval:
                                               const Duration(seconds: 5),
@@ -915,6 +918,12 @@ class _Home extends State<Home> {
                                               const Duration(milliseconds: 150),
                                           autoPlayCurve: Curves.easeInOutQuad,
                                           enlargeCenterPage: true,
+                                          onPageChanged: (index, ss) {
+                                            setState(() {
+                                              _current = index;
+                                              // print("${_current}");
+                                            });
+                                          },
                                         ),
                                         items: newProducts.map((item) {
                                           return Builder(
@@ -979,6 +988,52 @@ class _Home extends State<Home> {
                                                         ],
                                                       ),
                                                     ),
+                                                    Positioned(
+                                                      bottom: 0.0,
+                                                      left: 0.0,
+                                                      right: 0.0,
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children:
+                                                            newProducts.map(
+                                                          (image) {
+                                                            //these two lines
+                                                            int index = newProducts
+                                                                .indexOf(
+                                                                    image); //are changed
+                                                            return Container(
+                                                              width: 8.0,
+                                                              height: 8.0,
+                                                              margin: const EdgeInsets
+                                                                      .symmetric(
+                                                                  vertical:
+                                                                      10.0,
+                                                                  horizontal:
+                                                                      4.0),
+                                                              decoration: BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: _current ==
+                                                                          index
+                                                                      ? const Color
+                                                                              .fromRGBO(
+                                                                          255,
+                                                                          255,
+                                                                          255,
+                                                                          0.9)
+                                                                      : const Color
+                                                                              .fromRGBO(
+                                                                          255,
+                                                                          255,
+                                                                          255,
+                                                                          0.4)),
+                                                            );
+                                                          },
+                                                        ).toList(),
+                                                      ),
+                                                    ),
                                                   ]);
                                             },
                                           );
@@ -1005,7 +1060,7 @@ class _Home extends State<Home> {
                                 AppLocalizations.of(context).home_top,
                                 style: const TextStyle(
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.w900),
                               ),
                             ],
                           ),
@@ -1145,7 +1200,7 @@ class _Home extends State<Home> {
                                 AppLocalizations.of(context).home_popular,
                                 style: const TextStyle(
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.w900),
                               ),
                               InkWell(
                                 onTap: () {
@@ -1218,7 +1273,7 @@ class _Home extends State<Home> {
                                 AppLocalizations.of(context).home_new,
                                 style: const TextStyle(
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.w900),
                               ),
                               InkWell(
                                 onTap: () {
@@ -1331,7 +1386,7 @@ class _Home extends State<Home> {
                                 AppLocalizations.of(context).home_collections,
                                 style: const TextStyle(
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.w900),
                               ),
                               InkWell(
                                 onTap: () {
@@ -1368,7 +1423,7 @@ class _Home extends State<Home> {
                                 AppLocalizations.of(context).home_robots,
                                 style: const TextStyle(
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.w900),
                               ),
                               InkWell(
                                 onTap: () {
@@ -1404,7 +1459,7 @@ class _Home extends State<Home> {
                                 AppLocalizations.of(context).home_baby,
                                 style: const TextStyle(
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.w900),
                               ),
                               InkWell(
                                 onTap: () {

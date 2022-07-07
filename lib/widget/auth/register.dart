@@ -464,8 +464,34 @@ class _Register extends State<Register> {
                                                         horizontal: 10),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                    color: Colors.grey,
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                errorBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                focusedErrorBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
                                                   ),
                                                   borderRadius:
                                                       BorderRadius.circular(32),
@@ -477,11 +503,6 @@ class _Register extends State<Register> {
                                                     fontSize: 12,
                                                     fontWeight:
                                                         FontWeight.normal),
-                                                border:
-                                                    const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color:
-                                                                Colors.grey)),
                                               ),
                                               validator: (value) {
                                                 if (value == null ||
@@ -528,8 +549,34 @@ class _Register extends State<Register> {
                                                         horizontal: 10),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                    color: Colors.grey,
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                errorBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                focusedErrorBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
                                                   ),
                                                   borderRadius:
                                                       BorderRadius.circular(32),
@@ -541,11 +588,6 @@ class _Register extends State<Register> {
                                                     fontSize: 12,
                                                     fontWeight:
                                                         FontWeight.normal),
-                                                border:
-                                                    const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color:
-                                                                Colors.grey)),
                                               ),
                                               controller: _lastnameController,
                                               validator: (value) {
@@ -657,17 +699,38 @@ class _Register extends State<Register> {
                                                         horizontal: 10),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                    color: Colors.grey,
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
                                                   ),
                                                   borderRadius:
                                                       BorderRadius.circular(32),
                                                 ),
-                                                border:
-                                                    const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color:
-                                                                Colors.grey)),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                errorBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                focusedErrorBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
                                               ),
                                               validator: (value) {
                                                 if (value == null ||
@@ -724,17 +787,38 @@ class _Register extends State<Register> {
                                                         horizontal: 10),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                    color: Colors.grey,
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
                                                   ),
                                                   borderRadius:
                                                       BorderRadius.circular(32),
                                                 ),
-                                                border:
-                                                    const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color:
-                                                                Colors.grey)),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                errorBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                focusedErrorBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
                                               ),
                                               controller: _passwordController,
                                               validator: (value) {
@@ -785,17 +869,38 @@ class _Register extends State<Register> {
                                                         horizontal: 10),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                    color: Colors.grey,
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
                                                   ),
                                                   borderRadius:
                                                       BorderRadius.circular(32),
                                                 ),
-                                                border:
-                                                    const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color:
-                                                                Colors.grey)),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                errorBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
+                                                focusedErrorBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(32),
+                                                ),
                                               ),
                                               keyboardType:
                                                   TextInputType.visiblePassword,

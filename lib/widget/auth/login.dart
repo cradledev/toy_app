@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toy_app/components/components.dart';
@@ -32,6 +33,7 @@ class _LoginScreenPage extends State<LoginScreen> {
   UserService userService;
   // indicator status
   bool _loadingStatus = false;
+  bool _passwordVisible = false;
   @override
   void initState() {
     super.initState();
@@ -39,7 +41,10 @@ class _LoginScreenPage extends State<LoginScreen> {
   }
 
   void _init() async {
-    _loadingStatus = false;
+    setState(() {
+      _loadingStatus = false;
+      _passwordVisible = false;
+    });
     _appState = Provider.of<AppState>(context, listen: false);
     userService = UserService();
   }
@@ -166,15 +171,33 @@ class _LoginScreenPage extends State<LoginScreen> {
                                             const EdgeInsets.symmetric(
                                                 vertical: 0, horizontal: 10),
                                         enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.grey,
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.withOpacity(0.2),
                                           ),
                                           borderRadius:
                                               BorderRadius.circular(32),
                                         ),
-                                        border: const OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey)),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                                  Colors.grey.withOpacity(0.3)),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.withOpacity(0.2),
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.withOpacity(0.2),
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
                                       ),
                                       validator: (value) {
                                         if (value == null ||
@@ -218,21 +241,55 @@ class _LoginScreenPage extends State<LoginScreen> {
                                     ),
                                     TextFormField(
                                       controller: _userpwd,
-                                      obscureText: true,
+                                      obscureText: !_passwordVisible,
                                       decoration: InputDecoration(
                                         contentPadding:
                                             const EdgeInsets.symmetric(
                                                 vertical: 0, horizontal: 10),
                                         enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Colors.grey,
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.withOpacity(0.2),
                                           ),
                                           borderRadius:
                                               BorderRadius.circular(32),
                                         ),
-                                        border: const OutlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.grey)),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                                  Colors.grey.withOpacity(0.3)),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.withOpacity(0.2),
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.withOpacity(0.2),
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            // Based on passwordVisible state choose the icon
+                                            _passwordVisible
+                                                ? Icons.visibility_outlined
+                                                : Icons.visibility_off_outlined,
+                                            color: Colors.grey.withOpacity(0.5),
+                                          ),
+                                          onPressed: () {
+                                            // Update the state i.e. toogle the state of passwordVisible variable
+                                            setState(() {
+                                              _passwordVisible =
+                                                  !_passwordVisible;
+                                            });
+                                          },
+                                        ),
                                       ),
                                       validator: (value) {
                                         if (value == null ||
@@ -258,26 +315,40 @@ class _LoginScreenPage extends State<LoginScreen> {
                                     )
                                   ],
                                 ),
-                                // Row(
-                                //   children: [
-                                //     Padding(
-                                //       padding: EdgeInsets.zero,
-                                //       child: Row(
-                                //         children: [
-                                //           Text(AppLocalizations.of(context)
-                                //               .login_fpwd),
-                                //           Text(
-                                //             AppLocalizations.of(context)
-                                //                 .login_tap,
-                                //             style: const TextStyle(
-                                //                 fontWeight: FontWeight.w600,
-                                //                 fontSize: 18),
-                                //           ),
-                                //         ],
-                                //       ),
-                                //     ),
-                                //   ],
-                                // ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.zero,
+                                      child: Row(
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                                text:
+                                                    AppLocalizations.of(context)
+                                                        .login_fpwd,
+                                                style: const TextStyle(
+                                                    color: Colors.grey),
+                                                children: [
+                                                  TextSpan(
+                                                    text: " ${AppLocalizations.of(
+                                                            context)
+                                                        .login_tap}",
+                                                    style: const TextStyle(
+                                                        color: Color(0xff283488),
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold),
+                                                    recognizer:
+                                                        TapGestureRecognizer()
+                                                          ..onTap = () => print(
+                                                              'Tap Here onTap'),
+                                                  )
+                                                ]),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
@@ -312,7 +383,9 @@ class _LoginScreenPage extends State<LoginScreen> {
                       : Text(
                           AppLocalizations.of(context).login_login,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 14),
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900),
                         ),
                 ),
               ),
